@@ -1,11 +1,11 @@
-const { SSL_OP_EPHEMERAL_RSA } = require('constants');
 const {Client, MessageEmbed, Message} = require('discord.js');
 const { parse } = require('path');
 const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
 let embed = new MessageEmbed();
-numofmsgs = 0;
+numofmsgsg1 = 0;
+numofmsgsg2 = 0;
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
@@ -14,7 +14,11 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-    numofmsgs++;
+    if(message.guild.id === "789954638706376704") {
+        numofmsgsg1++
+    } else {
+        numofmsgsg2++;
+    }
     let args = message.content.substring(prefix.length).split(" ")
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
@@ -106,7 +110,11 @@ client.on('message', message => {
                 message.channel.send(`\`\`\`Added message counting(Beta)\`\`\``)
             break;
             case "messages" :
-                message.channel.send(`There were \`${numofmsgs}\` messages sent since the last bot update`)
+                if(message.guild.id === "789954638706376704") {
+                    message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
+                } else {
+                    message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
+                }
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
