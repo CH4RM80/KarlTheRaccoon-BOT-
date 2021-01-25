@@ -107,7 +107,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added message counting(Beta)\`\`\``)
+                message.channel.send(`\`\`\`Changed the prefix\`\`\``)
             break;
             case "messages" :
                 if(message.guild.id === "789954638706376704") {
