@@ -5,6 +5,7 @@ const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
 let embed = new MessageEmbed();
+numofmsgs = 0;
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
@@ -13,6 +14,7 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+    numofmsgs++;
     let args = message.content.substring(prefix.length).split(" ")
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
@@ -48,6 +50,7 @@ client.on('message', message => {
                 embed.addField(`5: ${prefix}number (int)`, "This command sends a random number");
                 embed.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
                 embed.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
+                embed.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor("#0070C0");
                 embed.setTimestamp();
@@ -100,8 +103,11 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Prefix changed to /\`\`\``)
-        }
+                message.channel.send(`\`\`\`Added message counting(Beta)\`\`\``)
+            break;
+            case "messages" :
+                message.channel.send(`There were \`${numofmsgs}\` messages sent since the last bot update`)
+        }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
         if (message.member.user.id === "801827038234804234") {
