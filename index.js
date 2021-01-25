@@ -107,9 +107,16 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Changed the prefix\`\`\``)
+                message.channel.send(`\`\`\`Added alias for messages\`\`\``)
             break;
-            case "messages" :
+            case "messages":
+                if(message.guild.id === "789954638706376704") {
+                    message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
+                } else {
+                    message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
+                }
+            break;
+            case "message":
                 if(message.guild.id === "789954638706376704") {
                     message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
                 } else {
