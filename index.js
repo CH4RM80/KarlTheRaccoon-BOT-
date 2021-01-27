@@ -23,6 +23,7 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+    if (message.author.bot) return;
     if(message.guild.id === "789954638706376704") {
         numofmsgsg1++
     } else {
@@ -80,12 +81,9 @@ client.on('message', message => {
                 }
             break;
             case "purge":
-                if (message.member.roles.cache.has("789955130648166430")) {
+                if (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) {
                     newsplit = message.content.split(" ");
-                    if (message.member.id === "801827038234804234") {
-                        
-                    }
-                    else if (newsplit.length === 1) {
+                    if (newsplit.length === 1) {
                         message.channel.bulkDelete(2);
                     } else {
                         message.channel.bulkDelete(parseInt(newsplit[1]) + 1);
@@ -97,7 +95,7 @@ client.on('message', message => {
                 embed.setTitle("Bungou Stray Dogs")
                 embed.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
                 embed.addField("Where to watch", "https://animepahe.com/anime/e9523036-5d5c-f06b-8310-fd2e0eaa303c\nhttps://lite.animevibe.wtf/anime/bungou-stray-dogs")
-                embed.setColor(getRandomColor);
+                embed.setColor(getRandomColor());
                 embed.setTimestamp();
                 message.channel.send(embed);
             break;
@@ -118,7 +116,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`More small code fixes and a timeout added for avatars\`\`\``)
+                message.channel.send(`\`\`\`smakked some bugs\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -141,7 +139,7 @@ client.on('message', message => {
                     embed.setTitle(`${us.username} Avatar`);
                     embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 1024 }));
                     embed.setColor(getRandomColor())
-                    message.channel.send(embed).then(()=> {message.delete({timeout: 20000})});
+                    message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
                 }
             break;
             case "color":
@@ -173,19 +171,19 @@ client.on('message', message => {
             }
             else {
                 greets = ["what a lovely day it is, but not as lovely as you ;)", "the sun is shining, but not as bright as your smile ;)", "what have you been up to?", "love u uwu", "sure hope your day has been going well :)", "have a great day uwu", "hope your day is as great as the day i met you ;)", "Let's curl up and read a horror novel together", "Would you like to steal trash with me?", "All my clues lead up to you being amazing", "I dig the look human", "even water is not as clear as how much I love you uwu", "Are you a garbage can? Because you smell f a n t a s t i c!"]
-                message.channel.send(`hi ${message.member.user.username}-chan, ${greets[Math.floor(Math.random() * greets.length) - 1]}`);
+                message.channel.send(`hi ${message.member.user.username}-san, ${greets[Math.floor(Math.random() * greets.length) - 1]}`);
             }   
         }
     }
     else if (message.content.toLowerCase().includes("compliment me")) {
         if(!(message.member.id === "801827038234804234")) {
             compliments = ["I would give my life for you in a heartbeat", "Depression is not an option, things will get better", "You're the best person I know", "No matter how many times you fall, I believe you can get back up again", "Enjoy life and value your friends", "Time is not of the essence when it comes to recovery", "Your body matters take care of it", "You're the sunshine to my morning", "You're not alone", "Your life matters, never forget that"]
-            message.channel.send(`${message.member.user.username}, ${compliments[Math.floor(Math.random() * compliments.length) - 1]}`)
+            message.channel.send(`${message.member.user.username}-san, ${compliments[Math.floor(Math.random() * compliments.length) - 1]}`)
         }
     }
     else if (message.content.toLowerCase().includes("bye karl")) {
         if(!(message.member.id === "801827038234804234")) {
-            message.channel.send(`bye ${message.member.user.username}-chan, have a great day uwu`);
+            message.channel.send(`bye ${message.member.user.username}-san, have a great day uwu`);
         }
     }
     else if (message.content.toLowerCase().includes("what is the prefix")) {
@@ -197,7 +195,7 @@ client.on('message', message => {
         }
     } 
     else if (message.content.toLowerCase().includes("suicide") || message.content.toLowerCase().includes("die")) {
-        message.channel.send(`${message.member.user.username}-chan, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
+        message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
     }
     else if (message.content.toLowerCase().startsWith("hi")) {
         if (!(message.content[2])) {
