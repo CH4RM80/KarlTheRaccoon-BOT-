@@ -18,8 +18,8 @@ function getRandomColor() {
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
-    cache1.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
-    cache1.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
+    ccache.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
+    ccache.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
 });
 
 client.on('message', message => {
