@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord} = require('discord.js');
 const { parse } = require('path');
 const client = new Client();
 let { prefix, token } = require('./config.json');
@@ -6,11 +6,20 @@ const botid = "801827038234804234";
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
+ccache = client.channels.cache
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
-    client.channels.cache.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``);
-    client.channels.cache.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``);
+    cache1.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
+    cache1.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
 });
 
 client.on('message', message => {
@@ -55,8 +64,10 @@ client.on('message', message => {
                 embed.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
                 embed.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
                 embed.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
+                embed.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
+                embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
-                embed.setColor("#0070C0");
+                embed.setColor(getRandomColor());
                 embed.setTimestamp();
                 message.channel.send(embed);
             break;
@@ -86,7 +97,7 @@ client.on('message', message => {
                 embed.setTitle("Bungou Stray Dogs")
                 embed.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
                 embed.addField("Where to watch", "https://animepahe.com/anime/e9523036-5d5c-f06b-8310-fd2e0eaa303c\nhttps://lite.animevibe.wtf/anime/bungou-stray-dogs")
-                embed.setColor("#0070C0");
+                embed.setColor(getRandomColor);
                 embed.setTimestamp();
                 message.channel.send(embed);
             break;
@@ -107,7 +118,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added alias for messages\`\`\``)
+                message.channel.send(`\`\`\`More small code fixes and a timeout added for avatars\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -122,13 +133,31 @@ client.on('message', message => {
                 } else {
                     message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
                 }
+            break;
+            case "avatar":
+                let us = message.mentions.users.first() || message.author;
+                if (us) {
+                    embed = new MessageEmbed()
+                    embed.setTitle(`${us.username} Avatar`);
+                    embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 1024 }));
+                    embed.setColor(getRandomColor())
+                    message.channel.send(embed).then(()=> {message.delete({timeout: 20000})});
+                }
+            break;
+            case "color":
+                randcolor = getRandomColor()
+                embed = new MessageEmbed()
+                    .setColor(randcolor)
+                    .setTitle("Random Color Generated")
+                    .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
+                message.channel.send(embed);
+            break;
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
-        if (message.member.user.id === "801827038234804234") {
-        } else {
-        message.reply("ugh fineee, I guess you are my little pogchamp, come here");
-        }
+        if (message.member.user.id !== "801827038234804234") {
+            message.reply("ugh fineee, I guess you are my little pogchamp, come here");
+        } 
     }
     else if (message.content.toLowerCase().includes("what is the meaning of life")) {
         message.reply("42");
@@ -193,7 +222,7 @@ client.on('messageDelete', (messageDelete) => {
         embed.setDescription(messageDelete.content);
         embed.addField('Author', messageDelete.author);
         embed.addField('Channel', messageDelete.channel);
-        embed.setColor("#0070C0");
+        embed.setColor(getRandomColor());
         embed.setTimestamp();
         channel.send(embed);
     }
@@ -215,7 +244,7 @@ client.on('guildBanAdd', async (guild, user) => {
             embed = new MessageEmbed();
             embed.setTitle("Member Banned");
             embed.setDescription(`${user.tag} was banned in ${guild.name}, by ${executor.tag}`);
-            embed.setColor("#0070C0");
+            embed.setColor(getRandomColor());
             embed.setTimestamp();
             channel.send(embed);
         }
@@ -224,7 +253,7 @@ client.on('guildBanAdd', async (guild, user) => {
             embed = new MessageEmbed();
             embed.setTitle("Member Banned");
             embed.setDescription(`${user.tag} was banned in ${guild.name}`);
-            embed.setColor("#0070C0");
+            embed.setColor(getRandomColor());
             embed.setTimestamp();
             channel.send(embed);
         }
