@@ -160,7 +160,7 @@ client.on('message', message => {
     else if (message.content.toLowerCase().includes("what is the meaning of life")) {
         message.reply("42");
     }
-    else if (message.content.toLowerCase().includes("discord.gg")) {
+    else if (message.member.id !== "681238807026466870" && message.content.toLowerCase().includes("discord.gg")) {
         message.channel.bulkDelete(1);
         message.reply("nice... but we don't really do advertising here");
     }
