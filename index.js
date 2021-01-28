@@ -49,7 +49,7 @@ client.on('message', message => {
                     prefix = args[1][0];
                     message.channel.send(`The prefix has been changed to \`${prefix}\``);
                 } else {
-                    message.reply(`The current prefix is\`${prefix}\``);
+                    message.reply(`The current prefix is \`${prefix}\``);
                 }
             break;
             case "help":
@@ -70,7 +70,7 @@ client.on('message', message => {
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
-                message.channel.send(embed);
+                message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
             break;
             case "number":
                 if(args[1]) {
@@ -116,7 +116,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`smakked some bugs\`\`\``)
+                message.channel.send(`\`\`\`fixed my ocd\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -187,7 +187,7 @@ client.on('message', message => {
         }
     }
     else if (message.content.toLowerCase().includes("what is the prefix")) {
-        message.reply(`The current prefix is\`${prefix}\``);
+        message.reply(`The current prefix is \`${prefix}\``);
     }
     else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes("hi ") || message.content.toLowerCase().endsWith("hi")) {
         if(!(message.member.id === "801827038234804234")) {
