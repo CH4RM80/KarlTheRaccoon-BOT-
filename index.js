@@ -116,7 +116,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`fixed my ocd\`\`\``)
+                message.channel.send(`\`\`\`removed react command as i am stupid and need time to figure it out\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
