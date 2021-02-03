@@ -116,7 +116,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`removed react command as i am stupid and need time to figure it out\`\`\``)
+                message.channel.send(`\`\`\`Bot will not be receiving many updates for the next couple weeks as i will be working on my actual js course and school\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
