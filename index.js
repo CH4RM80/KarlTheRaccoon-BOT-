@@ -150,12 +150,6 @@ client.on('message', message => {
                     .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
                 message.channel.send(embed);
             break;
-            case "pingme":
-                if(message.member.user.id === "601822624867155989" && args[1]) {
-                    for (let i = 0; i < parseInt(args[1]); i++) {
-                        message.reply("").then(() => {setTimeout(() => {message.reply("")}, 3000)}) 
-                    }
-                }
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
