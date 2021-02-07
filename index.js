@@ -153,7 +153,7 @@ client.on('message', message => {
             case "pingme":
                 if(message.member.user.id === "601822624867155989" && args[1]) {
                     for (let i = 0; i < parseInt(args[1]); i++) {
-                        setTimeout(() => {message.reply("")}, 3000) 
+                        message.reply("").then(() => {setTimeout(() => {message.reply("")}, 3000)}) 
                     }
                 }
         }   
