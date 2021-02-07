@@ -116,7 +116,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Bot will not be receiving many updates for the next couple weeks as i will be working on my actual js course and school\`\`\``)
+                message.channel.send(`\`\`\`Finally got the bot's host device updated to node;js 12.20.1, so some errors have been fixed\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -150,6 +150,12 @@ client.on('message', message => {
                     .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
                 message.channel.send(embed);
             break;
+            case "pingme":
+                if(message.member.user.id === "601822624867155989" && args[1]) {
+                    for (let i = 0; i < parseInt(args[1]); i++) {
+                        setTimeout(() => {message.channel.send("@Hypr#3309")}, 3000) 
+                    }
+                }
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
@@ -194,7 +200,7 @@ client.on('message', message => {
             message.react("✌")
         }
     } 
-    else if (message.content.toLowerCase().includes("suicide") || message.content.toLowerCase().includes("die")) {
+    else if (message.content.toLowerCase().includes("suicide") || message.content.toLowerCase().includes(" die")) {
         message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
     }
     else if (message.content.toLowerCase().startsWith("hi")) {
