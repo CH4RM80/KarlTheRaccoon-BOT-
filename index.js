@@ -67,6 +67,7 @@ client.on('message', message => {
                 embed.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
                 embed.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
                 embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
+                embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id");
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -116,7 +117,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Finally got the bot's host device updated to node;js 12.20.1, so some errors have been fixed\`\`\``)
+                message.channel.send(`\`\`\`Added a new command, ty arusok for the source code\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -156,7 +157,7 @@ client.on('message', message => {
                 message.channel.messages.fetch(args[1])
                 .then(message => 
                 {
-                  for(var i = 0; i < grossa.length; i++)
+                  for(var i = 0; i < id.length; i++)
                  {
                     if(id[i] == " ")
                     {
