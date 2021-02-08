@@ -150,6 +150,28 @@ client.on('message', message => {
                     .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
                 message.channel.send(embed);
             break;
+            case "reactionid":
+                let id = message.content.substring(32).toLowerCase();
+
+                message.channel.messages.fetch(args[1])
+                .then(message => 
+                {
+                  for(var i = 0; i < grossa.length; i++)
+                 {
+                    if(id[i] == " ")
+                    {
+                      console.log("error");
+                   }
+                   else if(id[i] != " ")
+                   {
+                     let letters = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"];            
+                     let letterscase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+                      message.react(letters[letterscase.indexOf(id[i])]);
+                    }
+                 }
+                })
+                .catch(console.error);
+            break;
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
