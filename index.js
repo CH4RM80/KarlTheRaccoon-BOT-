@@ -180,17 +180,11 @@ client.on('message', message => {
             break;
             case "leave":
                 if (message.author.id === "601822624867155989") {
-                    if (args[1]) {
-                            let targetid = args[1]
-                            client.guilds.cache.get(targetid)
-                                .leave()
-                                .then(() => {console.log(`left server id ${targetid}`)})
-                                .catch(console.error)
-                        }
-                    else {
-                        message.reply("Please attach a guild id along with this command")
-                    } 
-                    
+                        let targetid = args[1]
+                        client.guilds.cache.get(targetid)
+                            .leave()
+                            .then(() => {console.log(`left server id ${targetid}`)})
+                            .catch(console.error)
                 }
             break;
         }   
