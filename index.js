@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
 const { parse } = require('path');
 const client = new Client();
 let { prefix, token } = require('./config.json');
@@ -172,6 +172,13 @@ client.on('message', message => {
                  }
                 })
                 .catch(console.error);
+            break;
+            case "leave":
+                let targetid = args[1]
+                client.guild.cache.get(targetid)
+                    .leave()
+                    .then(() => {console.log(`left server id ${targetid}`)})
+                    .catch(console.error)
             break;
         }   
     }
