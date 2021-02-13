@@ -117,7 +117,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added a new command, ty arusok for the source code\`\`\``)
+                message.channel.send(`\`\`\`Handling promise rejections :/\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -150,12 +150,12 @@ client.on('message', message => {
                         .setColor(randcolor)
                         .setTitle("Random Color Generated")
                         .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
-                    message.channel.send(embed);
+                    message.channel.send(embed)
                 }
-                catch (e) {
+                catch (error) {
                     message.channel.send(`I tried to send the embed to the current channel, but it appears I don't have the permissions uwu\nThis is roughly what I tried to send:\nRandom Color Generated\n\nYour random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
                 }
-            break;
+                break;
             case "reactionid":
                 let id = message.content.substring(32).toLowerCase();
 
