@@ -145,11 +145,16 @@ client.on('message', message => {
             break;
             case "color":
                 randcolor = getRandomColor()
-                embed = new MessageEmbed()
-                    .setColor(randcolor)
-                    .setTitle("Random Color Generated")
-                    .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
-                message.channel.send(embed);
+                try {
+                    embed = new MessageEmbed()
+                        .setColor(randcolor)
+                        .setTitle("Random Color Generated")
+                        .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
+                    message.channel.send(embed);
+                }
+                catch (e) {
+                    message.channel.send(`I tried to send the embed to the current channel, but it appears I don't have the permissions uwu\nThis is roughly what I tried to send:\nRandom Color Generated\n\nYour random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
+                }
             break;
             case "reactionid":
                 let id = message.content.substring(32).toLowerCase();
@@ -174,11 +179,19 @@ client.on('message', message => {
                 .catch(console.error);
             break;
             case "leave":
-                let targetid = args[1]
-                client.guild.cache.get(targetid)
-                    .leave()
-                    .then(() => {console.log(`left server id ${targetid}`)})
-                    .catch(console.error)
+                if (message.author.id === "601822624867155989") {
+                    if (args[1]) {
+                            let targetid = args[1]
+                            client.guilds.cache.get(targetid)
+                                .leave()
+                                .then(() => {console.log(`left server id ${targetid}`)})
+                                .catch(console.error)
+                        }
+                    else {
+                        message.reply("Please attach a guild id along with this command")
+                    } 
+                    
+                }
             break;
         }   
     }
