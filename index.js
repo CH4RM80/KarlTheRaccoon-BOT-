@@ -199,7 +199,7 @@ client.on('message', message => {
                     .catch(console.error)
         }   
     }
-    if (message.guild === null && message.author.id !== "801827038234804234") {
+    if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
         console.log(message)
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
