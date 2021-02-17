@@ -192,7 +192,7 @@ client.on('message', message => {
                 const dude = message.mentions.members.first();
                 var msgContent = args.splice(2, args.length - 1).join(" ")
                 message.channel.bulkDelete(1)
-                dude.send(`${msgContent}\n\n-${message.author.name}`)
+                dude.send(`${msgContent}\n\n-${message.member.user.username}`)
                     .then(() => {
                         message.channel.send("dm successfully sent")
                     })
