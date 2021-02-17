@@ -33,7 +33,10 @@ client.on('message', message => {
     } 
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
-            console.log(`${message.content}\n\n${message.author.username}`)
+            console.log(`${message.content}\n\n-${message.author.username}`)
+            if(message.author.id !== "601822624867155989") {
+                client.users.get("601822624867155989").send(`${message.content}\n\n-${message.author.username}`)
+            }
         }
         return;
     }   
@@ -126,7 +129,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added a dm logger\`\`\``)
+                message.channel.send(`\`\`\`Fixed all the stuff with my dm logger, my mental is broken\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
