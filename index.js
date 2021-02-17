@@ -24,11 +24,16 @@ client.once('ready', () => {
 
 client.on('message', message => {
     if (message.author.bot) return;
-    if(message.guild.id === "789954638706376704") {
-        numofmsgsg1++
-    } else {
-        numofmsgsg2++;
-    }
+    try {
+        if(message.guild.id === "789954638706376704") {
+            numofmsgsg1++
+        } else {
+            numofmsgsg2++;
+        }
+    } 
+    catch (TypeError) {
+        
+    }   
     let args = message.content.substring(prefix.length).split(" ")
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
