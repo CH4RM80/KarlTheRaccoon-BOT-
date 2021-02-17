@@ -118,7 +118,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Made a new command! Please don't murder my bandwidth, check it out with >help, or just do the command with >dm\`\`\``)
+                message.channel.send(`\`\`\`Added a dm logger\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -198,6 +198,9 @@ client.on('message', message => {
                     })
                     .catch(console.error)
         }   
+    }
+    if (message.guild === null && message.author.id !== "801827038234804234") {
+        console.log(message)
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
         if (message.member.user.id !== "801827038234804234") {
