@@ -192,6 +192,7 @@ client.on('message', message => {
                     const dude = message.mentions.members.first();
                     var msgContent = args.splice(2, args.length - 1).join(" ")
                     dude.send(msgContent)
+                        .catch(error)
                 }
         }   
     }
