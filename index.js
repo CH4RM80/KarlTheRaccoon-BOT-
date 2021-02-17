@@ -189,8 +189,9 @@ client.on('message', message => {
             break;
             case "dm":
                 if(message.author.id === "601822624867155989") {
+                    const dude = message.mentions.members.first();
                     var msgContent = args.splice(2, args.length - 1).join(" ")
-                    client.users.cache.get(args[1]).send(msgContent)
+                    dude.send(msgContent)
                 }
         }   
     }
