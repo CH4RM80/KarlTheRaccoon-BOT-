@@ -188,12 +188,13 @@ client.on('message', message => {
                 }
             break;
             case "dm":
-                if(message.author.id === "601822624867155989") {
-                    const dude = message.mentions.members.first();
-                    var msgContent = args.splice(2, args.length - 1).join(" ")
-                    dude.send(msgContent)
-                        .catch(error)
-                }
+                const dude = message.mentions.members.first();
+                var msgContent = args.splice(2, args.length - 1).join(" ")
+                dude.send(`${msgContent}\n\n-${message.author.name}`)
+                    .then(() => {
+                        message.channel.send("dm successfully sent")
+                    })
+                    .catch(console.error)
         }   
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
