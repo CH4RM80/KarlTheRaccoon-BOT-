@@ -32,7 +32,7 @@ client.on('message', message => {
         }
     } 
     catch (TypeError) {
-        
+        return;
     }   
     let args = message.content.substring(prefix.length).split(" ")
     if (message.content[0] === prefix) {
