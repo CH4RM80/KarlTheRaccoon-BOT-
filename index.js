@@ -32,6 +32,9 @@ client.on('message', message => {
         }
     } 
     catch (TypeError) {
+        if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
+            console.log(message)
+        }
         return;
     }   
     let args = message.content.substring(prefix.length).split(" ")
@@ -203,9 +206,6 @@ client.on('message', message => {
                     })
                     .catch(console.error)
         }   
-    }
-    if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
-        console.log(message)
     }
     if (message.content.toLowerCase().includes("pogchamp")) {
         if (message.member.user.id !== "801827038234804234") {
