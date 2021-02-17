@@ -67,7 +67,8 @@ client.on('message', message => {
                 embed.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
                 embed.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
                 embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
-                embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id");
+                embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
+                embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -117,7 +118,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Handling promise rejections :/\`\`\``)
+                message.channel.send(`\`\`\`Made a new command! Please don't murder my bandwidth, check it out with >help, or just do the command with >dm\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -190,6 +191,7 @@ client.on('message', message => {
             case "dm":
                 const dude = message.mentions.members.first();
                 var msgContent = args.splice(2, args.length - 1).join(" ")
+                message.channel.bulkDelete(1)
                 dude.send(`${msgContent}\n\n-${message.author.name}`)
                     .then(() => {
                         message.channel.send("dm successfully sent")
