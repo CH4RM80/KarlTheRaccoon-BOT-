@@ -33,7 +33,7 @@ client.on('message', message => {
     } 
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
-            console.log(message)
+            console.log(`${message.content}\n\n${message.member.user.username}`)
         }
         return;
     }   
