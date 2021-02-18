@@ -40,7 +40,7 @@ client.on('message', message => {
                     if(message.content[0] === prefix) {
                         if (message.content[1] === "-") {
                             lastuserid = message.content.substring(2, 20)
-                            flmsg = args.splice(2, args.length - 1).join(" ");
+                            flmsg = args.splice(1, args.length - 1).join(" ");
                         }
                         else {
                             flmsg = args.splice(1, args.length - 1).join(" ");
