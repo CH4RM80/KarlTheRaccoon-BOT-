@@ -6,6 +6,7 @@ const botid = "801827038234804234";
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
+lastuserid = "";
 ccache = client.channels.cache
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -24,6 +25,7 @@ client.once('ready', () => {
 
 client.on('message', message => {
     if (message.author.bot) return;
+    let args = message.content.substring(prefix.length).split(" ")
     try {
         if(message.guild.id === "789954638706376704") {
             numofmsgsg1++
@@ -33,14 +35,21 @@ client.on('message', message => {
     } 
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
-            console.log(`${message.content}\n\n-${message.author.username}`)
-            if(message.author.id !== "601822624867155989") {
-                client.users.cache.get("601822624867155989").send(`This was dmed to the Bot:\n${message.content}\n\n-${message.author.username}`)
+            if (message.author.id === "601822624867155989") {
+                    if(message.content[0] === prefix && args[1 === "reply"]) {
+
+                    }
+            }
+            else {
+                console.log(`${message.content}\n\n-${message.author.username}`)
+                lastuserid = message.author.id.toString()
+                if(message.author.id !== "601822624867155989") {
+                    client.users.cache.get("601822624867155989").send(`This was dmed to the Bot:\n${message.content}\n\n-${message.author.username}`)
+                }
             }
         }
         return;
     }   
-    let args = message.content.substring(prefix.length).split(" ")
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
@@ -248,7 +257,7 @@ client.on('message', message => {
     else if (message.content.toLowerCase().includes("what is the prefix")) {
         message.reply(`The current prefix is \`${prefix}\``);
     }
-    else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes("hi ") || message.content.toLowerCase().endsWith("hi")) {
+    else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes(" hi ") || message.content.toLowerCase().endsWith("hi")) {
         if(!(message.member.id === "801827038234804234")) {
             message.react("✌")
         }
