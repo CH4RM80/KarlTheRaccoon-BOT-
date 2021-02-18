@@ -36,7 +36,7 @@ client.on('message', message => {
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
             if (message.author.id === "601822624867155989") {
-                    if(message.content[0] === prefix && args[1] === "reply") {
+                    if(message.content[0] === prefix) {
                         flmsg = args.splice(1, args.length - 1).join(" ");
                         client.users.cache.get(lastuserid).send(flmsg).then(() => {
                             client.users.cache.get("601822624867155989").send(`Your message of: ${flmsg} was sent to ${lastuserid}`)
