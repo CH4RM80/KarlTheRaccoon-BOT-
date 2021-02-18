@@ -129,7 +129,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Fixed all the stuff with my dm logger, my mental is broken\`\`\``)
+                message.channel.send(`\`\`\`Fixed some crap\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -206,6 +206,7 @@ client.on('message', message => {
                 dude.send(`${msgContent}\n\n-${message.member.user.username}`)
                     .then(() => {
                         message.channel.send("dm successfully sent")
+                        console.log(`${msgContent}\n\n-${message.member.user.username} sent to ${dude}`)
                     })
                     .catch(console.error)
         }   
