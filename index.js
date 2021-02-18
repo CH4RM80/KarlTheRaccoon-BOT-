@@ -1,5 +1,6 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
 const { parse } = require('path');
+const { measureMemory } = require('vm');
 const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
@@ -37,6 +38,9 @@ client.on('message', message => {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
             if (message.author.id === "601822624867155989") {
                     if(message.content[0] === prefix) {
+                        if (message.content[2] === "-") {
+                            lastuserid = message.content.splice(3, 21)
+                        }
                         flmsg = args.splice(1, args.length - 1).join(" ");
                         client.users.cache.get(lastuserid).send(flmsg).then(() => {
                             client.users.cache.get("601822624867155989").send(`Your message of: ${flmsg} was sent to ${lastuserid}`)
