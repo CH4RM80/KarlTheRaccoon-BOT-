@@ -75,7 +75,8 @@ client.on('message', message => {
             break;
             case "prefix":
                 if (args[1] && (message.member.roles.cache.has("789955154375868437") || message.member.roles.cache.has("789937840913383424") )) {
-                    prefix = args[1][0].then(() => {message.channel.send(`The prefix has been changed to \`${prefix}\``)})
+                    prefix = args[1][0]
+                    message.channel.send(`The prefix has been changed to \`${prefix}\``)
                 } else {
                     message.reply(`The current prefix is \`${prefix}\``);
                 }
