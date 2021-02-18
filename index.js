@@ -51,10 +51,10 @@ client.on('message', message => {
                     }
             }
             else {
-                console.log(`${message.content}\n\n-${message.author.username}`)
+                console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 lastuserid = message.author.id.toString()
                 if(message.author.id !== "601822624867155989") {
-                    client.users.cache.get("601822624867155989").send(`This was dmed to the Bot:\n${message.content}\n\n-${message.author.username}`)
+                    client.users.cache.get("601822624867155989").send(`This was dmed to the Bot:\n${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 }
             }
         }
@@ -225,7 +225,7 @@ client.on('message', message => {
                 dude.send(`${msgContent}\n\n-${message.member.user.username}`)
                     .then(() => {
                         message.channel.send("dm successfully sent")
-                        console.log(`${msgContent}\n\n-${message.member.user.username} sent to ${dude}`)
+                        console.log(`${msgContent}\n\n-${message.member.user.username}(${message.member.id}) sent to ${dude}`)
                     })
                     .catch(console.error)
         }   
