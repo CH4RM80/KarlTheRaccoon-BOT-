@@ -7,7 +7,7 @@ const botid = "801827038234804234";
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
-lastuserid = "";
+var lastuserid = "";
 ccache = client.channels.cache
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -39,14 +39,15 @@ client.on('message', message => {
             if (message.author.id === "601822624867155989") {
                     if(message.content[0] === prefix) {
                         if (message.content[1] === "-") {
-                            lastuserid = message.content.substring(2, 20)
+                            lastuserid = message.content.substring(2, 20).toString()
                         }
-                        else {
-                            flmsg = args.splice(1, args.length - 1).join(" ");
+                        flmsg = args.splice(1, args.length - 1).join(" ");
+                        try {
+                            client.users.cache.get(lastuserid).send(flmsg).then(() => {
+                                client.users.cache.get("601822624867155989").send(`Your message of: ${flmsg} was sent to ${lastuserid}`)
+                            })
                         }
-                        client.users.cache.get(lastuserid).send(flmsg).then(() => {
-                            client.users.cache.get("601822624867155989").send(`Your message of: ${flmsg} was sent to ${lastuserid}`)
-                        })
+                        catch (TypeError) {return;}
                     }
             }
             else {
