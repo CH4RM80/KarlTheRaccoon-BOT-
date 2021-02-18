@@ -39,7 +39,7 @@ client.on('message', message => {
             if (message.author.id === "601822624867155989") {
                     if(message.content[0] === prefix) {
                         if (message.content[1] === "-") {
-                            lastuserid = message.content.splice(2, 20)
+                            lastuserid = message.content.substring(2, 20)
                             flmsg = args.splice(2, args.length - 1).join(" ");
                         }
                         else {
