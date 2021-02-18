@@ -257,7 +257,7 @@ client.on('message', message => {
     else if (message.content.toLowerCase().includes("what is the prefix")) {
         message.reply(`The current prefix is \`${prefix}\``);
     }
-    else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes(" hi ") || message.content.toLowerCase().endsWith("hi")) {
+    else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes(" hi ") || message.content.toLowerCase().endsWith(" hi")) {
         if(!(message.member.id === "801827038234804234")) {
             message.react("✌")
         }
