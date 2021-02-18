@@ -36,8 +36,8 @@ client.on('message', message => {
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
             if (message.author.id === "601822624867155989") {
-                    if(message.content[0] === prefix && args[1 === "reply"]) {
-
+                    if(message.content[0] === prefix && args[1] === "reply") {
+                        client.users.cache.get(lastuserid).send("hello from Karl")
                     }
             }
             else {
