@@ -148,7 +148,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Fixed some crap\`\`\``)
+                message.channel.send(`\`\`\`You can now kinda converse with the bot... i want to die now please give me peace\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
