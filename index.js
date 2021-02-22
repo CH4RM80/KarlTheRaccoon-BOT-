@@ -311,15 +311,20 @@ client.on('message', message => {
         message.channel.bulkDelete(1)
         if (message.guild.id === "789954638706376704") {
             wordviolations1++
-            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations1}! If it goes above 10 something very bad will happen!`)
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations1}!`)
         } else {
             wordviolations2++
-            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen!`)
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}!`)
         }
-        if (wordviolations2 >= 10 || wordviolations1 >= 10 && prevbadmember !== badmember) {
-            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
-            message.member.roles.add(roleofshame)
-            message.channel.send(`Someone was very naughty, their name is ${badmember} and they have been given the Role Of Shame`)
+        if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+            if(prevbadmember === badmember) {
+                message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
+            }
+            else {
+                let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
+                message.member.roles.add(roleofshame)
+                message.channel.send(`Someone was very naughty, their name is ${badmember} and they have been given the Role Of Shame`)
+            }
         }
     }
 });
