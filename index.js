@@ -305,6 +305,7 @@ client.on('message', message => {
         message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
     }
     else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch")) {
+        let prevbadmember = badmember
         badmember = message.member.user.username
         badmemberid = message.member.id.toString()
         message.channel.bulkDelete(1)
@@ -315,7 +316,7 @@ client.on('message', message => {
             wordviolations2++
             message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen!`)
         }
-        if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+        if (wordviolations2 >= 10 || wordviolations1 >= 10 && prevbadmember !== badmember) {
             let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
             message.member.roles.add(roleofshame)
             message.channel.send(`Someone was very naughty, their name is ${badmember} and they have been given the Role Of Shame`)
