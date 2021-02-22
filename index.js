@@ -13,7 +13,6 @@ var lastuserid = "";
 ccache = client.channels.cache
 var wordviolations1 = 0;
 var wordviolations2 = 0;
-const lowercase = message.content.toLowerCase();
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -30,6 +29,7 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+    const lowercase = message.content.toLowerCase();
     if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
     try {
