@@ -237,7 +237,7 @@ client.on('message', message => {
                     })
                     .catch(console.error)
             case "shamed":
-                if (badmember !== "") {
+                if (reallybadmember !== "") {
                 message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
                 } else {
                     message.channel.send("There are no shamed users for any servers yet")
