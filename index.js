@@ -305,7 +305,7 @@ client.on('message', message => {
         message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
     }
     else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch")) {
-        badmember = message.member.name.username
+        badmember = message.member.user.username
         badmemberid = message.member.id.toString()
         message.channel.bulkDelete(1)
         if (message.guild.id === "789954638706376704") {
