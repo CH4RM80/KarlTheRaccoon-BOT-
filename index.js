@@ -317,7 +317,7 @@ client.on('message', message => {
             message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}!`)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-            if(prevbadmember === badmember) {
+            if(prevbadmember === badmember && prevbadmember !== "") {
                 message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
             }
             else {
