@@ -310,10 +310,10 @@ client.on('message', message => {
         message.channel.bulkDelete(1)
         if (message.guild.id === "789954638706376704") {
             wordviolations1++
-            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations1}! If it goes above 10 something very bad will happen`)
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations1}! If it goes above 10 something very bad will happen!`)
         } else {
             wordviolations2++
-            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen`)
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen!`)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
             let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
