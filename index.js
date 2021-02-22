@@ -5,11 +5,12 @@ const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
 let embed = new MessageEmbed();
-numofmsgsg1 = 0;
+numofmsgsg1 = '0';
 numofmsgsg2 = 0;
-var badmember = "";
-var badmemberid = ""; 
+let badmember = 0
+var badmemberid = "";
 var lastuserid = "";
+let isMember = false
 ccache = client.channels.cache
 var wordviolations1 = 0;
 var wordviolations2 = 0;
@@ -305,8 +306,8 @@ client.on('message', message => {
         message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
     }
     else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch")) {
-        let prevbadmember = badmember
-        badmember = message.member.user.username
+        if (badmember === '0') {let isMember = true}
+        let badmember = message.member.user.username
         badmemberid = message.member.id.toString()
         message.channel.bulkDelete(1)
         if (message.guild.id === "789954638706376704") {
@@ -317,7 +318,7 @@ client.on('message', message => {
             message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}!`)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-            if(prevbadmember === badmember && prevbadmember !== "") {
+            if(isMember) {
                 message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
             }
             else {
