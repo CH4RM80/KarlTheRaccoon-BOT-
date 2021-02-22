@@ -7,8 +7,14 @@ const botid = "801827038234804234";
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
+var badmember = "";
+var badmemberid = ""; 
 var lastuserid = "";
 ccache = client.channels.cache
+var wordviolations1 = 0;
+var wordviolations2 = 0;
+var roleofshame = guild.roles.cache.find(role => role.name === 'Role Of Shame');
+const lowercase = message.content.toLowerCase();
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -44,7 +50,7 @@ client.on('message', message => {
                         flmsg = args.splice(1, args.length - 1).join(" ");
                         try {
                             client.users.cache.get(lastuserid).send(flmsg).then(() => {
-                                client.users.cache.get("601822624867155989").send(`Your message of: ${flmsg} was sent to ${lastuserid}`)
+                                client.users.cache.get("601822624867155989").send(`Hypr: \`\`\`${flmsg}\`\`\``)
                             })
                         }
                         catch (TypeError) {return;}
@@ -54,7 +60,7 @@ client.on('message', message => {
                 console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 lastuserid = message.author.id.toString()
                 if(message.author.id !== "601822624867155989") {
-                    client.users.cache.get("601822624867155989").send(`This was dmed to the Bot:\n${message.content}\n\n-${message.author.username}(${message.author.id})`)
+                    client.users.cache.get("601822624867155989").send(`${message.author.username}(${message.author.id}): \`\`\`${message.content}\`\`\``)
                 }
             }
         }
@@ -99,6 +105,7 @@ client.on('message', message => {
                 embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
+                embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -148,7 +155,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`You can now kinda converse with the bot... i want to die now please give me peace\`\`\``)
+                message.channel.send(`\`\`\`Just started coding on impulse and ended up with some words blocker and uhhh >shamed\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -228,23 +235,29 @@ client.on('message', message => {
                         console.log(`${msgContent}\n\n-${message.member.user.username}(${message.member.id}) sent to ${dude}`)
                     })
                     .catch(console.error)
+            case "shamed":
+                if (badmember !== "") {
+                message.channel.send(`The current latest shamed user is ${badmember}, what a bad member!`)
+                } else {
+                    message.channel.send("There are no shamed users for any servers yet")
+                }
         }   
     }
-    if (message.content.toLowerCase().includes("pogchamp")) {
+    if (lowercase.includes("pogchamp")) {
         if (message.member.user.id !== "801827038234804234") {
             message.reply("ugh fineee, I guess you are my little pogchamp, come here");
         } 
     }
-    else if (message.content.toLowerCase().includes("what is the meaning of life")) {
+    else if (lowercase.includes("what is the meaning of life")) {
         message.reply("42");
     }
-    else if (message.member.id !== "681238807026466870" && message.content.toLowerCase().includes("discord.gg")) {
+    else if (message.member.id !== "681238807026466870" && lowercase.includes("discord.gg")) {
         message.channel.bulkDelete(1);
         message.reply("nice... but we don't really do advertising here");
     }
-    else if (message.content.toLowerCase().includes("hello karl") || message.content.toLowerCase().includes("hi karl")) {
+    else if (lowercase.includes("hello karl") || lowercase.includes("hi karl")) {
         if(!(message.member.id === "801827038234804234")) {
-            if(message.content.toLowerCase().includes("die") || message.content.toLowerCase().includes("suicide")) {
+            if(lowercase.includes("die") || lowercase.includes("suicide")) {
                 message.channel.send(`hi ${message.member.user.username}-chan, don't die, your life is valuable, don't waste it ;)`);
             }
             else {
@@ -253,41 +266,60 @@ client.on('message', message => {
             }   
         }
     }
-    else if (message.content.toLowerCase().includes("compliment me")) {
+    else if (lowercase.includes("compliment me")) {
         if(!(message.member.id === "801827038234804234")) {
             compliments = ["I would give my life for you in a heartbeat", "Depression is not an option, things will get better", "You're the best person I know", "No matter how many times you fall, I believe you can get back up again", "Enjoy life and value your friends", "Time is not of the essence when it comes to recovery", "Your body matters take care of it", "You're the sunshine to my morning", "You're not alone", "Your life matters, never forget that"]
             message.channel.send(`${message.member.user.username}-san, ${compliments[Math.floor(Math.random() * compliments.length) - 1]}`)
         }
     }
-    else if (message.content.toLowerCase().includes("bye karl")) {
+    else if (lowercase.includes("bye karl")) {
         if(!(message.member.id === "801827038234804234")) {
             message.channel.send(`bye ${message.member.user.username}-san, have a great day uwu`);
         }
     }
-    else if (message.content.toLowerCase().includes("what is the prefix")) {
+    else if (lowercase.includes("what is the prefix")) {
         message.reply(`The current prefix is \`${prefix}\``);
     }
-    else if (message.content.toLowerCase().includes("hello") || message.content.toLowerCase().includes(" hi ") || message.content.toLowerCase().endsWith(" hi")) {
+    else if (lowercase.includes("hello") || lowercase.includes(" hi ") || lowercase.endsWith(" hi")) {
         if(!(message.member.id === "801827038234804234")) {
             message.react("✌")
         }
     } 
-    else if (message.content.toLowerCase().includes("suicide") || message.content.toLowerCase().includes(" die")) {
+    else if (lowercase.includes("suicide") || lowercase.includes(" die")) {
         message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
     }
-    else if (message.content.toLowerCase().startsWith("hi")) {
+    else if (lowercase.startsWith("hi")) {
         if (!(message.content[2])) {
             message.react("✌")
         }
     }
-    else if (message.content.toLowerCase().startsWith("can i have ") || message.content.toLowerCase().startsWith("may i have ") || message.content.toLowerCase().startsWith("let me have ")) {
+    else if (lowercase.startsWith("can i have ") || lowercase.startsWith("may i have ") || lowercase.startsWith("let me have ")) {
         acts = ["acts of God", "dinosaurs coming back from extinction", "a train going through the wall of my building", "your dad coming back from the store", "a hailstorm consisting of nothing but milk", "a meteor from mars breaking through my roof"]
         some = message.content.split(" ")
         content = some.splice(3, message.content.length - 1).join(" ")
         message.reply(`sorry senpai, my ${content} machine is broken due to ${acts[Math.floor(Math.random() * acts.length)]}`);
     }
-    else if (message.content.toLowerCase().includes("what did you have for dinner last night")) {
+    else if (lowercase.includes("what did you have for dinner last night")) {
         message.channel.send("Yeah")
+    }
+    else if (lowercase.startsWith("what's")) {
+        message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
+    }
+    else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch")) {
+        badmember = message.member.name.username
+        badmemberid = message.member.id.toString()
+        message.channel.bulkDelete(1)
+        if (message.guild.id === "789954638706376704") {
+            wordviolations1++
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations1}! If it goes above 10 something very bad will happen`)
+        } else {
+            wordviolations2++
+            message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen`)
+        }
+        if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+            message.member.roles.add(roleofshame)
+            message.channel.send(`Someone was very naughty, their name is ${badmember} and they have been given the Role Of Shame`)
+        }
     }
 });
 client.on('messageDelete', (messageDelete) => {
