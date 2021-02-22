@@ -13,7 +13,6 @@ var lastuserid = "";
 ccache = client.channels.cache
 var wordviolations1 = 0;
 var wordviolations2 = 0;
-var roleofshame = guild.roles.cache.find(role => role.name === 'Role Of Shame');
 const lowercase = message.content.toLowerCase();
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -317,6 +316,7 @@ client.on('message', message => {
             message.channel.send(`Thou shalt not send unholy words in the holy chat of this holy server, the word violations count of this server is now ${wordviolations2}! If it goes above 10 something very bad will happen`)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
             message.member.roles.add(roleofshame)
             message.channel.send(`Someone was very naughty, their name is ${badmember} and they have been given the Role Of Shame`)
         }
