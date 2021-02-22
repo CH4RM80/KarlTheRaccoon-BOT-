@@ -7,6 +7,7 @@ const botid = "801827038234804234";
 let embed = new MessageEmbed();
 numofmsgsg1 = '0';
 numofmsgsg2 = 0;
+let reallybadmember = "";
 let badmember = "";
 var badmemberid = "";
 var lastuserid = "";
