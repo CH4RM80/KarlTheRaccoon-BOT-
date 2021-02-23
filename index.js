@@ -24,7 +24,9 @@ function getRandomColor() {
     return color;
   }
 client.once('ready', () => {
+    const Guilds = client.guilds.cache.map(guild => guild.id)
     console.log('Ready!');
+    console.log(Guilds)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     ccache.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
     ccache.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
