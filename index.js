@@ -317,7 +317,7 @@ client.on('message', message => {
             message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
         } else {
             wordviolations2++
-            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
+            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
             if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
