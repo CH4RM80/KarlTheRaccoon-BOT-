@@ -306,29 +306,33 @@ client.on('message', message => {
     else if (lowercase.startsWith("what's")) {
         message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
     }
-    else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch")) {
+    else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch") || lowercase.includes("nigger") || lowercase.includes("nigga") || lowercase.includes("niqqa") || lowercase.includes("niger")) {
         badmember = message.member.user.username
         badmemberid = message.member.id.toString()
         message.channel.bulkDelete(1)
         if (message.guild.id === "789954638706376704") {
             wordviolations1++
-            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`violations: ${wordviolations1}\`\`\``)
+            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
         } else {
             wordviolations2++
-            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`violations: ${wordviolations1}\`\`\``)
+            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
         }
         if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-            if(badmember === reallybadmember) {
-                message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
-            }
+            if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
+            else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
             else {
-                reallybadmember = badmember
-                let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
-                message.member.roles.add(roleofshame)
-                message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
+                if(badmember === reallybadmember) {
+                    message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
+                }
+                else {
+                    reallybadmember = badmember
+                    let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
+                    message.member.roles.add(roleofshame)
+                    message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
+                }
             }
         }
-    }
+    } 
 });
 client.on('messageDelete', (messageDelete) => {
     channel = messageDelete.guild.channels.cache.find(i => i.name === "mod-logs")
