@@ -24,12 +24,19 @@ function getRandomColor() {
     return color;
   }
 client.once('ready', () => {
-    const Guilds = client.guilds.cache.map(guild => guild.id)
     console.log('Ready!');
     console.log(Guilds)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
-    ccache.get("801873049401556992").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
-    ccache.get("789954074661486622").send(`I was just updated by my master uwu, check the new update with \`${prefix}update\``)
+    let guilds = client.guilds.cache.map(g => g.id)
+    guilds.forEach(element => {
+        let guild = client.guilds.cache.get(element)
+        guild.channels.cache.map(c =>{
+            if (c.name == "general"){
+                let general = client.channels.cache.get(c.id)
+                general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
+            }
+        })
+    });
 });
 
 client.on('message', message => {
@@ -144,7 +151,10 @@ client.on('message', message => {
             case "kick":
                 const member = message.mentions.members.first();
                 if (args[1] && (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) || message.member.roles.cache.has("789937840913383424")) {
-                    member.kick();
+                    member.kick().then(() => {
+                        console.log(`${member} was kicked`)
+                        message.channel.send(`${member} was kicked`)
+                    })
                 } else {
                     message.reply("you can't use that")
                 }
@@ -152,13 +162,16 @@ client.on('message', message => {
             case "ban":
                 const user = message.mentions.users.first();
                 if(args[1] && (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) || message.member.roles.cache.has("789937840913383424")) {
-                    message.guild.members.ban(user);
+                    message.guild.members.ban(user).then(() => {
+                        console.log(`${user} was banned`)
+                        message.channel.send(`${user} was banned`)
+                    })
                 } else {
                     message.reply("you can't use that")
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Just started coding on impulse and ended up with some words blocker and uhhh >shamed\`\`\``)
+                message.channel.send(`\`\`\`HAHAHAHA JUST TRY TO SAY CHERRIS CUTE(alr thats it im going insane)\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -334,6 +347,9 @@ client.on('message', message => {
                 }
             }
         }
+    }
+    else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
+        message.channel.send("no ur cute :3")
     } 
 });
 client.on('messageDelete', (messageDelete) => {
