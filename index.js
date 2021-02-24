@@ -25,7 +25,6 @@ function getRandomColor() {
   }
 client.once('ready', () => {
     console.log('Ready!');
-    console.log(Guilds)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
