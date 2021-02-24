@@ -179,7 +179,7 @@ client.on('message', message => {
                 if (us) {
                     embed = new MessageEmbed()
                     embed.setTitle(`${us.username} Avatar`);
-                    embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 1024 }));
+                    embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
                     embed.setColor(getRandomColor())
                     message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
                 }
