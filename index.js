@@ -115,6 +115,7 @@ client.on('message', message => {
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
+                embed.addField(`14. ${prefix}repeat (text) (x number)`, "Tells the bot to say whatever you tell it x amount of times")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -256,6 +257,24 @@ client.on('message', message => {
                 } else {
                     message.channel.send("There are no shamed users for any servers yet")
                 }
+            break;
+            case "repeat":
+                if (lowercase.includes("@")) {
+                    message.reply("bruh really, no pinging tyvm")
+                    return;
+                }
+                let numoftimes = parseInt(args[args.length - 1])
+                if (numoftimes < 11) {
+                    var msgCont = args.splice(2, args.length - 2).join(" ")
+                    for(let i = 0; i < numoftimes; i++) {
+                        setInterval(() => {message.channel.send(`${msgCont}`)}, 2000)
+                    }
+                }
+                else if (!(numoftimes)) {
+                    var msgCont = args.splice(2, args.length - 1).join(" ")
+                    message.channel.send(`${msgCont}`)
+                }
+                else {return;}
         }   
     }
     if (lowercase.includes("pogchamp")) {
@@ -319,6 +338,13 @@ client.on('message', message => {
     }
     else if (lowercase.startsWith("what's")) {
         message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
+    }
+    else if (lowercase.includes("delete")) {
+        for(let i = 0; i < 3; i++) {
+            message.channel.send("*delete*")
+            message.channel.send("**delete**")
+            message.channel.send("***delete***")
+        }
     }
     else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch") || lowercase.includes("nigger") || lowercase.includes("nigga") || lowercase.includes("niqqa") || lowercase.includes("niger")) {
         badmember = message.member.user.username
