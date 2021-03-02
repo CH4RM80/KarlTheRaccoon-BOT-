@@ -171,7 +171,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`HAHAHAHA JUST TRY TO SAY CHERRIS CUTE(alr thats it im going insane)\`\`\``)
+                message.channel.send(`\`\`\`fixed some stuff and made a new command, check it with >help\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -255,7 +255,7 @@ client.on('message', message => {
                 } catch (TypeError) {
                     return;
                 }
-                
+            break;
             case "shamed":
                 if (reallybadmember !== "" && reallybadmember !== null) {
                     message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
