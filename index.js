@@ -265,13 +265,13 @@ client.on('message', message => {
                 }
                 let numoftimes = parseInt(args[args.length - 1])
                 if (numoftimes < 11) {
-                    var msgCont = args.splice(2, args.length - 2).join(" ")
+                    var msgCont = args.splice(1, args.length - 2).join(" ")
                     for(let i = 0; i < numoftimes; i++) {
                         message.channel.send(`${msgCont}`)
                     }
                 }
                 else if (!(numoftimes)) {
-                    var msgCont = args.splice(2, args.length - 1).join(" ")
+                    var msgCont = args.splice(1, args.length - 1).join(" ")
                     message.channel.send(`${msgCont}`)
                 }
                 else {return;}
