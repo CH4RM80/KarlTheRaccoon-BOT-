@@ -245,12 +245,17 @@ client.on('message', message => {
                 const dude = message.mentions.members.first();
                 var msgContent = args.splice(2, args.length - 1).join(" ")
                 message.channel.bulkDelete(1)
-                dude.send(`${msgContent}\n\n-${message.member.user.username}`)
+                try {
+                    dude.send(`${msgContent}\n\n-${message.member.user.username}`)
                     .then(() => {
                         message.channel.send("dm successfully sent")
                         console.log(`${msgContent}\n\n-${message.member.user.username}(${message.member.id}) sent to ${dude}`)
-                    })
                     .catch(console.error)
+                    })
+                } catch (TypeError) {
+                    return;
+                }
+                
             case "shamed":
                 if (reallybadmember !== "" && reallybadmember !== null) {
                     message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
@@ -259,6 +264,7 @@ client.on('message', message => {
                 }
             break;
             case "repeat":
+                message.channel.bulkDelete(1)
                 if (lowercase.includes("@")) {
                     message.reply("bruh really, no pinging tyvm")
                     return;
