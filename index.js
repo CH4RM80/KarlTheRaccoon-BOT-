@@ -267,7 +267,7 @@ client.on('message', message => {
                 if (numoftimes < 11) {
                     var msgCont = args.splice(2, args.length - 2).join(" ")
                     for(let i = 0; i < numoftimes; i++) {
-                        setInterval(() => {message.channel.send(`${msgCont}`)}, 2000)
+                        message.channel.send(`${msgCont}`)
                     }
                 }
                 else if (!(numoftimes)) {
