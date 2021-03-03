@@ -119,7 +119,7 @@ client.on('message', message => {
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
-                message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
+                message.channel.send(embed)
             break;
             case "number":
                 if(args[1]) {
@@ -171,7 +171,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`fixed some stuff and made a new command, check it with >help\`\`\``)
+                message.channel.send(`\`\`\`removed some useless code\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -194,7 +194,7 @@ client.on('message', message => {
                     embed.setTitle(`${us.username} Avatar`);
                     embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
                     embed.setColor(getRandomColor())
-                    message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
+                    message.channel.send(embed)
                 }
             break;
             case "color":
