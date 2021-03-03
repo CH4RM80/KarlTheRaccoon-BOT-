@@ -23,8 +23,12 @@ function getRandomColor() {
     }
     return color;
   }
+const messagedeleteo = require('./messagedelete')
+const banyesyes = require('./banyesyes');
 client.once('ready', () => {
     console.log('Ready!');
+    banyesyes(client)
+    messagedeleteo(client)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
@@ -119,7 +123,7 @@ client.on('message', message => {
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
-                message.channel.send(embed)
+                message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
             break;
             case "number":
                 if(args[1]) {
@@ -171,7 +175,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`removed some useless code\`\`\``)
+                message.channel.send(`\`\`\`HAHAHAHA JUST TRY TO SAY CHERRIS CUTE(alr thats it im going insane)\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -194,7 +198,7 @@ client.on('message', message => {
                     embed.setTitle(`${us.username} Avatar`);
                     embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
                     embed.setColor(getRandomColor())
-                    message.channel.send(embed)
+                    message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
                 }
             break;
             case "color":
@@ -255,7 +259,7 @@ client.on('message', message => {
                 } catch (TypeError) {
                     return;
                 }
-            break;
+                
             case "shamed":
                 if (reallybadmember !== "" && reallybadmember !== null) {
                     message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
@@ -383,49 +387,5 @@ client.on('message', message => {
         message.channel.send("no ur cute :3")
     } 
 });
-client.on('messageDelete', (messageDelete) => {
-    channel = messageDelete.guild.channels.cache.find(i => i.name === "mod-logs")
-    if(channel) {
-        embed = new MessageEmbed();
-        embed.setTitle("Message Deleted");
-        embed.setDescription(messageDelete.content);
-        embed.addField('Author', messageDelete.author);
-        embed.addField('Channel', messageDelete.channel);
-        embed.setColor(getRandomColor());
-        embed.setTimestamp();
-        channel.send(embed);
-    }
-})
-client.on('guildBanAdd', async (guild, user) => {
-    channel = guild.channels.cache.find(i => i.name === "mod-logs")
-	const fetchedLogs = await guild.fetchAuditLogs({
-		limit: 1,
-		type: 'MEMBER_BAN_ADD',
-	});
-	const banLog = fetchedLogs.entries.first();
 
-	if (!banLog) return console.log(`${user.tag} was banned from ${guild.name} but no audit log could be found.`);
-
-	const { executor, target } = banLog;
-
-	if (target.id === user.id) {
-        if(channel) {
-            embed = new MessageEmbed();
-            embed.setTitle("Member Banned");
-            embed.setDescription(`${user.tag} was banned in ${guild.name}, by ${executor.tag}`);
-            embed.setColor(getRandomColor());
-            embed.setTimestamp();
-            channel.send(embed);
-        }
-	} else {
-        if(channel) {
-            embed = new MessageEmbed();
-            embed.setTitle("Member Banned");
-            embed.setDescription(`${user.tag} was banned in ${guild.name}`);
-            embed.setColor(getRandomColor());
-            embed.setTimestamp();
-            channel.send(embed);
-        }
-	}
-});
 client.login(token);
