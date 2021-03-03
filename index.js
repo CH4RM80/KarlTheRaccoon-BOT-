@@ -296,6 +296,7 @@ client.on('message', message => {
             return;
         }
         else if (lowercase.includes("stfu") || lowercase.includes("shut up") || lowercase.includes("fuck") || lowercase.includes("fuk") || lowercase.includes("shit") || lowercase.includes("cunt") || lowercase.includes("hell") || lowercase.includes("damn") || lowercase.includes("bastard") || lowercase.includes("bitch") || lowercase.includes("pussy") || lowercase.includes("bussy") || lowercase.includes("btch") || lowercase.includes("nigger") || lowercase.includes("nigga") || lowercase.includes("niqqa") || lowercase.includes("niger")) {
+            message.channel.bulkDelete(1)
             return;
         }
         else {
