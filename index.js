@@ -283,7 +283,7 @@ client.on('message', message => {
                 else {return;}
         }   
     }
-    let channel = message.guild.channels.find(
+    let channel = message.guild.channels.cache.find(
         channel => channel.name.toLowerCase() === "repeat"
       )      
     if (message.channel === channel) {
