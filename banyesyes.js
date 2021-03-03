@@ -1,3 +1,5 @@
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
+
 module.exports = client => {
     client.on('guildBanAdd', async (guild, user) => {
         channel = guild.channels.cache.find(i => i.name === "mod-logs")
