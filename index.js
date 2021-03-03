@@ -59,7 +59,7 @@ client.on('message', message => {
                         flmsg = args.splice(1, args.length - 1).join(" ");
                         try {
                             client.users.cache.get(lastuserid).send(flmsg).then(() => {
-                                client.users.cache.get("601822624867155989").send(`Hypr: \`\`\`${flmsg}\`\`\``)
+                                client.users.cache.get("601822624867155989").send(`Hypr: ${flmsg}`)
                             })
                         }
                         catch (TypeError) {return;}
@@ -69,12 +69,12 @@ client.on('message', message => {
                 console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 lastuserid = message.author.id.toString()
                 if(message.author.id !== "601822624867155989") {
-                    client.users.cache.get("601822624867155989").send(`${message.author.username}(${message.author.id}): \`\`\`${message.content}\`\`\``)
+                    client.users.cache.get("601822624867155989").send(`${message.author.username}(${message.author.id}): ${message.content}`)
                 }
             }
         }
         return;
-    }   
+    }  
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
@@ -82,7 +82,7 @@ client.on('message', message => {
                 if (message.content.includes("discord.gg")) {
                     message.reply("nice... but we don't really do advertising here");
                 } 
-                else if (message.content.includes("@")) {
+                else if (message.mentions.members.first()) {
                     message.reply("bruh really, no pinging tyvm");
                 } else {
                     fullmessage = args.splice(1, args.length - 1).join(" ");
@@ -119,7 +119,7 @@ client.on('message', message => {
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
-                message.channel.send(embed)
+                message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
             break;
             case "number":
                 if(args[1]) {
@@ -171,7 +171,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`removed some useless code\`\`\``)
+                message.channel.send(`\`\`\`made beta repeat channel\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -194,7 +194,7 @@ client.on('message', message => {
                     embed.setTitle(`${us.username} Avatar`);
                     embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
                     embed.setColor(getRandomColor())
-                    message.channel.send(embed)
+                    message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
                 }
             break;
             case "color":
@@ -283,6 +283,17 @@ client.on('message', message => {
                 else {return;}
         }   
     }
+    let channel = message.guild.channels.find(
+        channel => channel.name.toLowerCase() === "repeat"
+      )      
+    if (message.channel === channel) {
+        if (message.mentions.members.first()) {
+            return;
+        }
+        else {
+            message.send(message.content)
+        }
+    } 
     if (lowercase.includes("pogchamp")) {
         if (message.member.user.id !== "801827038234804234") {
             message.reply("ugh fineee, I guess you are my little pogchamp, come here");
