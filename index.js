@@ -1,6 +1,8 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
+const messagedeleteo = require('./messagedelete')
+const banyesyes = require('./banyesyes');
 const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
@@ -15,6 +17,7 @@ let isReallyBad = false
 ccache = client.channels.cache
 var wordviolations1 = 0;
 var wordviolations2 = 0;
+
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -25,6 +28,8 @@ function getRandomColor() {
   }
 client.once('ready', () => {
     console.log('Ready!');
+    banyesyes(client)
+    messagedeleteo(client)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
@@ -393,50 +398,5 @@ client.on('message', message => {
     else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
         message.channel.send("no ur cute :3")
     } 
-});
-client.on('messageDelete', (messageDelete) => {
-    channel = messageDelete.guild.channels.cache.find(i => i.name === "mod-logs")
-    if(channel) {
-        embed = new MessageEmbed();
-        embed.setTitle("Message Deleted");
-        embed.setDescription(messageDelete.content);
-        embed.addField('Author', messageDelete.author);
-        embed.addField('Channel', messageDelete.channel);
-        embed.setColor(getRandomColor());
-        embed.setTimestamp();
-        channel.send(embed);
-    }
-})
-client.on('guildBanAdd', async (guild, user) => {
-    channel = guild.channels.cache.find(i => i.name === "mod-logs")
-	const fetchedLogs = await guild.fetchAuditLogs({
-		limit: 1,
-		type: 'MEMBER_BAN_ADD',
-	});
-	const banLog = fetchedLogs.entries.first();
-
-	if (!banLog) return console.log(`${user.tag} was banned from ${guild.name} but no audit log could be found.`);
-
-	const { executor, target } = banLog;
-
-	if (target.id === user.id) {
-        if(channel) {
-            embed = new MessageEmbed();
-            embed.setTitle("Member Banned");
-            embed.setDescription(`${user.tag} was banned in ${guild.name}, by ${executor.tag}`);
-            embed.setColor(getRandomColor());
-            embed.setTimestamp();
-            channel.send(embed);
-        }
-	} else {
-        if(channel) {
-            embed = new MessageEmbed();
-            embed.setTitle("Member Banned");
-            embed.setDescription(`${user.tag} was banned in ${guild.name}`);
-            embed.setColor(getRandomColor());
-            embed.setTimestamp();
-            channel.send(embed);
-        }
-	}
 });
 client.login(token);
