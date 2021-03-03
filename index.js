@@ -291,7 +291,7 @@ client.on('message', message => {
             return;
         }
         else {
-            message.send(message.content)
+            message.channel.send(message.content)
         }
     } 
     if (lowercase.includes("pogchamp")) {
