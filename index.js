@@ -376,7 +376,7 @@ client.on('message', message => {
         else if (lowercase.includes("suicide") || lowercase.includes(" die")) {
             message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
         }
-        else if ((lowercase.startsWith("hi") && message.content[2] === " ") || lowercase.includes("hello") || lowercase.includes(" hi ") || lowercase.endsWith(" hi")) {
+        else if ((lowercase.startsWith("hi") && (message.content[2] === " " || !(message.content[2]))) || lowercase.includes("hello") || lowercase.includes(" hi ") || lowercase.endsWith(" hi")) {
             message.react("✌")
         }
         else if (lowercase.startsWith("can i have ") || lowercase.startsWith("may i have ") || lowercase.startsWith("let me have ")) {
