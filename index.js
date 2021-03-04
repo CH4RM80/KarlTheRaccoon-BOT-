@@ -17,7 +17,7 @@ let isReallyBad = false
 ccache = client.channels.cache
 var wordviolations1 = 0;
 var wordviolations2 = 0;
-let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "hell", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick"]
+let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick"]
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
