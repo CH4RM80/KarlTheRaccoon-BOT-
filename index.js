@@ -79,7 +79,11 @@ client.on('message', message => {
             }
         }
         return;
-    }  
+    }
+    let channel = message.guild.channels.cache.find(
+        channel => channel.name.toLowerCase() === "spam"
+    )
+    channel.send("spam")
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
