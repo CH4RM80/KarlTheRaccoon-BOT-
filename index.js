@@ -11,13 +11,16 @@ numofmsgsg1 = '0';
 numofmsgsg2 = 0;
 let reallybadmember = "";
 let badmember = "";
-var badmemberid = "";
-var lastuserid = "";
+let badmemberid = "";
+let lastuserid = "";
 let isReallyBad = false
+let reactm = []
+let reactions = []
 ccache = client.channels.cache
-var wordviolations1 = 0;
-var wordviolations2 = 0;
+let wordviolations1 = 0;
+let wordviolations2 = 0;
 let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick"]
+let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -38,6 +41,9 @@ client.once('ready', () => {
             if (c.name == "general"){
                 let general = client.channels.cache.get(c.id)
                 general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
+            }
+            if (c.name == "spam") {
+                spamchannel.push(c.id)
             }
         })
     });
@@ -81,12 +87,15 @@ client.on('message', message => {
         return;
     }
     try {
-        message.guild.channels.cache.find(
-            channel => channel.name.toLowerCase() === "spam"
-        ).send("spam")
+        for(let i = 0; i < spamchannel.length; i++) {
+            client.channels.cache.get(spamchannel[i]).send("spam")
+        }
     }
     catch (TypeError) {
         return;
+    }
+    if (message.member.id === "601822624867155989") {
+        message.react("😎")
     }
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
@@ -129,6 +138,7 @@ client.on('message', message => {
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField(`14. ${prefix}repeat (text) (x number)`, "Tells the bot to say whatever you tell it x amount of times")
+                embed.addField(`15. ${prefix}reaction (emoji)`, "Makes the bot react to every message you say with the specified emoji")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -184,7 +194,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`removed useless code\`\`\``)
+                message.channel.send(`\`\`\`made a release version of >reaction, check it with >help\`\`\``)
             break;
             case "messages":
                 if(message.guild.id === "789954638706376704") {
@@ -294,6 +304,23 @@ client.on('message', message => {
                     message.channel.send(`${msgCont}`)
                 }
                 else {return;}
+            break;
+            // case "reaction":
+            //     if (args[1]) {
+            //         for (let i = 0; i < reactm.length; i++) {
+            //            if (reactm[i] === message.member.id) {
+            //                 reactions[i] = args[1]
+            //                 message.channel.send("new emoji selected")
+            //                 message.react(args[1])
+            //                 return;
+            //             }
+            //         }
+            //         reactm.push(message.member.id)
+            //         reactions.push(args[1])
+            //         message.react(args[1])
+            //         message.channel.send(`${reactm}\n${reactions}`)
+            //     }
+            // break;
         }   
     }
     let channel = message.guild.channels.cache.find(
