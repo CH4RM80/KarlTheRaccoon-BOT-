@@ -94,9 +94,6 @@ client.on('message', message => {
     catch (TypeError) {
         return;
     }
-    if (message.member.id === "601822624867155989") {
-        message.react("😎")
-    }
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
