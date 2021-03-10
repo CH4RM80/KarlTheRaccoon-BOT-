@@ -11,8 +11,7 @@ To install npm on windows and mac: https://www.npmjs.com/get-npm
 ----------------------------------------------------------------------------------------------------------
 To install npm and node.js on Linux:
 
-sudo apt-get install node.js
-
+# sudo apt-get install node.js
 sudo apt-get install npm
 ----------------------------------------------------------------------------------------------------------
 Then put your token in the token spot in config.json, lastly, run the main bot file with: 
