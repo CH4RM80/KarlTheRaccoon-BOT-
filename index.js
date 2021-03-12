@@ -109,7 +109,7 @@ client.on('message', message => {
                 }
             break;
             case "prefix":
-                if (args[1] && (message.member.roles.cache.has("789955154375868437") || message.member.roles.cache.has("789937840913383424") )) {
+                if (args[1] && (message.member.hasPermission('ADMINISTRATOR'))) {
                     prefix = args[1][0]
                     message.channel.send(`The prefix has been changed to \`${prefix}\``)
                 } else {
@@ -150,13 +150,16 @@ client.on('message', message => {
                 }
             break;
             case "purge":
-                if (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) {
+                if (message.member.hasPermission('MANAGE_MESSAGES')) {
                     newsplit = message.content.split(" ");
                     if (newsplit.length === 1) {
                         message.channel.bulkDelete(2);
                     } else {
                         message.channel.bulkDelete(parseInt(newsplit[1]) + 1);
                     }
+                }
+                else {
+                    message.channel.send("Sadly you do not have the permissions to use this command")
                 }
             break;
             case "bungou":
@@ -170,7 +173,7 @@ client.on('message', message => {
             break;
             case "kick":
                 const member = message.mentions.members.first();
-                if (args[1] && (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) || message.member.roles.cache.has("789937840913383424")) {
+                if (args[1] && (message.member.hasPermission('KICK_MEMBERS')) {
                     member.kick().then(() => {
                         console.log(`${member} was kicked`)
                         message.channel.send(`${member} was kicked`)
@@ -181,7 +184,7 @@ client.on('message', message => {
             break;
             case "ban":
                 const user = message.mentions.users.first();
-                if(args[1] && (message.member.roles.cache.has("789955130648166430") || message.member.roles.cache.has("789938193830248479")) || message.member.roles.cache.has("789937840913383424")) {
+                if(args[1] && (message.member.hasPermission('BAN_MEMBERS'))) {
                     message.guild.members.ban(user).then(() => {
                         console.log(`${user} was banned`)
                         message.channel.send(`${user} was banned`)
@@ -194,12 +197,6 @@ client.on('message', message => {
                 message.channel.send(`\`\`\`made a release version of >reaction, check it with >help\`\`\``)
             break;
             case "messages":
-                if(message.guild.id === "789954638706376704") {
-                    message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
-                } else {
-                    message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
-                }
-            break;
             case "message":
                 if(message.guild.id === "789954638706376704") {
                     message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
@@ -359,8 +356,18 @@ client.on('message', message => {
                         }
                         else {
                             reallybadmember = badmember
-                            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame');
-                            message.member.roles.add(roleofshame)
+                            if (message.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
+                                message.member.roles.add(roleofshame)
+                            }
+                            else {
+                                try {
+                                    message.guild.roles.create({ data: { name: 'Role Of Shame'}});
+                                }
+                                catch (Error) {
+                                    message.channel.send("Inadequate permissions to create role, please try again")
+                                }
+                            }
+                            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
                             message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
                         }
                     }
