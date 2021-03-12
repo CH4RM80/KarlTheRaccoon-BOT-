@@ -38,7 +38,7 @@ client.once('ready', () => {
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
         guild.channels.cache.map(c =>{
-            if (c.name == "general"){
+            if (c.name.includes("general")){
                 let general = client.channels.cache.get(c.id)
                 general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
             }
@@ -354,7 +354,7 @@ client.on('message', message => {
                     if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
                     else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
                     else {
-                        if(badmember === reallybadmember) {
+                        if(badmember.roles.cache.has("813464855733993572") || badmember.roles.cache.has("813465089188823041") || badmember === reallybadmember) {
                             message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
                         }
                         else {
@@ -371,23 +371,28 @@ client.on('message', message => {
         if (lowercase.includes("pogchamp")) {
             if (message.member.user.id !== "801827038234804234") {
                 message.reply("ugh fineee, I guess you are my little pogchamp, come here");
+                return
             } 
         }
-        else if (lowercase.includes("what is the meaning of life")) {
+        else if (lowercase.includes("what is the meaning of life") || lowercase.includes("what's the meaning of life") || lowercase.includes("whats the meaning of life")) {
             message.reply("42");
+            return
         }
         else if (message.member.id !== "681238807026466870" && lowercase.includes("discord.gg")) {
             message.channel.bulkDelete(1);
             message.reply("nice... but we don't really do advertising here");
+            return
         }
         else if (lowercase.includes("hello karl") || lowercase.includes("hi karl")) {
             if(!(message.member.id === "801827038234804234")) {
                 if(lowercase.includes("die") || lowercase.includes("suicide")) {
                     message.channel.send(`hi ${message.member.user.username}-chan, don't die, your life is valuable, don't waste it ;)`);
+                    return
                 }
                 else {
                     greets = ["what a lovely day it is, but not as lovely as you ;)", "the sun is shining, but not as bright as your smile ;)", "what have you been up to?", "love u uwu", "sure hope your day has been going well :)", "have a great day uwu", "hope your day is as great as the day i met you ;)", "Let's curl up and read a horror novel together", "Would you like to steal trash with me?", "All my clues lead up to you being amazing", "I dig the look human", "even water is not as clear as how much I love you uwu", "Are you a garbage can? Because you smell f a n t a s t i c!"]
                     message.channel.send(`hi ${message.member.user.username}-san, ${greets[Math.floor(Math.random() * greets.length) - 1]}`);
+                    return
                 }   
             }
         }
@@ -395,43 +400,53 @@ client.on('message', message => {
             if(!(message.member.id === "801827038234804234")) {
                 compliments = ["I would give my life for you in a heartbeat", "Depression is not an option, things will get better", "You're the best person I know", "No matter how many times you fall, I believe you can get back up again", "Enjoy life and value your friends", "Time is not of the essence when it comes to recovery", "Your body matters take care of it", "You're the sunshine to my morning", "You're not alone", "Your life matters, never forget that"]
                 message.channel.send(`${message.member.user.username}-san, ${compliments[Math.floor(Math.random() * compliments.length) - 1]}`)
+                return
             }
         }
         else if (lowercase.includes("bye karl")) {
             if(!(message.member.id === "801827038234804234")) {
                 message.channel.send(`bye ${message.member.user.username}-san, have a great day uwu`);
+                return
             }
         }
-        else if (lowercase.includes("what is the prefix")) {
+        else if (lowercase.includes("what is the prefix") || lowercase.includes("what's the prefix") || lowercase.includes("whats the prefix")) {
             message.reply(`The current prefix is \`${prefix}\``);
+            return
         }
         else if (lowercase.includes("suicide") || lowercase.includes(" die")) {
             message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
+            return
         }
         else if ((lowercase.startsWith("hi") && (message.content[2] === " " || !(message.content[2]))) || lowercase.includes("hello") || lowercase.includes(" hi ") || lowercase.endsWith(" hi")) {
             message.react("✌")
+            return
         }
         else if (lowercase.startsWith("can i have ") || lowercase.startsWith("may i have ") || lowercase.startsWith("let me have ")) {
             acts = ["acts of God", "dinosaurs coming back from extinction", "a train going through the wall of my building", "your dad coming back from the store", "a hailstorm consisting of nothing but milk", "a meteor from mars breaking through my roof"]
             some = message.content.split(" ")
             content = some.splice(3, message.content.length - 1).join(" ")
             message.reply(`sorry senpai, my ${content} machine is broken due to ${acts[Math.floor(Math.random() * acts.length)]}`);
+            return
         }
         else if (lowercase.includes("what did you have for dinner last night")) {
             message.channel.send("Yeah")
+            return
         }
         else if (lowercase.startsWith("what's")) {
             message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
+            return
         }
         else if (lowercase.includes("delete")) {
             for(let i = 0; i < 3; i++) {
                 message.channel.send("*delete*")
                 message.channel.send("**delete**")
-                message.channel.send("***delete***")
+                message.channel.send("***delete***")                                    
             }
+            return
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
             message.channel.send("no ur cute :3")
+            return
         }
     }
 });
