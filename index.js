@@ -350,7 +350,7 @@ client.on('message', message => {
             if (lowercase.includes(badwords[i])) {
                 badmember = message.member.user.username
                 badmemberid = message.member.id.toString()
-                messages.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+                message.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
                 if (message.guild.id === "789954638706376704") {
                     wordviolations1++
                     message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
