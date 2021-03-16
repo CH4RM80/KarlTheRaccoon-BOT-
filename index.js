@@ -512,4 +512,13 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         }
     }
 });
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+    let name = newMember.user.name
+    for (let i = 0; i < badwords.length; i++) {
+        if (name.includes(badwords[i])) {
+            let al = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+            newMember.setNickname(`${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}`)${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}
+        }
+    }
+});
 client.login(token);
