@@ -19,7 +19,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis"]
+let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -368,6 +368,7 @@ client.on('message', message => {
                         else {
                             reallybadmember = badmember
                             if (message.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
+                                let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
                                 message.member.roles.add(roleofshame)
                             }
                             else {
