@@ -19,7 +19,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick"]
+let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -173,11 +173,16 @@ client.on('message', message => {
             break;
             case "kick":
                 const member = message.mentions.members.first();
-                if (args[1] && (message.member.hasPermission('KICK_MEMBERS')) {
+                if (args[1] && (message.member.hasPermission('KICK_MEMBERS'))) {
+                    try {
                     member.kick().then(() => {
                         console.log(`${member} was kicked`)
                         message.channel.send(`${member} was kicked`)
                     })
+                } catch (TypeError) {
+                    message.channel.send("member not kicked")
+                    return
+                }
                 } else {
                     message.reply("you can't use that")
                 }
@@ -185,10 +190,16 @@ client.on('message', message => {
             case "ban":
                 const user = message.mentions.users.first();
                 if(args[1] && (message.member.hasPermission('BAN_MEMBERS'))) {
-                    message.guild.members.ban(user).then(() => {
-                        console.log(`${user} was banned`)
-                        message.channel.send(`${user} was banned`)
-                    })
+                    try {
+                        message.guild.members.ban(user).then(() => {
+                            console.log(`${user} was banned`)
+                            message.channel.send(`${user} was banned`)
+                        })
+                    }
+                    catch (TypeError) {
+                        message.channel.send("member not banned")
+                        return
+                    }
                 } else {
                     message.reply("you can't use that")
                 }
@@ -453,7 +464,50 @@ client.on('message', message => {
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
             message.channel.send("no ur cute :3")
-            return
+            return;
+        }
+    }
+});
+client.on('messageUpdate', (oldMessage, newMessage) => {
+    let nlowercase = newMessage.content.toLowerCase()
+    for (let i = 0; i < badwords.length; i++) {
+        if (nlowercase.includes(badwords[i])) {
+            badmember = newMessage.member.user.username
+            badmemberid = newMessage.member.id.toString()
+            newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+            if (newMessage.guild.id === "789954638706376704") {
+                wordviolations1++
+                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
+            } else {
+                wordviolations2++
+                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
+            }
+            if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+                if (wordviolations1 >= 10 && newMessage.guild.id === "789937334865887313") {return;}
+                else if (wordviolations2 >= 10 && newMessage.guild.id === "789954638706376704") {return;}
+                else {
+                    if(badmember.roles.cache.has("813464855733993572") || badmember.roles.cache.has("813465089188823041") || badmember === reallybadmember) {
+                        newMessage.channel.send("The bad member did another bad thing, I'm so disappointed :(")
+                    }
+                    else {
+                        reallybadmember = badmember
+                        if (newMessage.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
+                            newMessage.member.roles.add(roleofshame)
+                        }
+                        else {
+                            try {
+                                newMessage.guild.roles.create({ data: { name: 'Role Of Shame'}});
+                            }
+                            catch (Error) {
+                                newMessage.channel.send("Inadequate permissions to create role, please try again")
+                            }
+                        }
+                        let roleofshame = newMessage.guild.roles.cache.find(role => role.name === 'Role Of Shame')
+                        newMessage.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
+                    }
+                }
+            }
+            return;
         }
     }
 });
