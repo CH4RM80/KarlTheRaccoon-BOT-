@@ -19,7 +19,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass"]
+let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -362,7 +362,7 @@ client.on('message', message => {
                     if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
                     else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
                     else {
-                        if(badmember.roles.cache.has("813464855733993572") || badmember.roles.cache.has("813465089188823041") || badmember === reallybadmember) {
+                        if(badmember === reallybadmember) {
                             message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
                         }
                         else {
