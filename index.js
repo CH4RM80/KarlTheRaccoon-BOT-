@@ -97,7 +97,7 @@ client.on('message', message => {
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
-                message.channel.bulkDelete(1);
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 if (message.content.includes("discord.gg")) {
                     message.reply("nice... but we don't really do advertising here");
                 } 
@@ -135,7 +135,6 @@ client.on('message', message => {
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField(`14. ${prefix}repeat (text) (x number)`, "Tells the bot to say whatever you tell it x amount of times")
-                embed.addField(`15. ${prefix}reaction (emoji)`, "Makes the bot react to every message you say with the specified emoji")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -272,7 +271,7 @@ client.on('message', message => {
             case "dm":
                 const dude = message.mentions.members.first();
                 var msgContent = args.splice(2, args.length - 1).join(" ")
-                message.channel.bulkDelete(1)
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 try {
                     dude.send(`${msgContent}\n\n-${message.member.user.username}`)
                     .then(() => {
@@ -398,7 +397,7 @@ client.on('message', message => {
             return
         }
         else if (message.member.id !== "681238807026466870" && lowercase.includes("discord.gg")) {
-            message.channel.bulkDelete(1);
+            message.channel.messages.fetch(message.id).then(msg => msg.delete())
             message.reply("nice... but we don't really do advertising here");
             return
         }
@@ -509,15 +508,6 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
                 }
             }
             return;
-        }
-    }
-});
-client.on('guildMemberUpdate', (oldMember, newMember) => {
-    let name = newMember.user.name
-    for (let i = 0; i < badwords.length; i++) {
-        if (name.includes(badwords[i])) {
-            let al = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-            newMember.setNickname(`${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}`)${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}${al[Math.floor(Math.random() * al.length)]}
         }
     }
 });
