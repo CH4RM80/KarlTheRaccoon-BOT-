@@ -55,7 +55,7 @@ client.on('message', message => {
     let args = message.content.substring(prefix.length).split(" ")
     try {
         if(message.guild.id === "789954638706376704") {
-            numofmsgsg1++
+            numofmsgsg1++;
         } else {
             numofmsgsg2++;
         }
@@ -93,6 +93,47 @@ client.on('message', message => {
     }
     catch (TypeError) {
         return;
+    }
+    for (let i = 0; i < badwords.length; i++) {
+        if (lowercase.includes(badwords[i])) {
+            badmember = message.member.user.username
+            badmemberid = message.member.id.toString()
+            message.channel.messages.fetch(message.id).then(msg => msg.delete())
+            if (message.guild.id === "789954638706376704") {
+                wordviolations1++
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
+            } else {
+                wordviolations2++
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
+            }
+            if (wordviolations2 >= 10 || wordviolations1 >= 10) {
+                if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
+                else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
+                else {
+                    if(badmember === reallybadmember) {
+                        message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
+                    }
+                    else {
+                        reallybadmember = badmember
+                        if (message.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
+                            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
+                            message.member.roles.add(roleofshame)
+                        }
+                        else {
+                            try {
+                                message.guild.roles.create({ data: { name: 'Role Of Shame'}});
+                            }
+                            catch (Error) {
+                                message.channel.send("Inadequate permissions to create role, please try again")
+                            }
+                        }
+                        let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
+                        message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
+                    }
+                }
+            }
+            return;
+        }
     }
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
@@ -204,7 +245,7 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`made a release version of >reaction, check it with >help\`\`\``)
+                message.channel.send(`\`\`\`Replaced >repeat with a chat commmand, try it out with: \n {your text here} * (number)\`\`\``)
             break;
             case "messages":
             case "message":
@@ -290,25 +331,25 @@ client.on('message', message => {
                     message.channel.send("There are no shamed users for any servers yet")
                 }
             break;
-            case "repeat":
-                message.channel.bulkDelete(1)
-                if (lowercase.includes("@")) {
-                    message.reply("bruh really, no pinging tyvm")
-                    return;
-                }
-                let numoftimes = parseInt(args[args.length - 1])
-                if (numoftimes < 11) {
-                    var msgCont = args.splice(1, args.length - 2).join(" ")
-                    for(let i = 0; i < numoftimes; i++) {
-                        message.channel.send(`${msgCont}`)
-                    }
-                }
-                else if (!(numoftimes)) {
-                    var msgCont = args.splice(1, args.length - 1).join(" ")
-                    message.channel.send(`${msgCont}`)
-                }
-                else {return;}
-            break;
+            // case "repeat":
+            //     message.channel.bulkDelete(1)
+            //     if (lowercase.includes("@")) {
+            //         message.reply("bruh really, no pinging tyvm")
+            //         return;
+            //     }
+            //     let numoftimes = parseInt(args[args.length - 1])
+            //     if (numoftimes < 11) {
+            //         var msgCont = args.splice(1, args.length - 2).join(" ")
+            //         for(let i = 0; i < numoftimes; i++) {
+            //             message.channel.send(`${msgCont}`)
+            //         }
+            //     }
+            //     else if (!(numoftimes)) {
+            //         var msgCont = args.splice(1, args.length - 1).join(" ")
+            //         message.channel.send(`${msgCont}`)
+            //     }
+            //     else {return;}
+            // break;
             // case "reaction":
             //     if (args[1]) {
             //         for (let i = 0; i < reactm.length; i++) {
@@ -333,7 +374,7 @@ client.on('message', message => {
     if (message.channel === channel) {
         for (let i = 0; i < badwords.length; i++) {
             if (lowercase.includes(badwords[i])) {
-                message.channel.bulkDelete(1)
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 return;
             }
         }
@@ -345,46 +386,27 @@ client.on('message', message => {
         }
     } 
     else {
-        for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
-                badmember = message.member.user.username
-                badmemberid = message.member.id.toString()
-                message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                if (message.guild.id === "789954638706376704") {
-                    wordviolations1++
-                    message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
-                } else {
-                    wordviolations2++
-                    message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
+        try {
+            if (args[args.length - 2] === "*") {
+                let numoftimes = 0
+                try {
+                    let numoftimes = parseInt(args[args.length - 1])
                 }
-                if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-                    if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
-                    else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
-                    else {
-                        if(badmember === reallybadmember) {
-                            message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
-                        }
-                        else {
-                            reallybadmember = badmember
-                            if (message.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
-                                let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
-                                message.member.roles.add(roleofshame)
-                            }
-                            else {
-                                try {
-                                    message.guild.roles.create({ data: { name: 'Role Of Shame'}});
-                                }
-                                catch (Error) {
-                                    message.channel.send("Inadequate permissions to create role, please try again")
-                                }
-                            }
-                            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
-                            message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
-                        }
+                catch (TypeError) {return}
+                if (numoftimes < 11) {
+                    var msgCont = args.splice(0, args.length - 3).join(" ")
+                    for(let i = 0; i < numoftimes; i++) {
+                        message.channel.send(`${msgCont}`)
                     }
                 }
-                return;
+                else {
+                    message.channel.send("Hold up just a minute bro don't you care about my bandwidth?")
+                    return
+                }
             }
+        }
+        catch (TypeError) {
+            return
         }
         if (lowercase.includes("pogchamp")) {
             if (message.member.user.id !== "801827038234804234") {
@@ -510,5 +532,6 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
             return;
         }
     }
+    return
 });
 client.login(token);
