@@ -388,21 +388,20 @@ client.on('message', message => {
     else {
         try {
             if (args[args.length - 2] === "*") {
-                let numoftimes = 0
                 try {
                     let numoftimes = parseInt(args[args.length - 1])
-                }
-                catch (TypeError) {return}
-                if (numoftimes < 11) {
-                    var msgCont = args.splice(0, args.length - 3).join(" ")
-                    for(let i = 0; i < numoftimes; i++) {
-                        message.channel.send(`${msgCont}`)
+                    if (numoftimes < 11) {
+                        var msgCont = args.splice(0, args.length - 3).join(" ")
+                        for(let i = 0; i < numoftimes; i++) {
+                            message.channel.send(`${msgCont}`)
+                        }
+                    }
+                    else {
+                        message.channel.send("Hold up just a minute bro don't you care about my bandwidth?")
+                        return
                     }
                 }
-                else {
-                    message.channel.send("Hold up just a minute bro don't you care about my bandwidth?")
-                    return
-                }
+                catch (TypeError) {return}
             }
         }
         catch (TypeError) {
