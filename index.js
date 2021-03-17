@@ -387,11 +387,12 @@ client.on('message', message => {
     } 
     else {
         try {
-            if (args[args.length - 2] === "*") {
+            var msgCont = message.content.split(" ")
+            if (msgCont[msgCont.length - 2] === "*") {
                 try {
-                    let numoftimes = parseInt(args[args.length - 1])
+                    let numoftimes = parseInt(msgCont[msgCont.length - 1])
+                    var msgCont = msgCont.splice(0, msgCont.length - 2).join(" ")
                     if (numoftimes < 11) {
-                        var msgCont = args.splice(0, args.length - 3).join(" ")
                         for(let i = 0; i < numoftimes; i++) {
                             message.channel.send(`${msgCont}`)
                         }
