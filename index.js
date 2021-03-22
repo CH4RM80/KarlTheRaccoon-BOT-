@@ -94,6 +94,23 @@ client.on('message', message => {
     catch (TypeError) {
         return;
     }
+    let channel2 = message.guild.channels.cache.find(
+        channel => channel.name.toLowerCase() === "swear-equals-ban"
+    )
+    if (message.channel === channel2) {
+        for (let i = 0; i < badwords.length; i++) {
+            if (lowercase.includes(badwords[i])) {
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                message.reply("You messed with the wrong bot, get pwned").then(() => {
+                    setTimeout(() => {
+                        message.guild.members.ban(message.member)
+                    }, 3000)
+                })
+                return;
+            }
+        }
+        return
+    }
     for (let i = 0; i < badwords.length; i++) {
         if (lowercase.includes(badwords[i])) {
             badmember = message.member.user.username
@@ -339,9 +356,6 @@ client.on('message', message => {
     let channel = message.guild.channels.cache.find(
         channel => channel.name.toLowerCase() === "repeat"
     )
-    let channel2 = message.guild.channels.cache.find(
-        channel => channel.name.toLowerCase() === "swear-equals-ban"
-    )
     if (message.channel === channel) {
         for (let i = 0; i < badwords.length; i++) {
             if (lowercase.includes(badwords[i])) {
@@ -349,19 +363,6 @@ client.on('message', message => {
                 return;
             }
         }
-    if (message.channel === channel2) {
-        for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
-                message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                message.reply("You messed with the wrong bot, get pwned").then(() => {
-                    setTimeout(() => {
-                        message.guild.members.ban(message.member)
-                    }, 3000)
-                })
-                return;
-            }
-        }
-    }
         if (message.mentions.members.first()) {
             return;
         }
