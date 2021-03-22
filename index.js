@@ -51,6 +51,7 @@ client.once('ready', () => {
 
 client.on('message', message => {
     const lowercase = message.content.toLowerCase();
+    const compiledLowercase = message.content.split(" ").join().toLowerCase()
     if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
     try {
@@ -99,7 +100,7 @@ client.on('message', message => {
     )
     if (message.channel === channel2) {
         for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
+            if (compiledLowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 message.reply("You messed with the wrong bot, get pwned").then(() => {
                     setTimeout(() => {
@@ -112,7 +113,7 @@ client.on('message', message => {
         return
     }
     for (let i = 0; i < badwords.length; i++) {
-        if (lowercase.includes(badwords[i])) {
+        if (compiledLowercase.includes(badwords[i])) {
             badmember = message.member.user.username
             badmemberid = message.member.id.toString()
             message.channel.messages.fetch(message.id).then(msg => msg.delete())
@@ -358,7 +359,7 @@ client.on('message', message => {
     )
     if (message.channel === channel) {
         for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
+            if (compiledLowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 return;
             }
@@ -477,8 +478,9 @@ client.on('message', message => {
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
     let nlowercase = newMessage.content.toLowerCase()
+    const cpLowercase
     for (let i = 0; i < badwords.length; i++) {
-        if (nlowercase.includes(badwords[i])) {
+        if (cpLowercase.includes(badwords[i])) {
             badmember = newMessage.member.user.username
             badmemberid = newMessage.member.id.toString()
             newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
@@ -486,6 +488,17 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
             return;
         }
     }
-    return
+    channel = oldMessage.guild.channels.cache.find(i => i.name === "mod-logs")
+    if (channel) {
+        embed = new MessageEmbed()
+            .setTitle("Message edited")
+            .addField("Old Message", oldMessage)
+            .addField("New Message", newMessage)
+            .setColor(randcolor)
+            .addField('Channel', message.channel.name)
+            .addField('Member', message.member.name)
+            channel.send(embed)
+            return
+    }
 });
 client.login(token);
