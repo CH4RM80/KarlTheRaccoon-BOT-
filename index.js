@@ -19,7 +19,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shut up", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore"]
+let badwords = ["stfu", "shutup", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -477,17 +477,7 @@ client.on('message', message => {
     }
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    let nlowercase = newMessage.content.toLowerCase()
-    const cpLowercase
-    for (let i = 0; i < badwords.length; i++) {
-        if (cpLowercase.includes(badwords[i])) {
-            badmember = newMessage.member.user.username
-            badmemberid = newMessage.member.id.toString()
-            newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-            newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
-            return;
-        }
-    }
+    const cpLowercase = newMessage.content.toLowerCase().split(" ").join()
     channel = oldMessage.guild.channels.cache.find(i => i.name === "mod-logs")
     if (channel) {
         embed = new MessageEmbed()
@@ -499,6 +489,15 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
             .addField('Member', message.member.name)
             channel.send(embed)
             return
+    }
+    for (let i = 0; i < badwords.length; i++) {
+        if (cpLowercase.includes(badwords[i])) {
+            badmember = newMessage.member.user.username
+            badmemberid = newMessage.member.id.toString()
+            newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+            newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
+            return;
+        }
     }
 });
 client.login(token);
