@@ -99,39 +99,7 @@ client.on('message', message => {
             badmember = message.member.user.username
             badmemberid = message.member.id.toString()
             message.channel.messages.fetch(message.id).then(msg => msg.delete())
-            if (message.guild.id === "789954638706376704") {
-                wordviolations1++
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
-            } else {
-                wordviolations2++
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
-            }
-            if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-                if (wordviolations1 >= 10 && message.guild.id === "789937334865887313") {return;}
-                else if (wordviolations2 >= 10 && message.guild.id === "789954638706376704") {return;}
-                else {
-                    if(badmember === reallybadmember) {
-                        message.channel.send("The bad member did another bad thing, I'm so disappointed :(")
-                    }
-                    else {
-                        reallybadmember = badmember
-                        if (message.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
-                            let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
-                            message.member.roles.add(roleofshame)
-                        }
-                        else {
-                            try {
-                                message.guild.roles.create({ data: { name: 'Role Of Shame'}});
-                            }
-                            catch (Error) {
-                                message.channel.send("Inadequate permissions to create role, please try again")
-                            }
-                        }
-                        let roleofshame = message.guild.roles.cache.find(role => role.name === 'Role Of Shame')
-                        message.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
-                    }
-                }
-            }
+            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
             return;
         }
     }
@@ -370,7 +338,10 @@ client.on('message', message => {
     }
     let channel = message.guild.channels.cache.find(
         channel => channel.name.toLowerCase() === "repeat"
-      )      
+    )
+    let channel2 = message.guild.channels.cache.find(
+        channel => channel.name.toLowerCase() === "swear-equals-ban"
+    )
     if (message.channel === channel) {
         for (let i = 0; i < badwords.length; i++) {
             if (lowercase.includes(badwords[i])) {
@@ -378,6 +349,19 @@ client.on('message', message => {
                 return;
             }
         }
+    if (message.channel === channel2) {
+        for (let i = 0; i < badwords.length; i++) {
+            if (lowercase.includes(badwords[i])) {
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                message.reply("You messed with the wrong bot, get pwned").then(() => {
+                    setTimeout(() => {
+                        message.guild.members.ban(message.member)
+                    }, 3000)
+                })
+                return;
+            }
+        }
+    }
         if (message.mentions.members.first()) {
             return;
         }
@@ -497,38 +481,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
             badmember = newMessage.member.user.username
             badmemberid = newMessage.member.id.toString()
             newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-            if (newMessage.guild.id === "789954638706376704") {
-                wordviolations1++
-                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations1}\`\`\``)
-            } else {
-                wordviolations2++
-                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! \`\`\`server violations: ${wordviolations2}\`\`\``)
-            }
-            if (wordviolations2 >= 10 || wordviolations1 >= 10) {
-                if (wordviolations1 >= 10 && newMessage.guild.id === "789937334865887313") {return;}
-                else if (wordviolations2 >= 10 && newMessage.guild.id === "789954638706376704") {return;}
-                else {
-                    if(badmember.roles.cache.has("813464855733993572") || badmember.roles.cache.has("813465089188823041") || badmember === reallybadmember) {
-                        newMessage.channel.send("The bad member did another bad thing, I'm so disappointed :(")
-                    }
-                    else {
-                        reallybadmember = badmember
-                        if (newMessage.guild.roles.cache.find(role => role.name === "Role Of Shame")) {
-                            newMessage.member.roles.add(roleofshame)
-                        }
-                        else {
-                            try {
-                                newMessage.guild.roles.create({ data: { name: 'Role Of Shame'}});
-                            }
-                            catch (Error) {
-                                newMessage.channel.send("Inadequate permissions to create role, please try again")
-                            }
-                        }
-                        let roleofshame = newMessage.guild.roles.cache.find(role => role.name === 'Role Of Shame')
-                        newMessage.channel.send(`Someone was very naughty, their name is ${reallybadmember} and they have been given the Role Of Shame`)
-                    }
-                }
-            }
+            newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
             return;
         }
     }
