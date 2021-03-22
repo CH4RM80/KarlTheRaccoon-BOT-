@@ -19,7 +19,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shutup", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore"]
+let badwords = ["stfu", "shutup", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -100,7 +100,7 @@ client.on('message', message => {
     )
     if (message.channel === channel2) {
         for (let i = 0; i < badwords.length; i++) {
-            if (compiledLowercase.includes(badwords[i])) {
+            if (lowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 message.reply("You messed with the wrong bot, get pwned").then(() => {
                     setTimeout(() => {
@@ -113,9 +113,7 @@ client.on('message', message => {
         return
     }
     for (let i = 0; i < badwords.length; i++) {
-        if (compiledLowercase.includes(badwords[i])) {
-            badmember = message.member.user.username
-            badmemberid = message.member.id.toString()
+        if (lowercase.includes(badwords[i])) {
             message.channel.messages.fetch(message.id).then(msg => msg.delete())
             message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
             return;
@@ -359,7 +357,7 @@ client.on('message', message => {
     )
     if (message.channel === channel) {
         for (let i = 0; i < badwords.length; i++) {
-            if (compiledLowercase.includes(badwords[i])) {
+            if (lowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 return;
             }
@@ -477,23 +475,9 @@ client.on('message', message => {
     }
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    const cpLowercase = newMessage.content.toLowerCase().split(" ").join()
-    channel = oldMessage.guild.channels.cache.find(i => i.name === "mod-logs")
-    if (channel) {
-        embed = new MessageEmbed()
-            .setTitle("Message edited")
-            .addField("Old Message", oldMessage)
-            .addField("New Message", newMessage)
-            .setColor(randcolor)
-            .addField('Channel', message.channel.name)
-            .addField('Member', message.member.name)
-            channel.send(embed)
-            return
-    }
+    const lowercase = message.content.toLowerCase()
     for (let i = 0; i < badwords.length; i++) {
-        if (cpLowercase.includes(badwords[i])) {
-            badmember = newMessage.member.user.username
-            badmemberid = newMessage.member.id.toString()
+        if (lowercase.includes(badwords[i])) {
             newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
             newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
             return;
