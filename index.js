@@ -28,7 +28,23 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
+function dojoke(data, message) {
+    if (data.error === "true") {
+        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
+        return
+    }
+    else if (data.type === "twopart") {
+        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
+        })
+        return
+    }
+    else if (data.type === "single") {
+        message.reply(`Here's your joke: \n${data.joke}`)
+        return
+    }
+}
 client.once('ready', () => {
     console.log('Ready!');
     banyesyes(client)
@@ -322,13 +338,14 @@ client.on('message', async message => {
                 }
             break;
             case "joke":
-                let resp = null
-                let data = null
+                var resp = undefined
+                var data = undefined
                 if (args[1]) {
                     let resp = await fetch(
                         `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit&contains=${args[1].toLowerCase()}`,
                     );
                     let data = await resp.json();
+                    dojoke(data, message)
                 }
                 else if (args[1] && args[args.length - 1].startsWith("+")) {
                     if (args[args.length - 1].toLowerCase() === "+clean") {
@@ -342,6 +359,7 @@ client.on('message', async message => {
                         );
                     }
                     let data = await resp.json();
+                    dojoke(data, message)
                 }
                 else if (args[args.length - 1].startsWith("+")) {
                     if (args[args.length - 1].toLowerCase() === "+clean") {
@@ -355,26 +373,14 @@ client.on('message', async message => {
                         );
                     }
                     let data = resp.json();
+                    dojoke(data, message)
                 }
                 else {
                     let resp = await fetch(
                         `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
                     );
                     let data = resp.json();
-                }
-                if (data.error === "true") {
-                    message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                    return
-                }
-                else if (data.type === "twopart") {
-                    message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                        setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                    })
-                    return
-                }
-                else if (data.type === "single") {
-                    message.reply(`Here's your joke: \n${data.joke}`)
-                    return
+                    dojoke(data, message)
                 }
             break;
             // case "repeat":
