@@ -8,8 +8,9 @@ let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
 const fetch = require("node-fetch")
 let embed = new MessageEmbed();
-numofmsgsg1 = '0';
+numofmsgsg1 = 0;
 numofmsgsg2 = 0;
+newgmsg = 0;
 let reallybadmember = "";
 let badmember = "";
 let badmemberid = "";
@@ -18,8 +19,6 @@ let isReallyBad = false
 let reactm = []
 let reactions = []
 ccache = client.channels.cache
-let wordviolations1 = 0;
-let wordviolations2 = 0;
 let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck"]
 let spamchannel = []
 function getRandomColor() {
@@ -50,7 +49,7 @@ client.once('ready', () => {
     });
 });
 
-client.on('message', message => {
+client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
     const compiledLowercase = message.content.split(" ").join().toLowerCase()
     if (message.author.bot) return;
@@ -58,8 +57,11 @@ client.on('message', message => {
     try {
         if(message.guild.id === "789954638706376704") {
             numofmsgsg1++;
-        } else {
+        } else if (message.guild.id === "789937334865887313") {
             numofmsgsg2++;
+        }
+        else {
+            newgmsg++;
         }
     } 
     catch (TypeError) {
@@ -230,14 +232,17 @@ client.on('message', message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Replaced >repeat with a chat commmand, try it out with: \n {your text here} * (number)\`\`\``)
+                message.channel.send(`\`\`\`Made a new command, its called >joke, try it out!\`\`\``)
             break;
             case "messages":
             case "message":
                 if(message.guild.id === "789954638706376704") {
                     message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
-                } else {
+                } else if (message.guild.id === "789937334865887313") {
                     message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
+                }
+                else {
+                    message.channel.send(`There were \`${newgmsg}\` messages sent since the last bot update`)
                 }
             break;
             case "avatar":
@@ -326,8 +331,8 @@ client.on('message', message => {
                     return
                 }
                 else if (data.type === "twopart") {
-                    message.channel.send(data.setup).then(() => {
-                        setTimeout(() => {message.reply(`Here's your joke: \n${data.delivery}`)}, 2000)
+                    message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+                        setTimeout(() => {message.reply(data.delivery)}, 2000)
                     })
                     return
                 }
