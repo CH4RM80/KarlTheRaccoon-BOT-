@@ -29,6 +29,26 @@ function getRandomColor() {
     }
     return color;
 }
+function safeJoke(message) {
+    const resp = await fetch(
+        `https://v2.jokeapi.dev/joke/Any?safe-mode`,
+    );
+    const data = resp.json();
+    if (data.error === "true") {
+        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
+        return
+    }
+    else if (data.type === "twopart") {
+        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
+        })
+        return
+    }
+    else if (data.type === "single") {
+        message.reply(`Here's your joke: \n${data.joke}`)
+        return
+    }
+}
 client.once('ready', () => {
     console.log('Ready!');
     banyesyes(client)
@@ -343,26 +363,12 @@ client.on('message', async message => {
                                 return
                             }
                     }
+                    else {
+                        safeJoke(message)
+                    }
                 }
                 else {
-                    const resp = await fetch(
-                        `https://v2.jokeapi.dev/joke/Any?safe-mode`,
-                    );
-                    const data = resp.json();
-                    if (data.error === "true") {
-                        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                        return
-                    }
-                    else if (data.type === "twopart") {
-                        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                        })
-                        return
-                    }
-                    else if (data.type === "single") {
-                        message.reply(`Here's your joke: \n${data.joke}`)
-                        return
-                    }
+                    safeJoke(message)
                 }
             break;
             // case "repeat":
