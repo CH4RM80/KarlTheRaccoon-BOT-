@@ -322,24 +322,26 @@ client.on('message', async message => {
                 }
             break;
             case "joke":
-                if (args[1].toLowerCase() === "noclean"){
-                    const resp = await fetch(
-                        "https://v2.jokeapi.dev/joke/Any",
-                    );
-                    const data = resp.json();
-                    if (data.error === "true") {
-                        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                        return
-                    }
-                    else if (data.type === "twopart") {
-                        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                        })
-                        return
-                    }
-                    else if (data.type === "single") {
-                        message.reply(`Here's your joke: \n${data.joke}`)
-                        return
+                if (args[1]) {
+                    if (args[1].toLowerCase() === "noclean"){
+                        const resp = await fetch(
+                            "https://v2.jokeapi.dev/joke/Any",
+                        );
+                        const data = resp.json();
+                        if (data.error === "true") {
+                            message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
+                            return
+                        }
+                        else if (data.type === "twopart") {
+                            message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+                                setTimeout(() => {message.channel.send(data.delivery)}, 2000)
+                            })
+                            return
+                        }
+                        else if (data.type === "single") {
+                            message.reply(`Here's your joke: \n${data.joke}`)
+                            return
+                        }
                     }
                 }
                 else {
