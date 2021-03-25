@@ -6,6 +6,7 @@ const banyesyes = require('./banyesyes');
 const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
+const fetch = require("node-fetch")
 let embed = new MessageEmbed();
 numofmsgsg1 = '0';
 numofmsgsg2 = 0;
@@ -19,7 +20,7 @@ let reactions = []
 ccache = client.channels.cache
 let wordviolations1 = 0;
 let wordviolations2 = 0;
-let badwords = ["stfu", "shutup", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa"]
+let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -313,6 +314,26 @@ client.on('message', message => {
                     message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
                 } else {
                     message.channel.send("There are no shamed users for any servers yet")
+                }
+            break;
+            case "joke":
+                const resp = await fetch(
+                    `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
+                );
+                const data = await resp.json();
+                if (data.error === "true") {
+                    message.channel.send("Something went wrong :(")
+                    return
+                }
+                else if (data.type === "twopart") {
+                    message.channel.send(data.setup).then(() => {
+                        setTimeout(() => {message.reply(`Here's your joke: \n${data.delivery}`)}, 2000)
+                    })
+                    return
+                }
+                else if (data.type === "single") {
+                    message.reply(`Here's your joke: \n${data.joke}`)
+                    return
                 }
             break;
             // case "repeat":
