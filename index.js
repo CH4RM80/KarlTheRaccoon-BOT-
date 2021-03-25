@@ -162,7 +162,7 @@ client.on('message', async message => {
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
-                embed.addField(`14. ${prefix}joke (search filter) (clean or noclean)`, "Tells the bot to say whatever you tell it x amount of times")
+                embed.addField(`14. ${prefix}joke (clean or noclean)`, "This command generates a random joke")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -327,7 +327,7 @@ client.on('message', async message => {
                         const resp = await fetch(
                             "https://v2.jokeapi.dev/joke/Any",
                         );
-                        const data = resp.json();
+                        const data = await resp.json();
                         if (data.error === "true") {
                             message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
                             return
@@ -348,21 +348,21 @@ client.on('message', async message => {
                     const resp = await fetch(
                         "https://v2.jokeapi.dev/joke/Any?safe-mode",
                     );
-                    const data = resp.json();
-                if (data.error === "true") {
-                    message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                    return
-                }
-                else if (data.type === "twopart") {
-                    message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                        setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                    })
-                    return
-                }
-                else if (data.type === "single") {
-                    message.reply(`Here's your joke: \n${data.joke}`)
-                    return
-                }
+                    const data = await resp.json();
+                    if (data.error === "true") {
+                        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
+                        return
+                    }
+                    else if (data.type === "twopart") {
+                        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+                            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
+                        })
+                        return
+                    }
+                    else if (data.type === "single") {
+                        message.reply(`Here's your joke: \n${data.joke}`)
+                        return
+                    }
                 }
             break;
             // case "repeat":
