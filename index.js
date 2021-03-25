@@ -19,7 +19,7 @@ let isReallyBad = false
 let reactm = []
 let reactions = []
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck"]
+let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "bitch", "pussy", "bussy", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -162,7 +162,7 @@ client.on('message', async message => {
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
-                embed.addField(`14. ${prefix}repeat (text) (x number)`, "Tells the bot to say whatever you tell it x amount of times")
+                embed.addField(`14. ${prefix}joke (search filter) (+clean or +notclean)`, "Tells the bot to say whatever you tell it x amount of times")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -322,17 +322,53 @@ client.on('message', async message => {
                 }
             break;
             case "joke":
-                const resp = await fetch(
-                    `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
-                );
-                const data = await resp.json();
+                let resp = null
+                let data = null
+                if (args[1]) {
+                    let resp = await fetch(
+                        `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit&contains=${args[1].toLowerCase()}`,
+                    );
+                    let data = await resp.json();
+                }
+                else if (args[1] && args[args.length - 1].startsWith("+")) {
+                    if (args[args.length - 1].toLowerCase() === "+clean") {
+                        let resp = await fetch(
+                            `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit&contains=${args[1].toLowerCase()}`,
+                        );
+                    }
+                    else if (args[args.length - 1].toLowerCase() === "+noclean") {
+                        let resp = await fetch(
+                            `https://v2.jokeapi.dev/joke/Any?contains=${args[1].toLowerCase()}`,
+                        );
+                    }
+                    let data = await resp.json();
+                }
+                else if (args[args.length - 1].startsWith("+")) {
+                    if (args[args.length - 1].toLowerCase() === "+clean") {
+                        let resp = await fetch(
+                            `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
+                        );
+                    }
+                    else if (args[args.length - 1].toLowerCase() === "+noclean") {
+                        let resp = await fetch(
+                            `https://v2.jokeapi.dev/joke/Any?contains=${args[1]}`,
+                        );
+                    }
+                    let data = resp.json();
+                }
+                else {
+                    let resp = await fetch(
+                        `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
+                    );
+                    let data = resp.json();
+                }
                 if (data.error === "true") {
-                    message.channel.send("Something went wrong :(")
+                    message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
                     return
                 }
                 else if (data.type === "twopart") {
                     message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                        setTimeout(() => {message.reply(data.delivery)}, 2000)
+                        setTimeout(() => {message.channel.send(data.delivery)}, 2000)
                     })
                     return
                 }
@@ -501,7 +537,7 @@ client.on('message', async message => {
     }
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    const lowercase = message.content.toLowerCase()
+    const lowercase = newMessage.content.toLowerCase()
     for (let i = 0; i < badwords.length; i++) {
         if (lowercase.includes(badwords[i])) {
             newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
