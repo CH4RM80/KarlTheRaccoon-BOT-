@@ -178,7 +178,7 @@ client.on('message', async message => {
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
-                embed.addField(`14. ${prefix}joke (search filter) (+clean or +notclean)`, "Tells the bot to say whatever you tell it x amount of times")
+                embed.addField(`14. ${prefix}joke (+clean or +notclean)`, "Tells the bot to say whatever you tell it x amount of times")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -338,46 +338,16 @@ client.on('message', async message => {
                 }
             break;
             case "joke":
-                var resp = undefined
-                var data = undefined
-                if (args[1]) {
-                    let resp = await fetch(
-                        `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit&contains=${args[1].toLowerCase()}`,
-                    );
-                    let data = await resp.json();
-                    dojoke(data, message)
-                }
-                else if (args[1] && args[args.length - 1].startsWith("+")) {
-                    if (args[args.length - 1].toLowerCase() === "+clean") {
+                if (args[1].toLowerCase() === "+noclean") {
                         let resp = await fetch(
-                            `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit&contains=${args[1].toLowerCase()}`,
+                            `https://v2.jokeapi.dev/joke/Any`,
                         );
-                    }
-                    else if (args[args.length - 1].toLowerCase() === "+noclean") {
-                        let resp = await fetch(
-                            `https://v2.jokeapi.dev/joke/Any?contains=${args[1].toLowerCase()}`,
-                        );
-                    }
-                    let data = await resp.json();
-                    dojoke(data, message)
-                }
-                else if (args[args.length - 1].startsWith("+")) {
-                    if (args[args.length - 1].toLowerCase() === "+clean") {
-                        let resp = await fetch(
-                            `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
-                        );
-                    }
-                    else if (args[args.length - 1].toLowerCase() === "+noclean") {
-                        let resp = await fetch(
-                            `https://v2.jokeapi.dev/joke/Any?contains=${args[1]}`,
-                        );
-                    }
-                    let data = resp.json();
-                    dojoke(data, message)
+                        let data = resp.json();
+                        dojoke(data, message)
                 }
                 else {
                     let resp = await fetch(
-                        `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,political,racist,sexist,explicit`,
+                        `https://v2.jokeapi.dev/joke/Any?safe-mode`,
                     );
                     let data = resp.json();
                     dojoke(data, message)
