@@ -28,7 +28,23 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
+function checks(data, message) {
+    if (data.error === "true") {
+        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
+        return
+    }
+    else if (data.type === "twopart") {
+        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
+            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
+        })
+        return
+    }
+    else if (data.type === "single") {
+        message.reply(`Here's your joke: \n${data.joke}`)
+        return
+    }
+}
 client.once('ready', () => {
     console.log('Ready!');
     banyesyes(client)
@@ -163,6 +179,8 @@ client.on('message', async message => {
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField(`14. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
+                embed.addField(`15. ${prefix}quote`, "This command generates a random quote")
+                embed.addField(`16. ${prefix}qod`, "This command sends the quote of the day")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -232,7 +250,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Made a new command, its called >joke, try it out!\`\`\``)
+                message.channel.send(`\`\`\`Added 2 commands, >quote and >qod\`\`\``)
             break;
             case "messages":
             case "message":
@@ -323,25 +341,19 @@ client.on('message', async message => {
             break;
             case "joke":
                 if (args[1]) {
-                    if (args[1].toLowerCase().startsWith("no")){
+                    if (args[1].toLowerCase().startsWith("n")){
                         const resp = await fetch(
                             "https://v2.jokeapi.dev/joke/Any",
                         );
                         const data = await resp.json();
-                        if (data.error === "true") {
-                            message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                            return
-                        }
-                        else if (data.type === "twopart") {
-                            message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                                setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                            })
-                            return
-                        }
-                        else if (data.type === "single") {
-                            message.reply(`Here's your joke: \n${data.joke}`)
-                            return
-                        }
+                        checks(data, message)
+                    }
+                    else if (args[1].toLowerCase().startsWith("c")) {
+                        const resp = await fetch(
+                            "https://v2.jokeapi.dev/joke/Any?safe-mode",
+                        );
+                        const data = await resp.json();
+                        checks(data, message)
                     }
                 }
                 else {
@@ -349,21 +361,27 @@ client.on('message', async message => {
                         "https://v2.jokeapi.dev/joke/Any?safe-mode",
                     );
                     const data = await resp.json();
-                    if (data.error === "true") {
-                        message.channel.send(`Sorry senpai, ${data.message.toLowerCase()}, ${data.causedBy[0]}`)
-                        return
-                    }
-                    else if (data.type === "twopart") {
-                        message.reply(`Here's your joke: \n${data.setup}`).then(() => {
-                            setTimeout(() => {message.channel.send(data.delivery)}, 2000)
-                        })
-                        return
-                    }
-                    else if (data.type === "single") {
-                        message.reply(`Here's your joke: \n${data.joke}`)
-                        return
-                    }
+                    checks(data, message)
                 }
+            break;
+            case "quote":
+                const response = await fetch(
+                    "http://api.quotable.io/random",
+                );
+                const dat = await response.json();
+                message.reply(`Here's your quote:\n${dat.content}\n-${dat.author}`)
+            break;
+            case "qod":
+                    const respo = await fetch(
+                        "https://quotes.rest/qod?language=en",
+                    );
+                    const da = await respo.json();
+                    embed = new MessageEmbed();
+                    embed.setTitle("Quote Of The Day")
+                    embed.setImage(`${da.background}`)
+                    embed.addField(`${da.author}`, `${da.quote}`)
+                    embed.footer(`${da.permalink}`)
+                    message.channel.send(embed)   
             break;
             // case "repeat":
             //     message.channel.bulkDelete(1)
