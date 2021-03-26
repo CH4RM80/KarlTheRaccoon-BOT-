@@ -19,7 +19,7 @@ let isReallyBad = false
 let reactm = []
 let reactions = []
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "bitch", "pussy", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck"]
+let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
