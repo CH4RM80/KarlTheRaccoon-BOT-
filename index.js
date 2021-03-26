@@ -373,14 +373,12 @@ client.on('message', async message => {
             break;
             case "qod":
                     const respo = await fetch(
-                        "https://quotes.rest/qod?language=en",
+                        "https://zenquotes.io/api/today",
                     );
                     const da = await respo.json();
                     embed = new MessageEmbed();
                     embed.setTitle("Quote Of The Day")
-                    embed.setImage(`${da.background}`)
-                    embed.addField(`${da.author}`, `${da.quote}`)
-                    embed.footer(`${da.permalink}`)
+                    embed.addField(`${da.a}`, `${da.q}`)
                     message.channel.send(embed)   
             break;
             // case "repeat":
