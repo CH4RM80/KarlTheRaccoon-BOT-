@@ -162,7 +162,7 @@ client.on('message', async message => {
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
-                embed.addField(`14. ${prefix}joke (clean or noclean)`, "This command generates a random joke")
+                embed.addField(`14. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -323,7 +323,7 @@ client.on('message', async message => {
             break;
             case "joke":
                 if (args[1]) {
-                    if (args[1].toLowerCase() === "noclean"){
+                    if (args[1].toLowerCase().startsWith("no")){
                         const resp = await fetch(
                             "https://v2.jokeapi.dev/joke/Any",
                         );
