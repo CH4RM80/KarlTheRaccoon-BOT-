@@ -146,7 +146,7 @@ client.on('message', async message => {
         for (let i = 0; i < badwords.length; i++) {
             if (lowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
                 return;
             }
         }
@@ -573,11 +573,21 @@ client.on('message', async message => {
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
     const lowercase = newMessage.content.toLowerCase()
-    for (let i = 0; i < badwords.length; i++) {
-        if (lowercase.includes(badwords[i])) {
-            newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-            newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
-            return;
+    for (let i = 0; i < swearingallowed.length; i++) {
+        if (newMessage.guild.id === swearingallowed[i]) {
+            sAllow = true
+        }
+        else {
+            sAllow = false
+        }
+    }
+    if (sAllow === false) {
+        for (let i = 0; i < badwords.length; i++) {
+            if (lowercase.includes(badwords[i])) {
+                newMessage.channel.messages.fetch(message.id).then(msg => msg.delete())
+                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                return;
+            }
         }
     }
 });
