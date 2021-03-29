@@ -138,6 +138,9 @@ client.on('message', async message => {
         if (message.guild.id === swearingallowed[i]) {
             sAllow = true
         }
+        else {
+            sAllow = false
+        }
     }
     if (sAllow === false) {
         for (let i = 0; i < badwords.length; i++) {
@@ -400,7 +403,7 @@ client.on('message', async message => {
                 if (message.member.id === ownerid) {
                     for (i = 0; i < swearingallowed.length; i++) {
                         if (message.guild.id === swearingallowed[i]) {
-                            swearingallowed.splice(i, i)
+                            swearingallowed.splice(i, 1)
                             message.channel.send("Disallowed swearing for this server successfully")
                             return
                         }
