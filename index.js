@@ -405,6 +405,7 @@ client.on('message', async message => {
                         if (message.guild.id === swearingallowed[i]) {
                             swearingallowed.splice(i, 1)
                             message.channel.send("Disallowed swearing for this server successfully")
+                            sAllow = false
                             return
                         }
                     }
