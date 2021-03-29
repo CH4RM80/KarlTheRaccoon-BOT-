@@ -11,6 +11,7 @@ let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
 newgmsg = 0;
+swearingallowed = []
 let reallybadmember = "";
 let badmember = "";
 let badmemberid = "";
@@ -18,6 +19,8 @@ let lastuserid = "";
 let isReallyBad = false
 let reactm = []
 let reactions = []
+let sAllow = false
+let ownerid = "601822624867155989"
 ccache = client.channels.cache
 let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck"]
 let spamchannel = []
@@ -131,11 +134,18 @@ client.on('message', async message => {
         }
         return
     }
-    for (let i = 0; i < badwords.length; i++) {
-        if (lowercase.includes(badwords[i])) {
-            message.channel.messages.fetch(message.id).then(msg => msg.delete())
-            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
-            return;
+    for (let i = 0; i < swearingallowed.length; i++) {
+        if (message.guild.id === swearingallowed[i]) {
+            sAllow = true
+        }
+    }
+    if (sAllow === false) {
+        for (let i = 0; i < badwords.length; i++) {
+            if (lowercase.includes(badwords[i])) {
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`)
+                return;
+            }
         }
     }
     if (message.content[0] === prefix) {
@@ -250,7 +260,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added 2 commands, >quote and >qod\`\`\``)
+                message.channel.send(`\`\`\`Added a swearing allowed mode\`\`\``)
             break;
             case "messages":
             case "message":
@@ -348,7 +358,7 @@ client.on('message', async message => {
                         const data = await resp.json();
                         checks(data, message)
                     }
-                    else if (args[1].toLowerCase().startsWith("c")) {
+                    else {
                         const resp = await fetch(
                             "https://v2.jokeapi.dev/joke/Any?safe-mode",
                         );
@@ -371,15 +381,32 @@ client.on('message', async message => {
                 const dat = await response.json();
                 message.reply(`Here's your quote:\n${dat.content}\n-${dat.author}`)
             break;
-            case "qod":
-                    const respo = await fetch(
-                        "https://zenquotes.io/api/today",
-                    );
-                    const da = await respo.json();
-                    embed = new MessageEmbed();
-                    embed.setTitle("Quote Of The Day")
-                    embed.addField(`${da.a}`, `${da.q}`)
-                    message.channel.send(embed)   
+            case "alswear":
+                    if (message.member.id === ownerid) {
+                        if (swearingallowed.length = 0) {
+                            swearingallowed.push(message.guild.id)
+                        }
+                        else {
+                            for (let i = 0; i < swearingallowed.length; i++) {
+                                if (swearingallowed[i] === message.guild.id) {
+                                    return
+                                }
+                            }
+                            swearingallowed.push(message.guild.id)
+                        }
+                    }
+            break;
+            case "deswear":
+                if (message.member.id === ownerid) {
+                    for (i = 0; i < swearingallowed.length; i++) {
+                        if (message.guild.id === swearingallowed[i]) {
+                            swearingallowed.splice(i, i)
+                            message.channel.send("Disallowed swearing for this server successfully")
+                            return
+                        }
+                    }
+                    message.channel.send("Swearing is already not allowed")
+                }
             break;
             // case "repeat":
             //     message.channel.bulkDelete(1)
