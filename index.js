@@ -23,7 +23,7 @@ let reactions = []
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck"]
+let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -560,6 +560,9 @@ client.on('message', async message => {
         else if (lowercase.startsWith("what's")) {
             message.channel.send("idk... why are you so desperate for an answer that you would ask a raccoon?")
             return
+        }
+        else if (lowercase.includes("hentai")) {
+            message.reply("Pervert!! 😡")
         }
         else if (lowercase.includes("delete")) {
             for(let i = 0; i < 3; i++) {
