@@ -10,7 +10,8 @@ const fetch = require("node-fetch")
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
-newgmsg = 0;
+numofmsgsg3 = 0;
+numofmsgsg4 = 0;
 swearingallowed = []
 let reallybadmember = "";
 let badmember = "";
@@ -79,8 +80,11 @@ client.on('message', async message => {
         } else if (message.guild.id === "789937334865887313") {
             numofmsgsg2++;
         }
+        else if (message.guild.id === "818491944190738443") {
+            numofmsgsg3++;
+        }
         else {
-            newgmsg++;
+            numofmsgsg4++
         }
     } 
     catch (TypeError) {
@@ -273,7 +277,7 @@ client.on('message', async message => {
                     message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
                 }
                 else {
-                    message.channel.send(`There were \`${newgmsg}\` messages sent since the last bot update`)
+                    message.channel.send(`There were \`${numofmsgsg3}\` messages sent since the last bot update`)
                 }
             break;
             case "avatar":
