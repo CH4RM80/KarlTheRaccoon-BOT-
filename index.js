@@ -6,12 +6,16 @@ const banyesyes = require('./banyesyes');
 const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
-const fetch = require("node-fetch")
+const fetch = require("node-fetch");
+const { WSATYPE_NOT_FOUND } = require('node:constants');
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
 numofmsgsg3 = 0;
 numofmsgsg4 = 0;
+let allguilds = []
+let guildmsgs = []
+let foundguild = false
 swearingallowed = []
 let reallybadmember = "";
 let badmember = "";
@@ -75,17 +79,37 @@ client.on('message', async message => {
     if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
     try {
-        if(message.guild.id === "789954638706376704") {
-            numofmsgsg1++;
-        } else if (message.guild.id === "789937334865887313") {
-            numofmsgsg2++;
+        foundguild = false
+        for (let i = 0; i < allguilds.length; i++) {
+            if (message.guild.id === allguilds[i]) {
+                guildmsgs[i]++
+                foundguild = true
+            }
         }
-        else if (message.guild.id === "818491944190738443") {
-            numofmsgsg3++;
+        if (foundguild !== true) {
+            allguilds.push(message.guild.id)
+            guildmsgs.push(0)
         }
         else {
-            numofmsgsg4++
+            foundguild = false
         }
+
+
+
+
+
+
+        // if(message.guild.id === "789954638706376704") {
+        //     numofmsgsg1++;
+        // } else if (message.guild.id === "789937334865887313") {
+        //     numofmsgsg2++;
+        // }
+        // else if (message.guild.id === "818491944190738443") {
+        //     numofmsgsg3++;
+        // }
+        // else {
+        //     numofmsgsg4++
+        // }
     } 
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
@@ -271,13 +295,10 @@ client.on('message', async message => {
             break;
             case "messages":
             case "message":
-                if(message.guild.id === "789954638706376704") {
-                    message.channel.send(`There were \`${numofmsgsg1}\` messages sent since the last bot update`)
-                } else if (message.guild.id === "789937334865887313") {
-                    message.channel.send(`There were \`${numofmsgsg2}\` messages sent since the last bot update`)
-                }
-                else {
-                    message.channel.send(`There were \`${numofmsgsg3}\` messages sent since the last bot update`)
+                for (let i = 0; i < allguilds.length; i++) {
+                    if (message.guild.id === allguilds[i]) {
+                        message.channel.send(`There were \`${guildmsgs[i]}\` sent since the last bot update`)
+                    }
                 }
             break;
             case "avatar":
