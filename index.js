@@ -26,7 +26,7 @@ let reactions = []
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
+let badwords = ["stfu", "fuck", "fuk", "fucc", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -61,10 +61,10 @@ client.once('ready', () => {
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
         guild.channels.cache.map(c =>{
-            if (c.name.includes("general")){
-                let general = client.channels.cache.get(c.id)
-                general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
-            }
+            // if (c.name.includes("general")){
+            //     let general = client.channels.cache.get(c.id)
+            //     general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
+            // }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
             }
@@ -391,69 +391,36 @@ client.on('message', async message => {
                 const dat = await response.json();
                 message.reply(`Here's your quote:\n${dat.content}\n-${dat.author}`)
             break;
-            case "alswear":
+            case "swear":
                     if (message.member.id === ownerid) {
-                        if (swearingallowed.length = 0) {
-                            swearingallowed.push(message.guild.id)
-                        }
-                        else {
-                            for (let i = 0; i < swearingallowed.length; i++) {
-                                if (swearingallowed[i] === message.guild.id) {
+                        if (args[1] === "on") {
+                            for (i = 0; i < swearingallowed.length; i++) {
+                                if (message.guild.id === swearingallowed[i]) {
+                                    swearingallowed.splice(i, 1)
+                                    message.channel.send("Disallowed swearing for this server successfully")
+                                    sAllow = false
                                     return
                                 }
                             }
-                            swearingallowed.push(message.guild.id)
+                            message.channel.send("Swearing is already not allowed")
+                        }
+                        else if (args[1] === "off") {
+                            if (swearingallowed.length = 0) {
+                                swearingallowed.push(message.guild.id)
+                                message.channel.send("Enabled swearing for this server successfully")
+                            }
+                            else {
+                                for (let i = 0; i < swearingallowed.length; i++) {
+                                    if (swearingallowed[i] === message.guild.id) {
+                                        message.channel.send("Swearing is already allowed")
+                                        return
+                                    }
+                                }
+                                swearingallowed.push(message.guild.id)
+                            }
                         }
                     }
             break;
-            case "deswear":
-                if (message.member.id === ownerid) {
-                    for (i = 0; i < swearingallowed.length; i++) {
-                        if (message.guild.id === swearingallowed[i]) {
-                            swearingallowed.splice(i, 1)
-                            message.channel.send("Disallowed swearing for this server successfully")
-                            sAllow = false
-                            return
-                        }
-                    }
-                    message.channel.send("Swearing is already not allowed")
-                }
-            break;
-            // case "repeat":
-            //     message.channel.bulkDelete(1)
-            //     if (lowercase.includes("@")) {
-            //         message.reply("bruh really, no pinging tyvm")
-            //         return;
-            //     }
-            //     let numoftimes = parseInt(args[args.length - 1])
-            //     if (numoftimes < 11) {
-            //         var msgCont = args.splice(1, args.length - 2).join(" ")
-            //         for(let i = 0; i < numoftimes; i++) {
-            //             message.channel.send(`${msgCont}`)
-            //         }
-            //     }
-            //     else if (!(numoftimes)) {
-            //         var msgCont = args.splice(1, args.length - 1).join(" ")
-            //         message.channel.send(`${msgCont}`)
-            //     }
-            //     else {return;}
-            // break;
-            // case "reaction":
-            //     if (args[1]) {
-            //         for (let i = 0; i < reactm.length; i++) {
-            //            if (reactm[i] === message.member.id) {
-            //                 reactions[i] = args[1]
-            //                 message.channel.send("new emoji selected")
-            //                 message.react(args[1])
-            //                 return;
-            //             }
-            //         }
-            //         reactm.push(message.member.id)
-            //         reactions.push(args[1])
-            //         message.react(args[1])
-            //         message.channel.send(`${reactm}\n${reactions}`)
-            //     }
-            // break;
         }   
     }
     let channel = message.guild.channels.cache.find(
