@@ -7,7 +7,6 @@ const client = new Client();
 let { prefix, token } = require('./config.json');
 const botid = "801827038234804234";
 const fetch = require("node-fetch");
-const { WSATYPE_NOT_FOUND } = require('node:constants');
 let embed = new MessageEmbed();
 numofmsgsg1 = 0;
 numofmsgsg2 = 0;
@@ -93,23 +92,6 @@ client.on('message', async message => {
         else {
             foundguild = false
         }
-
-
-
-
-
-
-        // if(message.guild.id === "789954638706376704") {
-        //     numofmsgsg1++;
-        // } else if (message.guild.id === "789937334865887313") {
-        //     numofmsgsg2++;
-        // }
-        // else if (message.guild.id === "818491944190738443") {
-        //     numofmsgsg3++;
-        // }
-        // else {
-        //     numofmsgsg4++
-        // }
     } 
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
@@ -297,7 +279,7 @@ client.on('message', async message => {
             case "message":
                 for (let i = 0; i < allguilds.length; i++) {
                     if (message.guild.id === allguilds[i]) {
-                        message.channel.send(`There were \`${guildmsgs[i]}\` sent since the last bot update`)
+                        message.channel.send(`There were \`${guildmsgs[i]}\` messages sent since the last bot update`)
                     }
                 }
             break;
