@@ -417,6 +417,7 @@ client.on('message', async message => {
                                     }
                                 }
                                 swearingallowed.push(message.guild.id)
+                                message.channel.send("Enabled swearing for this server successfully")
                             }
                         }
                     }
