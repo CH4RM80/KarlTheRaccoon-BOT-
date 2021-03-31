@@ -4,7 +4,8 @@ const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
 const banyesyes = require('./banyesyes');
 const client = new Client();
-let { prefix, token } = require('./config.json');
+let { prefix } = require('./config.json');
+require('dotenv').config()
 const botid = "801827038234804234";
 const fetch = require("node-fetch");
 let embed = new MessageEmbed();
@@ -203,7 +204,6 @@ client.on('message', async message => {
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField(`14. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
                 embed.addField(`15. ${prefix}quote`, "This command generates a random quote")
-                embed.addField(`16. ${prefix}qod`, "This command sends the quote of the day")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -569,4 +569,4 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         }
     }
 });
-client.login(token);
+client.login(process.env.BOT_TOKEN);
