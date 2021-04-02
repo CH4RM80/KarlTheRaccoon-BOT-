@@ -429,14 +429,9 @@ client.on('message', async message => {
             case "pingme":
                 try {
                     if (args[1] < 70) {
-                        setInterval(() => {
-                            let counter = 0
+                        for (let i = 0; i < args[1]; i++) {
                             client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
-                            counter++
-                            if (counter === args[1]) {
-                                clearInterval()
-                            }
-                        }, 1000);
+                        }
                     }
                     else {
                         message.reply("Sorry that's too many, the max pings is 69")
