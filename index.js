@@ -4,7 +4,7 @@ const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
 const banyesyes = require('./banyesyes');
 const client = new Client();
-let { prefix } = require('./config.json');
+let prefix = '>'
 require('dotenv').config()
 const botid = "801827038234804234";
 const fetch = require("node-fetch");
@@ -15,6 +15,7 @@ numofmsgsg3 = 0;
 numofmsgsg4 = 0;
 let allguilds = []
 let guildmsgs = []
+let pingchannel = []
 let foundguild = false
 swearingallowed = []
 let reallybadmember = "";
@@ -68,6 +69,9 @@ client.once('ready', () => {
             // }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
+            }
+            if (c.name === "pingchannel") {
+                pingchannel.push(c.id)
             }
         })
     });
@@ -422,6 +426,25 @@ client.on('message', async message => {
                         }
                     }
             break;
+            case "pingme":
+                try {
+                    if (args[1] < 70) {
+                        setInterval(() => {
+                            let counter = 0
+                            client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
+                            counter++
+                            if (counter === args[1]) {
+                                clearInterval()
+                            }
+                        }, 1000);
+                    }
+                    else {
+                        message.reply("Sorry that's too many, the max pings is 69")
+                    }
+                }
+                catch {
+                    return
+                }
         }   
     }
     let channel = message.guild.channels.cache.find(
