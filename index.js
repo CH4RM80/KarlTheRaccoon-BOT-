@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
@@ -9,11 +9,10 @@ require('dotenv').config()
 const botid = "801827038234804234";
 const fetch = require("node-fetch");
 let embed = new MessageEmbed();
-numofmsgsg1 = 0;
-numofmsgsg2 = 0;
-numofmsgsg3 = 0;
-numofmsgsg4 = 0;
 let allguilds = []
+let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+birthdayids = []
+birthdays = []
 let guildmsgs = []
 let pingchannel = []
 let foundguild = false
@@ -208,6 +207,7 @@ client.on('message', async message => {
                 embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
                 embed.addField(`14. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
                 embed.addField(`15. ${prefix}quote`, "This command generates a random quote")
+                embed.addField(`16. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -277,7 +277,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added a swearing allowed mode\`\`\``)
+                message.channel.send(`\`\`\`Added a birthday command, check it with >help\`\`\``)
             break;
             case "messages":
             case "message":
@@ -440,6 +440,76 @@ client.on('message', async message => {
                 catch {
                     return
                 }
+            break;
+            case "birthday":
+                let memid = message.mentions.members.first() || message.author.id
+                if (message.mentions.members.first()) {
+                    memid = memid.id
+                    for (let i = 0; i < birthdayids.length; i++) {
+                        if (birthdayids[i] === memid) {
+                            // try {
+                            let month = months[parseInt(birthdays.toString().split("/")[0]) - 1]
+                            let day = birthdays.toString().split("/")[1]
+                            let suffix = ""
+                            switch (day[day.length - 1]) {
+                                case "1":
+                                    suffix = "st"
+                                break;
+                                case "2":
+                                    suffix = "nd"
+                                break;
+                                case "3":
+                                    suffix = "rd"
+                                break;
+                                case "4":
+                                case "5":
+                                case "6":
+                                case "7":
+                                case "8":
+                                case "9":
+                                case "0":
+                                    suffix = "th"
+                                break;
+                            }
+                            let year = birthdays.toString().split("/")[2]
+                            // }
+                            // catch (TypeError) {return}
+                            message.channel.send(`<@${memid}>'s birthday is ${month} the ${day}${suffix} in ${year}`)
+                        }
+                        else {
+                            message.channel.send("This person's birthday doesn't exist in my database :(")
+                        }
+                    }
+                }
+                else {
+                    for (let i = 0; i < birthdayids.length; i++) {
+                        if (birthdayids[i] === memid) {
+                            message.channel.send("You already have a birthday on record, please try again on the next bot update")
+                            return
+                        }
+                    }
+                    if (!(args[1].includes("/"))) {return}
+                    let separated = args[1].split("/")
+                    if (separated.length > 10) {
+                        return
+                    }
+                    if (separated[0] > 12 || separated[0] < 1) {
+                        message.channel.send("Sorry that isn't a valid month")
+                        return
+                    }
+                    else if (separated[1] > 31 || separated[1] < 1) {
+                        message.channel.send("Sorry that isn't a valid day")
+                        return
+                    }
+                    else if (separated[2] >= 2021) {
+                        message.channel.send("Cmon guys I wasn't born yesterday... seems you were tho")
+                        return
+                    }
+                    birthdayids.push(memid)
+                    birthdays.push(args[1])
+                    message.channel.send("Your birthday has been added to our database!")
+                }
+            break;
         }   
     }
     let channel = message.guild.channels.cache.find(
