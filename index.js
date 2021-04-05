@@ -9,10 +9,6 @@ require('dotenv').config()
 const botid = "801827038234804234";
 const fetch = require("node-fetch");
 let embed = new MessageEmbed();
-numofmsgsg1 = 0;
-numofmsgsg2 = 0;
-numofmsgsg3 = 0;
-numofmsgsg4 = 0;
 let allguilds = []
 let guildmsgs = []
 let pingchannel = []
