@@ -443,71 +443,76 @@ client.on('message', async message => {
             break;
             case "birthday":
                 let memid = message.mentions.members.first() || message.author.id
-                if (message.mentions.members.first()) {
-                    memid = memid.id
-                    for (let i = 0; i < birthdayids.length; i++) {
-                        if (birthdayids[i] === memid) {
-                            // try {
-                            let month = months[parseInt(birthdays.toString().split("/")[0]) - 1]
-                            let day = birthdays.toString().split("/")[1]
-                            let suffix = ""
-                            switch (day[day.length - 1]) {
-                                case "1":
-                                    suffix = "st"
-                                break;
-                                case "2":
-                                    suffix = "nd"
-                                break;
-                                case "3":
-                                    suffix = "rd"
-                                break;
-                                case "4":
-                                case "5":
-                                case "6":
-                                case "7":
-                                case "8":
-                                case "9":
-                                case "0":
-                                    suffix = "th"
-                                break;
+                if (args[1]) {
+                    if (message.mentions.members.first()) {
+                        memid = memid.id
+                        for (let i = 0; i < birthdayids.length; i++) {
+                            if (birthdayids[i] === memid) {
+                                // try {
+                                let month = months[parseInt(birthdays.toString().split("/")[0]) - 1]
+                                let day = birthdays.toString().split("/")[1]
+                                let suffix = ""
+                                switch (day[day.length - 1]) {
+                                    case "1":
+                                        suffix = "st"
+                                    break;
+                                    case "2":
+                                        suffix = "nd"
+                                    break;
+                                    case "3":
+                                        suffix = "rd"
+                                    break;
+                                    case "4":
+                                    case "5":
+                                    case "6":
+                                    case "7":
+                                    case "8":
+                                    case "9":
+                                    case "0":
+                                        suffix = "th"
+                                    break;
+                                }
+                                let year = birthdays.toString().split("/")[2]
+                                // }
+                                // catch (TypeError) {return}
+                                message.channel.send(`<@${memid}>'s birthday is ${month} the ${day}${suffix} in ${year}`)
                             }
-                            let year = birthdays.toString().split("/")[2]
-                            // }
-                            // catch (TypeError) {return}
-                            message.channel.send(`<@${memid}>'s birthday is ${month} the ${day}${suffix} in ${year}`)
+                            else {
+                                message.channel.send("This person's birthday doesn't exist in my database :(")
+                            }
                         }
-                        else {
-                            message.channel.send("This person's birthday doesn't exist in my database :(")
+                    }
+                    else {
+                        for (let i = 0; i < birthdayids.length; i++) {
+                            if (birthdayids[i] === memid) {
+                                message.channel.send("You already have a birthday on record, please try again on the next bot update")
+                                return
+                            }
                         }
+                        if (!(args[1].includes("/"))) {return}
+                        let separated = args[1].split("/")
+                        if (separated.length > 10) {
+                            return
+                        }
+                        if (separated[0] > 12 || separated[0] < 1) {
+                            message.channel.send("Sorry that isn't a valid month")
+                            return
+                        }
+                        else if (separated[1] > 31 || separated[1] < 1) {
+                            message.channel.send("Sorry that isn't a valid day")
+                            return
+                        }
+                        else if (separated[2] >= 2021) {
+                            message.channel.send("Cmon guys I wasn't born yesterday... seems you were tho")
+                            return
+                        }
+                        birthdayids.push(memid)
+                        birthdays.push(args[1])
+                        message.channel.send("Your birthday has been added to our database!")
                     }
                 }
                 else {
-                    for (let i = 0; i < birthdayids.length; i++) {
-                        if (birthdayids[i] === memid) {
-                            message.channel.send("You already have a birthday on record, please try again on the next bot update")
-                            return
-                        }
-                    }
-                    if (!(args[1].includes("/"))) {return}
-                    let separated = args[1].split("/")
-                    if (separated.length > 10) {
-                        return
-                    }
-                    if (separated[0] > 12 || separated[0] < 1) {
-                        message.channel.send("Sorry that isn't a valid month")
-                        return
-                    }
-                    else if (separated[1] > 31 || separated[1] < 1) {
-                        message.channel.send("Sorry that isn't a valid day")
-                        return
-                    }
-                    else if (separated[2] >= 2021) {
-                        message.channel.send("Cmon guys I wasn't born yesterday... seems you were tho")
-                        return
-                    }
-                    birthdayids.push(memid)
-                    birthdays.push(args[1])
-                    message.channel.send("Your birthday has been added to our database!")
+                    message.channel.send("To enter your birthday into the database, use the command like this:\`\`\`>birthday 1/12/2010\`\`\`")
                 }
             break;
         }   
