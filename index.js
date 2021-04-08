@@ -207,6 +207,7 @@ client.on('message', async message => {
                 embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
                 embed.addField(`14. ${prefix}quote`, "This command generates a random quote")
                 embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
+                embed.addField(`16. ${prefix}pingme ()`, "")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -421,10 +422,11 @@ client.on('message', async message => {
             case "pingme":
                 try {
                     if (args[1] < 70) {
-                        let i = 0
+                        let i = 1
                         let a = setInterval(() => {
-                            if (i < (args[1] - 1)) {
+                            if (i < (args[1])) {
                                 client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
+                                i++
                             }
                             else {
                                 clearInterval(a)
