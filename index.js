@@ -15,15 +15,15 @@ birthdayids = []
 birthdays = []
 let guildmsgs = []
 let pingchannel = []
+// let lguildallow = []
+// let lguilddeny = []
+// let lchannelallow = []
+// let lchanneldeny = []
+// let luserallow = []
+// let luserdeny = []
 let foundguild = false
 swearingallowed = []
-let reallybadmember = "";
-let badmember = "";
-let badmemberid = "";
 let lastuserid = "";
-let isReallyBad = false
-let reactm = []
-let reactions = []
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
@@ -55,8 +55,6 @@ function checks(data, message) {
 }
 client.once('ready', () => {
     console.log('Ready!');
-    banyesyes(client)
-    messagedeleteo(client)
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
@@ -123,6 +121,8 @@ client.on('message', async message => {
         }
         return;
     }
+    banyesyes(client)
+    messagedeleteo(client)
     try {
         for(let i = 0; i < spamchannel.length; i++) {
             client.channels.cache.get(spamchannel[i]).send("spam")
@@ -204,10 +204,9 @@ client.on('message', async message => {
                 embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
-                embed.addField(`13. ${prefix}shamed`, "Tells who is the last person to get the role of shame")
-                embed.addField(`14. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
-                embed.addField(`15. ${prefix}quote`, "This command generates a random quote")
-                embed.addField(`16. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
+                embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
+                embed.addField(`14. ${prefix}quote`, "This command generates a random quote")
+                embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -356,13 +355,6 @@ client.on('message', async message => {
                     return;
                 }
             break;
-            case "shamed":
-                if (reallybadmember !== "" && reallybadmember !== null) {
-                    message.channel.send(`The current latest shamed user is ${reallybadmember}, what a bad member!`)
-                } else {
-                    message.channel.send("There are no shamed users for any servers yet")
-                }
-            break;
             case "joke":
                 if (args[1]) {
                     if (args[1].toLowerCase().startsWith("n")){
@@ -429,9 +421,15 @@ client.on('message', async message => {
             case "pingme":
                 try {
                     if (args[1] < 70) {
-                        for (let i = 0; i < args[1]; i++) {
-                            client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
-                        }
+                        let i = 0
+                        let a = setInterval(() => {
+                            if (i < (args[1] - 1)) {
+                                client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
+                            }
+                            else {
+                                clearInterval(a)
+                            }
+                        }, 2000)
                     }
                     else {
                         message.reply("Sorry that's too many, the max pings is 69")
@@ -515,6 +513,40 @@ client.on('message', async message => {
                     message.channel.send("To enter your birthday into the database, use the command like this:\`\`\`>birthday 1/12/2010\`\`\`")
                 }
             break;
+            // case "link":
+            // case "links":
+            //     if (message.member.hasPermission('MANAGE_GUILD')) {
+            //         if (args[2]) {
+            //             switch (args[1]) {
+            //                 case "member":
+            //                     if (message.mentions.members.first()) {
+            //                         let meid = message.mentions.members.first()
+            //                         if (args[args.length - 1] === "true") { 
+            //                             luserallow.push(meid.id)
+            //                             message.channel.send("User allowed to use links")
+            //                         }
+            //                         else if (args[args.length - 1] === "false") {
+            //                             luserdeny.push(meid.id)
+            //                             message.channel.send("User denied from using links")
+            //                         }
+            //                         else {
+            //                             message.channel.send("You didn't provide a correct value for this user's permissions")
+            //                         }
+            //                     }
+            //                     else {
+            //                         message.channel.send("Doesn't look like you mentioned a user, please try again")
+            //                     }
+            //                 break
+            //                 case "server":
+
+            //                 break
+            //                 case "channel":
+
+            //                 break
+            //             }
+            //         }
+            //     }
+            // break
         }   
     }
     let channel = message.guild.channels.cache.find(
