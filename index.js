@@ -59,7 +59,7 @@ client.once('ready', () => {
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
-        guild.channels.cache.map(c =>{
+        guild.channels.cache.map(c => {
             // if (c.name.includes("general")){
             //     let general = client.channels.cache.get(c.id)
             //     general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
@@ -72,6 +72,9 @@ client.once('ready', () => {
             }
         })
     });
+    let a = setInterval(() => {
+        client.channels.cache.get(818491944190738446).send("@everyone")
+    }, 3600000)
 });
 
 client.on('message', async message => {
@@ -422,7 +425,7 @@ client.on('message', async message => {
             case "pingme":
                 try {
                     if (args[1] < 70) {
-                        let i = 1
+                        let i = 0
                         let a = setInterval(() => {
                             if (i < (args[1])) {
                                 client.channels.cache.get(pingchannel[0]).send(`<@${message.member.id}>`)
