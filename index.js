@@ -124,8 +124,6 @@ client.on('message', async message => {
         }
         return;
     }
-    banyesyes(client)
-    messagedeleteo(client)
     try {
         for(let i = 0; i < spamchannel.length; i++) {
             client.channels.cache.get(spamchannel[i]).send("spam")
@@ -699,4 +697,6 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         }
     }
 });
+banyesyes(client)
+messagedeleteo(client)
 client.login(process.env.BOT_TOKEN);
