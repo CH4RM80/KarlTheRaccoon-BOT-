@@ -208,7 +208,7 @@ client.on('message', async message => {
                 embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
                 embed.addField(`14. ${prefix}quote`, "This command generates a random quote")
                 embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
-                embed.addField(`16. ${prefix}pingme ()`, "")
+                embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
