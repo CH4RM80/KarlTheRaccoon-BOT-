@@ -209,6 +209,7 @@ client.on('message', async message => {
                 embed.addField(`14. ${prefix}quote`, "This command generates a random quote")
                 embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
                 embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times")
+                embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -390,7 +391,7 @@ client.on('message', async message => {
                 message.reply(`Here's your quote:\n${dat.content}\n-${dat.author}`)
             break;
             case "swear":
-                    if (message.member.id === ownerid) {
+                    if (message.member.id === ownerid || message.member.hasPermission('MANAGE_GUILD')) {
                         if (args[1] === "on") {
                             for (i = 0; i < swearingallowed.length; i++) {
                                 if (message.guild.id === swearingallowed[i]) {
@@ -422,7 +423,7 @@ client.on('message', async message => {
             break;
             case "pingme":
                 try {
-                    if (args[1] < 70) {
+                    if (args[1] <= 100) {
                         let i = 0
                         let a = setInterval(() => {
                             if (i < (args[1])) {
@@ -435,7 +436,7 @@ client.on('message', async message => {
                         }, 2000)
                     }
                     else {
-                        message.reply("Sorry that's too many, the max pings is 69")
+                        message.reply("Sorry that's too many, the max pings is 100")
                     }
                 }
                 catch {
