@@ -13,6 +13,7 @@ let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 birthdayids = []
 birthdays = []
+let quotechannel = []
 let guildmsgs = []
 let pingchannel = []
 // let lguildallow = []
@@ -67,14 +68,28 @@ client.once('ready', () => {
             if (c.name == "spam") {
                 spamchannel.push(c.id)
             }
-            if (c.name === "pingchannel") {
+            else if (c.name === "pingchannel") {
                 pingchannel.push(c.id)
+            }
+            else if (c.name.includes("quotes")) {
+                quotechannel.push(c.id)
+            }
+            if (quotechannel) {
+                let z = setInterval(() => {
+                    for (let i = 0; i < quotechannel.length; i++) {
+                        const response = await fetch(
+                            "http://api.quotable.io/random",
+                        );
+                        const dat = await response.json();
+                        client.channels.cache.get(quotechannel[i]).send(`${dat.content}\n-${dat.author}`)
+                    }
+                }, 3600000)
             }
         })
     });
-    let a = setInterval(() => {
-        client.channels.cache.get(818491944190738446).send("@everyone")
-    }, 3600000)
+    // let a = setInterval(() => {
+    //     client.channels.cache.get("818491944190738446").send("@everyone")
+    // }, 3600000)
 });
 
 client.on('message', async message => {
@@ -117,7 +132,7 @@ client.on('message', async message => {
             else {
                 console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 lastuserid = message.author.id.toString()
-                if(message.author.id !== "601822624867155989") {
+                if (message.author.id !== "601822624867155989") {
                     client.users.cache.get("601822624867155989").send(`${message.author.username}(${message.author.id}): ${message.content}`)
                 }
             }
@@ -314,25 +329,20 @@ client.on('message', async message => {
                 break;
             case "reactionid":
                 let id = message.content.substring(32).toLowerCase();
-
                 message.channel.messages.fetch(args[1])
-                .then(message => 
-                {
-                  for(var i = 0; i < id.length; i++)
-                 {
-                    if(id[i] == " ")
-                    {
-                      console.log("error");
-                   }
-                   else if(id[i] != " ")
-                   {
-                     let letters = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"];            
-                     let letterscase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-                      message.react(letters[letterscase.indexOf(id[i])]);
-                    }
-                 }
-                })
-                .catch(console.error);
+                    .then(message => {
+                        for(var i = 0; i < id.length; i++) {
+                            if(id[i] == " ") {
+                                console.log("error");
+                            }
+                            else if(id[i] != " ") {
+                                let letters = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"];            
+                                let letterscase = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+                                message.react(letters[letterscase.indexOf(id[i])]);
+                            }
+                        }
+                    })
+                    .catch(console.error);
             break;
             case "leave":
                 if (message.author.id === "601822624867155989") {
