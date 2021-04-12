@@ -54,7 +54,7 @@ function checks(data, message) {
         return
     }
 }
-client.once('ready', () => {
+client.once('ready', async () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
