@@ -14,7 +14,7 @@ To install npm and node.js on Linux:
 # sudo apt-get install node.js
 # sudo apt-get install npm
 ----------------------------------------------------------------------------------------------------------
-Then put your token in the token spot in config.json, lastly, run the main bot file with: 
+Then make a file called ".env", and paste the following inside it: prefix=(paste your token here)
 -------------
 node index.js
 -------------
