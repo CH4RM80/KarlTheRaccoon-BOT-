@@ -559,7 +559,9 @@ client.on('message', async message => {
                 const animu = await respnse.json()
                 let embed = new MessageEmbed()
                     .setImage(animu.images[0])
-                    .setTitle(`Waifu: ${da.names.en}`)
+                    .setTitle(`Waifu: ${animu.names.en}`)
+                    .setColor(`${getRandomColor()}`)
+                    .addField(`${animu.from.type} title:`, `${animu.from.name}`)
                 message.channel.send(embed)
             break;
             case "anime":
