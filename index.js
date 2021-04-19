@@ -557,12 +557,23 @@ client.on('message', async message => {
                     }
                 })
                 const animu = await respnse.json()
+                if (animu.from.type === "H-Game" || animu.from.type === "Hentai") {
+                    message.channel.send("No lewd allowed so imma just block that one")
+                    return
+                }
                 let embed = new MessageEmbed()
-                    .setImage(animu.images[0])
-                    .setTitle(`Waifu: ${animu.names.en}`)
-                    .setColor(`${getRandomColor()}`)
-                    .addField(`${animu.from.type} title:`, `${animu.from.name}`)
-                message.channel.send(embed)
+                for (let i = 0; i < animu.images.length; i++) {
+                    if (animu.images[i] === "") {}
+                    else {
+                        embed.setImage(animu.images[i])
+                        embed.setTitle(`Waifu: ${animu.names.en}`)
+                        embed.setColor(`${getRandomColor()}`)
+                        embed.addField(`${animu.from.type} title:`, `${animu.from.name}`)
+                        message.channel.send(embed)
+                        return
+                    }
+                }
+                
             break;
             case "anime":
 
