@@ -54,36 +54,22 @@ function checks(data, message) {
         return
     }
 }
-client.once('ready', async () => {
+client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
         guild.channels.cache.map(c => {
-            // if (c.name.includes("general")){
-            //     let general = client.channels.cache.get(c.id)
-            //     general.send("I went offline for a bit :(, but I'm back now, and I have a new update, check it out with >update")
-            // }
+            if (c.name.includes("general")){
+                let general = client.channels.cache.get(c.id)
+                general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
+            }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
             }
             else if (c.name === "pingchannel") {
                 pingchannel.push(c.id)
-            }
-            else if (c.name.includes("quotes")) {
-                quotechannel.push(c.id)
-            }
-            if (quotechannel) {
-                let z = setInterval(() => {
-                    for (let i = 0; i < quotechannel.length; i++) {
-                        const response = await fetch(
-                            "http://api.quotable.io/random",
-                        );
-                        const dat = await response.json();
-                        client.channels.cache.get(quotechannel[i]).send(`${dat.content}\n-${dat.author}`)
-                    }
-                }, 3600000)
             }
         })
     });
@@ -176,7 +162,7 @@ client.on('message', async message => {
         for (let i = 0; i < badwords.length; i++) {
             if (lowercase.includes(badwords[i])) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
                 return;
             }
         }
@@ -187,7 +173,7 @@ client.on('message', async message => {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 if (message.content.includes("discord.gg")) {
                     message.reply("nice... but we don't really do advertising here");
-                } 
+                }
                 else if (message.mentions.members.first()) {
                     message.reply("bruh really, no pinging tyvm");
                 } else {
@@ -220,11 +206,11 @@ client.on('message', async message => {
                 embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
                 embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
                 embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
-                embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke")
-                embed.addField(`14. ${prefix}quote`, "This command generates a random quote")
-                embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others")
-                embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times")
-                embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)")
+                embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
+                embed.addField(`14. ${prefix}quote`, "This command generates a random quote");
+                embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
+                embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
+                embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -294,7 +280,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added a birthday command, check it with >help\`\`\``)
+                message.channel.send(`\`\`\`Started working on a >anime command\`\`\``)
             break;
             case "messages":
             case "message":
@@ -561,6 +547,9 @@ client.on('message', async message => {
             //         }
             //     }
             // break
+            case "anime":
+                message.channel.send("This command is in development so it will be unresponsive for a while")
+            break;
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -675,11 +664,18 @@ client.on('message', async message => {
             message.reply("Pervert!! 😡")
         }
         else if (lowercase.includes("delete")) {
-            for(let i = 0; i < 3; i++) {
-                message.channel.send("*delete*")
-                message.channel.send("**delete**")
-                message.channel.send("***delete***")                                    
-            }
+                let o = 1
+                let m = setInterval(() => {
+                    if (o < 3) {
+                        i++
+                        message.channel.send("*delete*")
+                        message.channel.send("**delete**")
+                        message.channel.send("***delete***")   
+                    }
+                    else {
+                        clearInterval(m)
+                    }
+                }, 1500)
             return
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
