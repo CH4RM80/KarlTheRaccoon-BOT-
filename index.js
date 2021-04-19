@@ -547,8 +547,23 @@ client.on('message', async message => {
             //         }
             //     }
             // break
+            case "waifu":
+                message.channel.send("This command is in development so it will be in its testing phase for a while")
+                const respnse = await fetch("https://animu.p.rapidapi.com/waifus", {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "animu.p.rapidapi.com"
+                    }
+                })
+                const animu = await respnse.json()
+                let embed = new MessageEmbed()
+                    .setImage(animu.images[0])
+                    .setTitle(`Waifu: ${da.names.en}`)
+                message.channel.send(embed)
+            break;
             case "anime":
-                message.channel.send("This command is in development so it will be unresponsive for a while")
+
             break;
         }   
     }
