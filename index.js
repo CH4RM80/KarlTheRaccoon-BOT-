@@ -692,8 +692,8 @@ client.on('message', async message => {
         else if (lowercase.includes("hentai")) {
             message.reply("Pervert!! 😡")
         }
-        else if (lowercase.includes("karl meet") || lowercase.includes("<@801827038234804234> meet")) {
-            console.log(message.mentions.members)
+        else if (lowercase.startsWith("karl meet")) {
+            message.channel.send(`Nice to meet you, ${message.mentions.members.first()}`)
         }
         else if (lowercase.includes("delete")) {
                 let o = 1
