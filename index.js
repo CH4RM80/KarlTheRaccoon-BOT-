@@ -211,6 +211,7 @@ client.on('message', async message => {
                 embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
                 embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
                 embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
+                embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -690,6 +691,9 @@ client.on('message', async message => {
         }
         else if (lowercase.includes("hentai")) {
             message.reply("Pervert!! 😡")
+        }
+        else if (lowercase.includes("karl meet") || lowercase.includes("<@801827038234804234> meet")) {
+            console.log(message.mentions.members)
         }
         else if (lowercase.includes("delete")) {
                 let o = 1
