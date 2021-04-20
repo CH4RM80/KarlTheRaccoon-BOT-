@@ -81,7 +81,7 @@ client.once('ready', () => {
 client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
     const xspaces = message.content.toLowerCase().split(" ")
-    const compiledLowercase = message.content.split(" ").join().toLowerCase()
+    const compiledLowercase = message.content.split(" ").join("").toLowerCase()
     if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
     try {
@@ -727,7 +727,9 @@ client.on('message', async message => {
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
     const lowercase = newMessage.content.toLowerCase()
+    const compiledLowercase = newMessage.content.split(" ").join("").toLowerCase()
     const xspaces = newMessage.content.toLowerCase().split(" ")
+    console.log(compiledLowercase)
     for (let i = 0; i < swearingallowed.length; i++) {
         if (newMessage.guild.id === swearingallowed[i]) {
             sAllow = true
