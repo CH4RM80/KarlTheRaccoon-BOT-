@@ -707,7 +707,7 @@ client.on('message', async message => {
                     else {
                         clearInterval(m)
                     }
-                }, 2500)
+                }, 3500)
             return
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
