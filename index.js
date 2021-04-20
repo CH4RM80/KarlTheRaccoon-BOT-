@@ -80,6 +80,7 @@ client.once('ready', () => {
 
 client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
+    const xspaces = message.content.toLowerCase().split(" ")
     const compiledLowercase = message.content.split(" ").join().toLowerCase()
     if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
@@ -160,10 +161,20 @@ client.on('message', async message => {
     }
     if (sAllow === false) {
         for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
-                message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                return;
+            for (let j = 0; j < xspaces.length; j++) {
+                if (xspaces[j].includes(badwords[i])) {
+                    if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
+                        return
+                    }
+                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
+                        return
+                    }
+                    else {
+                        message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                        return;
+                    }
+                }
             }
         }
     }
@@ -696,18 +707,11 @@ client.on('message', async message => {
             message.channel.send(`Nice to meet you, ${message.mentions.members.first()}`)
         }
         else if (lowercase.includes("delete")) {
-                let o = 0
-                let m = setInterval(() => {
-                    if (o < 3) {
-                        o++
-                        message.channel.send("*delete*")
-                        message.channel.send("**delete**")
-                        message.channel.send("***delete***")   
-                    }
-                    else {
-                        clearInterval(m)
-                    }
-                }, 3500)
+            for (let i = 0; i < 3; i++) {
+                message.channel.send("*delete*")
+                message.channel.send("**delete**")
+                message.channel.send("***delete***")
+            }
             return
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
@@ -718,6 +722,7 @@ client.on('message', async message => {
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
     const lowercase = newMessage.content.toLowerCase()
+    const xspaces = newMessage.content.toLowerCase().split(" ")
     for (let i = 0; i < swearingallowed.length; i++) {
         if (newMessage.guild.id === swearingallowed[i]) {
             sAllow = true
@@ -728,10 +733,20 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     }
     if (sAllow === false) {
         for (let i = 0; i < badwords.length; i++) {
-            if (lowercase.includes(badwords[i])) {
-                newMessage.channel.messages.fetch(message.id).then(msg => msg.delete())
-                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
-                return;
+            for (let j = 0; j < xspaces.length; j++) {
+                if (xspaces[j].includes(badwords[i])) {
+                    if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
+                        return
+                    }
+                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
+                        return
+                    }
+                    else {
+                        newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                        return;
+                    }
+                }
             }
         }
     }
