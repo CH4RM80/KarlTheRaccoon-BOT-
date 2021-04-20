@@ -176,6 +176,11 @@ client.on('message', async message => {
                     }
                 }
             }
+            if (compiledLowercase.includes(badwords[i])) {
+                message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                return;
+            }
         }
     }
     if (message.content[0] === prefix) {
@@ -747,6 +752,11 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
                         return;
                     }
                 }
+            }
+            if (compiledLowercase.includes(badwords[i])) {
+                newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                return;
             }
         }
     }
