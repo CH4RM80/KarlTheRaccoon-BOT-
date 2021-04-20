@@ -61,10 +61,10 @@ client.once('ready', () => {
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
         guild.channels.cache.map(c => {
-            if (c.name.includes("general")){
-                let general = client.channels.cache.get(c.id)
-                general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
-            }
+            // if (c.name.includes("general")){
+            //     let general = client.channels.cache.get(c.id)
+            //     general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
+            // }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
             }
@@ -171,7 +171,7 @@ client.on('message', async message => {
                     }
                     else {
                         message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
                         return;
                     }
                 }
@@ -292,7 +292,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Started working on a >anime command\`\`\``)
+                message.channel.send(`\`\`\`>waifu command officially released and better chat moderation in effect\`\`\``)
             break;
             case "messages":
             case "message":
@@ -743,7 +743,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
                     }
                     else {
                         newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then(msg => setTimeout(() => {msg.delete}, 5000))
+                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
                         return;
                     }
                 }
