@@ -696,7 +696,7 @@ client.on('message', async message => {
             message.channel.send(`Nice to meet you, ${message.mentions.members.first()}`)
         }
         else if (lowercase.includes("delete")) {
-                let o = 1
+                let o = 0
                 let m = setInterval(() => {
                     if (o < 3) {
                         o++
@@ -707,7 +707,7 @@ client.on('message', async message => {
                     else {
                         clearInterval(m)
                     }
-                }, 1500)
+                }, 2500)
             return
         }
         else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
