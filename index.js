@@ -699,7 +699,7 @@ client.on('message', async message => {
                 let o = 1
                 let m = setInterval(() => {
                     if (o < 3) {
-                        i++
+                        o++
                         message.channel.send("*delete*")
                         message.channel.send("**delete**")
                         message.channel.send("***delete***")   
