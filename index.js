@@ -61,10 +61,10 @@ client.once('ready', () => {
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
         guild.channels.cache.map(c => {
-            // if (c.name.includes("general")){
-            //     let general = client.channels.cache.get(c.id)
-            //     general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
-            // }
+            if (c.name.includes("general")){
+                let general = client.channels.cache.get(c.id)
+                general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
+            }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
             }
@@ -228,6 +228,7 @@ client.on('message', async message => {
                 embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
                 embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
                 embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title")
+                embed.addField(`19. ${prefix}afact`, "Gets a random anime fact")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -297,7 +298,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`>waifu command officially released and better chat moderation in effect\`\`\``)
+                message.channel.send(`\`\`\`>waifu and >afact commmands out\`\`\``)
             break;
             case "messages":
             case "message":
@@ -592,8 +593,16 @@ client.on('message', async message => {
                 }
                 
             break;
-            case "anime":
-
+            case "afact":
+                const respn = await fetch("https://animu.p.rapidapi.com/fact", {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "animu.p.rapidapi.com"
+                    }
+                })
+                const facts = await respn.json()
+                message.channel.send(`Here's your anime fact:\n${facts.fact}`)
             break;
         }   
     }
