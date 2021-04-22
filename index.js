@@ -159,20 +159,24 @@ client.on('message', async message => {
             sAllow = false
         }
     }
+    let isbad = true
     if (sAllow === false) {
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
                     if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
-                        break
+                        let isbad = false
                     }
                     else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
-                        break
+                        let isbad = false
                     }
                     else {
-                        message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                        return;
+                        if (isbad === false) {}
+                        else {
+                            message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                            return;
+                        }
                     }
                 }
             }
