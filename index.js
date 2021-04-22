@@ -164,10 +164,10 @@ client.on('message', async message => {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
                     if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
-                        return
+                        break
                     }
                     else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
-                        return
+                        break
                     }
                     else {
                         message.channel.messages.fetch(message.id).then(msg => msg.delete())
@@ -625,7 +625,7 @@ client.on('message', async message => {
     }
     else {
         try {
-            var msgCont = message.content.split(" ")
+            var msgCont = message.content.toLowerCase().split(" ")
             if (msgCont[msgCont.length - 2] === "*") {
                 try {
                     let numoftimes = parseInt(msgCont[msgCont.length - 1])
@@ -646,15 +646,17 @@ client.on('message', async message => {
         catch (TypeError) {
             return
         }
-        let msgarray = message.content.toLowerCase().split(" ")
+        let msgarray = message.content.toLowercase().split(" ")
         for (let i = 0; i < msgarray.length; i++) {
             if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
                 let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
+                return
             }
-            if (msgarray[i] === "im" || msgarray[i] === "i'm") {
+            else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
                 let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
+                return
             }
         }
         if (lowercase.includes("pogchamp")) {
