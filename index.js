@@ -165,16 +165,17 @@ client.on('message', async message => {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
                     if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
-                        let isbad = false
+                        isbad = false
                     }
                     else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
-                        let isbad = false
+                        isbad = false
                     }
                     else {
                         if (isbad === false) {}
                         else {
                             message.channel.messages.fetch(message.id).then(msg => msg.delete())
                             message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                            console.log(isbad)
                             return;
                         }
                     }
