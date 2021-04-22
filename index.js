@@ -298,7 +298,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`>waifu and >afact commmands out\`\`\``)
+                message.channel.send(`\`\`\`Added dad jokes\`\`\``)
             break;
             case "messages":
             case "message":
@@ -622,7 +622,7 @@ client.on('message', async message => {
         else {
             message.channel.send(message.content)
         }
-    } 
+    }
     else {
         try {
             var msgCont = message.content.split(" ")
@@ -645,6 +645,17 @@ client.on('message', async message => {
         }
         catch (TypeError) {
             return
+        }
+        let msgarray = message.content.toLowerCase().split(" ")
+        for (let i = 0; i < msgarray.length; i++) {
+            if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
+                let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
+                message.channel.send(`Hi ${iam}, I'm karl!`)
+            }
+            if (msgarray[i] === "im" || msgarray[i] === "i'm") {
+                let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
+                message.channel.send(`Hi ${iam}, I'm karl!`)
+            }
         }
         if (lowercase.includes("pogchamp")) {
             if (message.member.user.id !== "801827038234804234") {
@@ -738,7 +749,6 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     const lowercase = newMessage.content.toLowerCase()
     const compiledLowercase = newMessage.content.split(" ").join("").toLowerCase()
     const xspaces = newMessage.content.toLowerCase().split(" ")
-    console.log(compiledLowercase)
     for (let i = 0; i < swearingallowed.length; i++) {
         if (newMessage.guild.id === swearingallowed[i]) {
             sAllow = true
