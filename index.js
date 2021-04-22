@@ -180,7 +180,7 @@ client.on('message', async message => {
                     }
                 }
             }
-            if (compiledLowercase.includes(badwords[i])) {
+            if (compiledLowercase.includes(badwords[i]) && isbad === true) {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
                 return;
@@ -650,7 +650,7 @@ client.on('message', async message => {
         catch (TypeError) {
             return
         }
-        let msgarray = message.content.toLowercase().split(" ")
+        let msgarray = message.content.toLowerCase().split(" ")
         for (let i = 0; i < msgarray.length; i++) {
             if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
                 let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
