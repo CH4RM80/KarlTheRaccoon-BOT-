@@ -423,7 +423,7 @@ client.on('message', async message => {
                             message.channel.send("Swearing is already not allowed")
                         }
                         else if (args[1] === "off") {
-                            if (swearingallowed.length = 0) {
+                            if (swearingallowed.length === 0) {
                                 swearingallowed.push(message.guild.id)
                                 message.channel.send("Enabled swearing for this server successfully")
                             }
