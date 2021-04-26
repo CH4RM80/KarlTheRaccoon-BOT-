@@ -63,7 +63,7 @@ client.once('ready', () => {
         guild.channels.cache.map(c => {
             if (c.name.includes("general")){
                 let general = client.channels.cache.get(c.id)
-                general.send("Sorry for the message, just letting you know there is a new update that i plan on posting in a few days or so, check it out with >update")
+                general.send("Made a massive update, check it out with >update")
             }
             if (c.name == "spam") {
                 spamchannel.push(c.id)
@@ -234,6 +234,12 @@ client.on('message', async message => {
                 embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
                 embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title")
                 embed.addField(`19. ${prefix}afact`, "Gets a random anime fact")
+                embed.addField(`20. ${prefix}meme`, "Gets a random meme")
+                embed.addField(`21. ${prefix}dank`, "Gets a random dank meme")
+                embed.addField(`22. ${prefix}cat`, "Gets a random cat gif/image")
+                embed.addField(`23. ${prefix}dog`, "Gets a random dog gif/image")
+                embed.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
+                embed.addField(`25. ${prefix}cute`, "Gets a random cute gif/image")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -303,7 +309,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added dad jokes\`\`\``)
+                message.channel.send(`\`\`\`Made a lotta hecking stuff, check it out posthaste, >help\`\`\``)
             break;
             case "messages":
             case "message":
@@ -608,6 +614,72 @@ client.on('message', async message => {
                 })
                 const facts = await respn.json()
                 message.channel.send(`Here's your anime fact:\n${facts.fact}`)
+            break;
+            case "cat":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/cat?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const catto = await proto.json()
+                message.channel.send(catto[0])
+            break;
+            case "dog":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dog?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const doggo = await proto.json()
+                message.channel.send(doggo[0])
+            break;
+            case "duck":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/duck?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const ducc = await proto.json()
+                message.channel.send(ducc[0])
+            break;
+            case "meme":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/memes?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const meme = await proto.json()
+                message.channel.send(meme[0])
+            break;
+            case "dank":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dankmemes?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const dankmeme = await proto.json()
+                message.channel.send(dankmeme[0])
+            break;
+            case "cute":
+                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/aww?api_key=SBGW8qLcfEFL`, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+                    }
+                })
+                const cute = await proto.json()
+                message.channel.send(cute[0])
             break;
         }   
     }
