@@ -236,10 +236,10 @@ client.on('message', async message => {
                 embed.addField(`19. ${prefix}afact`, "Gets a random anime fact")
                 embed.addField(`20. ${prefix}meme`, "Gets a random meme")
                 embed.addField(`21. ${prefix}dank`, "Gets a random dank meme")
-                embed.addField(`22. ${prefix}cat`, "Gets a random cat gif/image")
-                embed.addField(`23. ${prefix}dog`, "Gets a random dog gif/image")
+                embed.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
+                embed.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
                 embed.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
-                embed.addField(`25. ${prefix}cute`, "Gets a random cute gif/image")
+                embed.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
                 embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 embed.setColor(getRandomColor());
                 embed.setTimestamp();
@@ -615,6 +615,7 @@ client.on('message', async message => {
                 const facts = await respn.json()
                 message.channel.send(`Here's your anime fact:\n${facts.fact}`)
             break;
+            case "catto":
             case "cat":
                 const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/cat?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
@@ -626,6 +627,7 @@ client.on('message', async message => {
                 const catto = await proto.json()
                 message.channel.send(catto[0])
             break;
+            case "doggo":
             case "dog":
                 const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dog?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
@@ -670,6 +672,8 @@ client.on('message', async message => {
                 const dankmeme = await proto.json()
                 message.channel.send(dankmeme[0])
             break;
+            case "kawaii":
+            case "aww":
             case "cute":
                 const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/aww?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
