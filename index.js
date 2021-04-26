@@ -617,48 +617,48 @@ client.on('message', async message => {
             break;
             case "catto":
             case "cat":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/cat?api_key=SBGW8qLcfEFL`, {
+                const p = await fetch(`https://random-stuff-api.p.rapidapi.com/image/cat?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
                     "headers": {
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
                     }
                 })
-                const catto = await proto.json()
+                const catto = await p.json()
                 message.channel.send(catto[0])
             break;
             case "doggo":
             case "dog":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dog?api_key=SBGW8qLcfEFL`, {
+                const pr = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dog?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
                     "headers": {
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
                     }
                 })
-                const doggo = await proto.json()
+                const doggo = await pr.json()
                 message.channel.send(doggo[0])
             break;
             case "duck":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/duck?api_key=SBGW8qLcfEFL`, {
+                const pro = await fetch(`https://random-stuff-api.p.rapidapi.com/image/duck?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
                     "headers": {
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
                     }
                 })
-                const ducc = await proto.json()
+                const ducc = await pro.json()
                 message.channel.send(ducc[0])
             break;
             case "meme":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/memes?api_key=SBGW8qLcfEFL`, {
+                const prot = await fetch(`https://random-stuff-api.p.rapidapi.com/image/memes?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
                     "headers": {
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
                     }
                 })
-                const meme = await proto.json()
+                const meme = await prot.json()
                 message.channel.send(meme[0])
             break;
             case "dank":
@@ -675,14 +675,14 @@ client.on('message', async message => {
             case "kawaii":
             case "aww":
             case "cute":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/aww?api_key=SBGW8qLcfEFL`, {
+                const protocute = await fetch(`https://random-stuff-api.p.rapidapi.com/image/aww?api_key=SBGW8qLcfEFL`, {
                     "method": "GET",
                     "headers": {
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
                     }
                 })
-                const cute = await proto.json()
+                const cute = await protocute.json()
                 message.channel.send(cute[0])
             break;
         }   
