@@ -232,8 +232,8 @@ client.on('message', async message => {
                 embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
                 embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
                 embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
-                embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title")
-                embed.addField(`19. ${prefix}afact`, "Gets a random anime fact")
+                embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
+                embed.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
                 embed.addField(`20. ${prefix}meme`, "Gets a random meme")
                 embed.addField(`21. ${prefix}dank`, "Gets a random dank meme")
                 embed.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
