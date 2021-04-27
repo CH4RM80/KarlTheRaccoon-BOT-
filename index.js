@@ -211,39 +211,39 @@ client.on('message', async message => {
                 }
             break;
             case "help":
-                let embed = new MessageEmbed()
-                embed.setTitle("Commands")
-                embed.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
-                embed.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
-                embed.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
-                embed.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
-                embed.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
-                embed.addField(`4: ${prefix}help`, "This command lists all the commands");
-                embed.addField(`5: ${prefix}number (int)`, "This command sends a random number");
-                embed.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
-                embed.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
-                embed.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
-                embed.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
-                embed.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
-                embed.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
-                embed.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
-                embed.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
-                embed.addField(`14. ${prefix}quote`, "This command generates a random quote");
-                embed.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
-                embed.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
-                embed.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
-                embed.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
-                embed.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
-                embed.addField(`20. ${prefix}meme`, "Gets a random meme")
-                embed.addField(`21. ${prefix}dank`, "Gets a random dank meme")
-                embed.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
-                embed.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
-                embed.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
-                embed.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
-                embed.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
-                embed.setColor(getRandomColor());
-                embed.setTimestamp();
-                message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
+                let help = new MessageEmbed()
+                help.setTitle("Commands")
+                help.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
+                help.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
+                help.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
+                help.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
+                help.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
+                help.addField(`4: ${prefix}help`, "This command lists all the commands");
+                help.addField(`5: ${prefix}number (int)`, "This command sends a random number");
+                help.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
+                help.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
+                help.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
+                help.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
+                help.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
+                help.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
+                help.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
+                help.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
+                help.addField(`14. ${prefix}quote`, "This command generates a random quote");
+                help.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
+                help.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
+                help.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
+                help.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
+                help.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
+                help.addField(`20. ${prefix}meme`, "Gets a random meme")
+                help.addField(`21. ${prefix}dank`, "Gets a random dank meme")
+                help.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
+                help.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
+                help.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
+                help.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+                help.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
+                help.setColor(getRandomColor());
+                help.setTimestamp();
+                message.channel.send(help).then((msg)=> {msg.delete({timeout: 20000})});
             break;
             case "number":
                 if(args[1]) {
@@ -267,13 +267,13 @@ client.on('message', async message => {
                 }
             break;
             case "bungou":
-                embed = new MessageEmbed()
-                embed.setTitle("Bungou Stray Dogs")
-                embed.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
-                embed.addField("Where to watch", "https://animepahe.com/anime/e9523036-5d5c-f06b-8310-fd2e0eaa303c\nhttps://lite.animevibe.wtf/anime/bungou-stray-dogs\nhttps://animixplay.to/v1/bungou-stray-dogs/ep1")
-                embed.setColor(getRandomColor());
-                embed.setTimestamp();
-                message.channel.send(embed);
+                let bungou = new MessageEmbed()
+                bungou.setTitle("Bungou Stray Dogs")
+                bungou.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
+                bungou.addField("Where to watch", "https://animepahe.com/anime/e9523036-5d5c-f06b-8310-fd2e0eaa303c\nhttps://lite.animevibe.wtf/anime/bungou-stray-dogs\nhttps://animixplay.to/v1/bungou-stray-dogs/ep1")
+                bungou.setColor(getRandomColor());
+                bungou.setTimestamp();
+                message.channel.send(bungou);
             break;
             case "kick":
                 const member = message.mentions.members.first();
@@ -322,21 +322,21 @@ client.on('message', async message => {
             case "avatar":
                 let us = message.mentions.users.first() || message.author;
                 if (us) {
-                    embed = new MessageEmbed()
-                    embed.setTitle(`${us.username} Avatar`);
-                    embed.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
-                    embed.setColor(getRandomColor())
-                    message.channel.send(embed).then((msg)=> {msg.delete({timeout: 20000})});
+                    let avatar = new MessageEmbed()
+                    avatar.setTitle(`${us.username} Avatar`);
+                    avatar.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
+                    avatar.setColor(getRandomColor())
+                    message.channel.send(avatar).then((msg)=> {msg.delete({timeout: 20000})});
                 }
             break;
             case "color":
                 randcolor = getRandomColor()
                 try {
-                    embed = new MessageEmbed()
+                    let color = new MessageEmbed()
                         .setColor(randcolor)
                         .setTitle("Random Color Generated")
                         .setDescription(`Your random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
-                    message.channel.send(embed)
+                    message.channel.send(color)
                 }
                 catch (error) {
                     message.channel.send(`I tried to send the embed to the current channel, but it appears I don't have the permissions uwu\nThis is roughly what I tried to send:\nRandom Color Generated\n\nYour random color is https://www.color-hex.com/color/${randcolor.substring(1, 7)}`)
