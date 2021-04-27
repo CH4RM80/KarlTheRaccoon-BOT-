@@ -4,8 +4,6 @@ const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
 const banyesyes = require('./banyesyes');
 const client = new Client();
-import rsa from "random-stuff-api"
-let ai = rsa.ai
 let prefix = '>'
 require('dotenv').config()
 const botid = "801827038234804234";
@@ -191,9 +189,8 @@ client.on('message', async message => {
         }
     }
     if (message.channel.id === "836714862863581234") {
-        let responseai = ai.getReply(message.content, "English")
+        let responseai = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`)
         message.channel.send(responseai)
-        return
     }
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
