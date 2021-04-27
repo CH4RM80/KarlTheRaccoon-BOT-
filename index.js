@@ -211,7 +211,7 @@ client.on('message', async message => {
                 }
             break;
             case "help":
-                embed = new MessageEmbed()
+                let embed = new MessageEmbed()
                 embed.setTitle("Commands")
                 embed.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
                 embed.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
