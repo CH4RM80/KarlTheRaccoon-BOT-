@@ -189,15 +189,9 @@ client.on('message', async message => {
         }
     }
     if (message.channel.id === "836714862863581234") {
-        const airesp = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
-                })
+        const airesp = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`)
         const aifull = await airesp.json()
-        message.channel.send(airesp[0])
+        message.channel.send(aifull[0])
     }
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
