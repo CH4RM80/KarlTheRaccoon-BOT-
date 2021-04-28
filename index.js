@@ -16,6 +16,7 @@ birthdays = []
 let quotechannel = []
 let guildmsgs = []
 let pingchannel = []
+let aichannels = []
 // let lguildallow = []
 // let lguilddeny = []
 // let lchannelallow = []
@@ -28,7 +29,7 @@ let lastuserid = "";
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "wtf", "fucc", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
+let badwords = ["stfu", "fuck", "fuk", "wtf", "fucc", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -70,6 +71,9 @@ client.once('ready', () => {
             }
             else if (c.name === "pingchannel") {
                 pingchannel.push(c.id)
+            }
+            else if (c.name === "ai") {
+                aichannels.push(c.id)
             }
         })
     });
@@ -188,11 +192,15 @@ client.on('message', async message => {
             }
         }
     }
-    if (message.channel.id === "836714862863581234") {
-        const airesp = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`)
-        const aifull = await airesp.json()
-        message.channel.send(aifull[0])
+    for (let i = 0; i < aichannels.length; i++) {
+        if (message.channel.id === aichannels[i]) {
+            const airesp = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`)
+            const aifull = await airesp.json()
+            message.channel.send(aifull[0])
+            return
+        }
     }
+    
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
