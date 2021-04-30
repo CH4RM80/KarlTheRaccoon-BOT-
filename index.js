@@ -591,7 +591,7 @@ client.on('message', async message => {
             // break
             case "waifu":
                 message.channel.send("This command is in development so it will be in its testing phase for a while")
-                const respnse = await fetch("https://animu.p.rapidapi.com/waifus", {
+                const respnse = await fetch("https://animu.p.rapidapi.com/waifu", {
                     "method": "GET",
                     "headers": {
                         "auth": "720cf4348c22f038f76b4becf818b8099af93c8dcf70",
@@ -622,6 +622,7 @@ client.on('message', async message => {
                 const respn = await fetch("https://animu.p.rapidapi.com/fact", {
                     "method": "GET",
                     "headers": {
+                        "auth": "720cf4348c22f038f76b4becf818b8099af93c8dcf70",
                         "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
                         "x-rapidapi-host": "animu.p.rapidapi.com"
                     }
