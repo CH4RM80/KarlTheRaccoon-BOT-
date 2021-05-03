@@ -29,7 +29,7 @@ let lastuserid = "";
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "wtf", "fucc", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck"]
+let badwords = require("./badwords.json")
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
