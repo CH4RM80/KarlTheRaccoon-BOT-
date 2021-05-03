@@ -16,7 +16,7 @@ To install npm and node.js on Linux:
 ----------------------------------------------------------------------------------------------------------
 Then make a file called ".env", and paste the following inside it:
 ```
-prefix=(paste your token here)
+BOT_TOKEN=(paste your token here)
 ```
 -------------
 node index.js
