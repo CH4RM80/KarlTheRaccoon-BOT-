@@ -17,12 +17,6 @@ let quotechannel = []
 let guildmsgs = []
 let pingchannel = []
 let aichannels = []
-// let lguildallow = []
-// let lguilddeny = []
-// let lchannelallow = []
-// let lchanneldeny = []
-// let luserallow = []
-// let luserdeny = []
 let foundguild = false
 swearingallowed = []
 let lastuserid = "";
@@ -66,21 +60,30 @@ client.once('ready', () => {
                 let general = client.channels.cache.get(c.id)
                 general.send("Made a massive update, check it out with >update")
             }
-            if (c.name == "spam") {
+            if (c.name.toLowerCase() == "spam") {
                 spamchannel.push(c.id)
             }
-            else if (c.name === "pingchannel") {
+            else if (c.name.toLowerCase() === "pingchannel") {
                 pingchannel.push(c.id)
             }
-            else if (c.name === "ai") {
+            else if (c.name.toLowerCase() === "ai") {
                 aichannels.push(c.id)
+            }
+            else if (c.name.toLowerCase().includes("quotes")) {
+                quotechannel.push(c.id)
             }
         })
     });
-    // let a = setInterval(() => {
-    //     client.channels.cache.get("818491944190738446").send("@everyone")
-    // }, 3600000)
 });
+let q = setInterval(() => {
+    for (i = 0; i < quotechannel.length; i++) {
+        const quoteraw = await fetch(
+            "http://api.quotable.io/random",
+        );
+        const quote = await quoteraw.json();
+        client.channels.cache.get(quotechannel[i]).send(`Here's your quote:\n${quote.content}\n-${quote.author}`)
+    }
+}, 600000);
 client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
     const xspaces = message.content.toLowerCase().split(" ")
