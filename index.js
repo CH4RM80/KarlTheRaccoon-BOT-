@@ -50,17 +50,6 @@ function checks(data, message) {
         return
     }
 }
-async function constantQuote() {
-    let q = setInterval(() => {
-        for (i = 0; i < quotechannel.length; i++) {
-            const quoteraw = await fetch(
-                "http://api.quotable.io/random",
-            );
-            const quote = await quoteraw.json();
-            client.channels.cache.get(quotechannel[i]).send(`Here's your quote:\n${quote.content}\n-${quote.author}`)
-        }
-    }, 600000);
-}
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
@@ -210,10 +199,7 @@ client.on('message', async message => {
         switch(args[0].toLowerCase()) {
             case "say":
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                if (message.content.includes("discord.gg")) {
-                    message.reply("nice... but we don't really do advertising here");
-                }
-                else if (message.mentions.members.first()) {
+                if (message.mentions.members.first()) {
                     message.reply("bruh really, no pinging tyvm");
                 } else {
                     fullmessage = args.splice(1, args.length - 1).join(" ");
@@ -773,7 +759,7 @@ client.on('message', async message => {
             message.reply("42");
             return
         }
-        else if (message.member.id !== "681238807026466870" && lowercase.includes("discord.gg")) {
+        else if (message.member.id !== "681238807026466870" && message.member.id !== "601822624867155989" && lowercase.includes("discord.gg")) {
             message.channel.messages.fetch(message.id).then(msg => msg.delete())
             message.reply("nice... but we don't really do advertising here");
             return

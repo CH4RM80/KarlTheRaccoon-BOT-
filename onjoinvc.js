@@ -1,11 +1,10 @@
 const { OpusEncoder } = require('@discordjs/opus');
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
-const { readSync } = require('node:fs');
 
 async function play(voiceChannel) {
     const connection = await voiceChannel.join();
     const dispatcher = connection.play('./Files/rr.mp3');
-    dispatcher.on("end", end => {await voiceChannel.leave();});
+    dispatcher.on("end", async end => {await voiceChannel.leave();});
 }
 module.exports = client => {
     client.on('voiceStateUpdate', (oldState, newState) => {
