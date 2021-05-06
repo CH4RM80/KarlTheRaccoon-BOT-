@@ -3,6 +3,7 @@ const { parse } = require('path');
 const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
 const banyesyes = require('./banyesyes');
+const onjoinvc = require('./onjoinvc');
 const client = new Client();
 let prefix = '>'
 require('dotenv').config()
@@ -49,6 +50,17 @@ function checks(data, message) {
         return
     }
 }
+async function constantQuote() {
+    let q = setInterval(() => {
+        for (i = 0; i < quotechannel.length; i++) {
+            const quoteraw = await fetch(
+                "http://api.quotable.io/random",
+            );
+            const quote = await quoteraw.json();
+            client.channels.cache.get(quotechannel[i]).send(`Here's your quote:\n${quote.content}\n-${quote.author}`)
+        }
+    }, 600000);
+}
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
@@ -75,15 +87,6 @@ client.once('ready', () => {
         })
     });
 });
-let q = setInterval(() => {
-    for (i = 0; i < quotechannel.length; i++) {
-        const quoteraw = await fetch(
-            "http://api.quotable.io/random",
-        );
-        const quote = await quoteraw.json();
-        client.channels.cache.get(quotechannel[i]).send(`Here's your quote:\n${quote.content}\n-${quote.author}`)
-    }
-}, 600000);
 client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
     const xspaces = message.content.toLowerCase().split(" ")
@@ -702,6 +705,9 @@ client.on('message', async message => {
                 const cute = await protocute.json()
                 message.channel.send(cute[0])
             break;
+            case "ping":
+                message.channel.send(`Latency is \`${Date.now() - message.createdTimestamp}ms.\``);
+            break
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -884,4 +890,5 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 });
 banyesyes(client)
 messagedeleteo(client)
+onjoinvc(client)
 client.login(process.env.BOT_TOKEN);
