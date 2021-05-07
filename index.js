@@ -3,6 +3,7 @@ const { parse } = require('path');
 const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
 const banyesyes = require('./banyesyes');
+const guildmember = require('./GMa.js');
 const onjoinvc = require('./onjoinvc');
 const client = new Client();
 let prefix = '>'
@@ -17,6 +18,7 @@ birthdays = []
 let quotechannel = []
 let guildmsgs = []
 let pingchannel = []
+let generalchannels = []
 let aichannels = []
 let foundguild = false
 swearingallowed = []
@@ -59,6 +61,7 @@ client.once('ready', () => {
         guild.channels.cache.map(c => {
             if (c.name.includes("general")){
                 let general = client.channels.cache.get(c.id)
+                generalchannels.push(c.id)
                 general.send("Made a massive update, check it out with >update")
             }
             if (c.name.toLowerCase() == "spam") {
@@ -877,4 +880,5 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 banyesyes(client)
 messagedeleteo(client)
 onjoinvc(client)
+guildmember(client, generalchannels)
 client.login(process.env.BOT_TOKEN);
