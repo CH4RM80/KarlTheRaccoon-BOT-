@@ -7,17 +7,21 @@ function getRandomColor() {
     }
     return color;
 }
-module.exports = (client, defchannels) => {
+let generalchannel = 0
+module.exports = client => {
 
     client.on('guildMemberAdd', member => {
-        for (let i = 0; i < defchannels.length; i++) {
-            let embed = new MessageEmbed()
-                .setTitle("Welcome, New Member!")
-                .setColor(getRandomColor())
-                .setDescription(`Welcome ${member} to the server!`)
-                .setTimestamp(new Date())
-                .setImage(member.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
-            member.guild.channels.get(defchannels[i]).send(embed)
-        }
-    });
+        member.guild.channels.cache.map(c => {
+            if (c.name.includes("general")){
+                let general = client.channels.cache.get(c.id)
+                generalchannel = c.id
+            }
+        })
+        let embed = new MessageEmbed()
+            .setTitle("Welcome, New Member!")
+            .setColor(getRandomColor())
+            .setDescription(`Welcome ${member} to the server!`)
+            .setTimestamp(new Date())
+        member.guild.channels.get(generalchannel).send(embed)
+    })
 }

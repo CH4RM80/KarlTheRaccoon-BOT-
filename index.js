@@ -880,5 +880,5 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 banyesyes(client)
 messagedeleteo(client)
 onjoinvc(client)
-guildmember(client, generalchannels)
+guildmember(client)
 client.login(process.env.BOT_TOKEN);
