@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
@@ -26,7 +26,7 @@ let lastuserid = "";
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "wtf", "fucc", "shit", "cunt", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck", "whore"]
+let badwords = ["stfu", "fuck", "fuk", "wtf", "orgy", "faggot", "fucc", "shit", "cunt", "as$", "a$$", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck", "whore"]
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -52,6 +52,12 @@ function checks(data, message) {
         return
     }
 }
+async function createAPIMessage(interaction, content) {
+    const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
+        .resolveData()
+        .resolveFiles()
+    return { ...apiMessage.data, files: apiMessage.files};
+}
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
@@ -62,7 +68,7 @@ client.once('ready', () => {
             if (c.name.includes("general")){
                 let general = client.channels.cache.get(c.id)
                 generalchannels.push(c.id)
-                general.send("Made a massive update, check it out with >update")
+                // general.send("Made a massive update, check it out with >update")
             }
             if (c.name.toLowerCase() == "spam") {
                 spamchannel.push(c.id)
@@ -77,8 +83,61 @@ client.once('ready', () => {
                 quotechannel.push(c.id)
             }
         })
+        const guildids = client.guilds.cache.map(guild => guild.id)
+        console.log(guildids)
+        for (let i = 0; i < guildids.length; i++) {
+            client.guilds
+                .fetch(guildids[i])
+                .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
+                .catch(console.error)
+        }
     });
+    client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
+        data: {
+            name: 'ping', 
+            description: "Show's the bot's ping"
+        }
+    })
+    client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
+        data: {
+            name: 'say', 
+            description: "Makes the bot say whatever you want",
+            options: [
+                {
+                    name: "content",
+                    description: "Content of the message",
+                    type: 3,
+                    required: true
+                }
+            ]
+        }
+    })
 });
+client.ws.on('INTERACTION_CREATE', async interaction => {
+    let command = interaction.data.name.toLowerCase()
+    let args = interaction.data.options
+    switch (command) {
+        case "ping":
+            client.api.interactions(interaction.id, interaction.token).callback.post({
+                data: {
+                    type: 4,
+                    data: {
+                        content: `Ping: ${client.ws.ping}ms`
+                    }
+                }
+            })
+        break;
+        case "say":
+            const description = args.find(arg => arg.name.toLowerCase() == "content").value
+            client.api.interactions(interaction.id, interaction.token).callback.post({
+                data: {
+                    type: 4,
+                    data: await createAPIMessage(interaction, description)
+                }
+            })
+        break
+    }
+})
 client.on('message', async message => {
     const lowercase = message.content.toLowerCase();
     const xspaces = message.content.toLowerCase().split(" ")
@@ -176,7 +235,6 @@ client.on('message', async message => {
                         else {
                             message.channel.messages.fetch(message.id).then(msg => msg.delete())
                             message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                            console.log(isbad)
                             return;
                         }
                     }
@@ -304,7 +362,11 @@ client.on('message', async message => {
                     try {
                         message.guild.members.ban(user).then(() => {
                             console.log(`${user} was banned`)
-                            message.channel.send(`${user} was banned`)
+                            message.channel.send(`${user} was banned`, {
+                                files: [
+                                    "./Files/ban.mp4"
+                                ]
+                            })
                         })
                     }
                     catch (TypeError) {
@@ -316,7 +378,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Made a lotta hecking stuff, check it out posthaste, >help\`\`\``)
+                message.channel.send(`\`\`\`Changed some small things about the ban command, and started working on the link screening method\`\`\``)
             break;
             case "messages":
             case "message":
@@ -551,38 +613,110 @@ client.on('message', async message => {
             break;
             // case "link":
             // case "links":
-            //     if (message.member.hasPermission('MANAGE_GUILD')) {
-            //         if (args[2]) {
-            //             switch (args[1]) {
-            //                 case "member":
-            //                     if (message.mentions.members.first()) {
-            //                         let meid = message.mentions.members.first()
-            //                         if (args[args.length - 1] === "true") { 
-            //                             luserallow.push(meid.id)
-            //                             message.channel.send("User allowed to use links")
+            //     if (args[1] && message.member.hasPermission('ADMINISTRATOR')) {
+            //         switch (args[1].toLowerCase()) {
+            //             case "user":
+            //                 let user = message.mentions.users.first() || message.author
+            //                 if (user) {
+            //                     if (args[2].toLowerCase() === "allow") {
+            //                         for (let i = 0; i < linkallowed.guilds.length; i++) {
+            //                             if (linkallowed.guilds.users === user.id) {
+            //                                 message.channel.send("User was already allowed to use links")
+            //                                 return
+            //                             }
             //                         }
-            //                         else if (args[args.length - 1] === "false") {
-            //                             luserdeny.push(meid.id)
-            //                             message.channel.send("User denied from using links")
+            //                         linkallowed.guild.
+            //                         message.channel.send("User allowed to use links successfully")
+            //                     }
+            //                     else if (args[2].toLowerCase() === "deny") {
+            //                         for (let i = 0; i < linkallowedusers.length; i++) {
+            //                             if (linkallowedusers[i] === user.id) {
+            //                                 linkallowedusers.splice(i, 1)
+            //                                 message.channel.send("User disabled from using links")
+            //                                 return
+            //                             }
             //                         }
-            //                         else {
-            //                             message.channel.send("You didn't provide a correct value for this user's permissions")
+            //                         message.channel.send("That user was already not allowed to use links")
+            //                         return
+            //                     }
+            //                 }
+            //             break;
+            //             case "channel":
+            //                 if (args[2]) {
+            //                     try {args[2].parseInt} catch (error) {
+            //                         message.channel.send("This is not a valid id")
+            //                         return
+            //                     }
+            //                     if (args[2].length > 18) {
+            //                         message.channel.send("This is not a valid id")
+            //                         return
+            //                     }
+            //                     if (args[3].toLowerCase() === "allow") {
+            //                         for (let i = 0; i < linkallowedchannels.length; i++) {
+            //                             if (linkallowedchannels[i] === args[3]) {
+            //                                 message.channel.send("That channel was already allowed to use links")
+            //                                 return
+            //                             }
+            //                         }
+            //                         linkallowedchannels.push(args[2])
+            //                         message.channel.send("Channel successfully allowed")
+            //                         return
+            //                     }
+            //                     else if (args[3].toLowerCase() === "deny") {
+            //                         for (let i = 0; i < linkallowedchannels.length; i++) {
+            //                             if (linkallowedchannels[i] === args[2]) {
+            //                                 linkallowedchannels.splice(i, 1)
+            //                                 message.channel.send("Channel sucessfully not allowed to use links")
+            //                                 return
+            //                             }
+            //                         }
+            //                         message.channel.send("That channel was already not allowed to use links")
+            //                         return
+            //                     }
+            //                 }
+            //             break;
+            //             case "server":
+            //                 if (args[2]) {
+            //                     if (args[2].toLowerCase() === "allow") {
+            //                         for (let i = 0; i < linkallowedservers.length; i++) {
+            //                             if (linkallowedservers[i] === message.guild.id) {
+            //                                 message.channel.send("Change not needed as the id was already in the allowed servers")
+            //                                 return
+            //                             }
+            //                         }
+            //                         linkallowedservers.push()
+            //                         message.channel.send("Server successfully allowed to use links")
+            //                         return
+            //                     }
+            //                     else if (args[2].toLowerCase() === "deny") {
+            //                         for (let i = 0; i < linkallowedservers.length; i++) {
+            //                             if (linkallowedservers[i] === message.guild.id) {
+            //                                 linkallowedservers.splice(i, 1)
+            //                                 message.channel.send("Server successfully disallowed to use links")
+            //                                 return
+            //                             }
+            //                         }
+            //                         message.channel.send("That server was already not allowed to use links")
+            //                         return
+            //                     }
+            //                 }
+            //                 else {
+            //                     let isallowed = "not allowed"
+            //                     for (let i = 0; i < linkallowedservers.length; i++) {
+            //                         if (linkallowedservers[i] === message.guild.id) {
+            //                             isallowed = "allowed"
             //                         }
             //                     }
-            //                     else {
-            //                         message.channel.send("Doesn't look like you mentioned a user, please try again")
-            //                     }
-            //                 break
-            //                 case "server":
-
-            //                 break
-            //                 case "channel":
-
-            //                 break
-            //             }
+            //                     message.channel.send(`Current status of server is:\n \`${isallowed}\` to use links`)
+            //                 }
+            //             break;
             //         }
             //     }
-            // break
+            //     else {
+            //         message.channel.send("You have used this command incorrectly/do not have the correct permissions to use this command")
+            //         return
+            //     }
+            // break;
             case "waifu":
                 message.channel.send("This command is in development so it will be in its testing phase for a while")
                 const respnse = await fetch("https://animu.p.rapidapi.com/waifu", {
@@ -859,7 +993,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
                     if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
                         return
                     }
-                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
+                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup") || xspaces[j].includes("passive") || xspaces[j].includes("bypass")) {
                         return
                     }
                     else {

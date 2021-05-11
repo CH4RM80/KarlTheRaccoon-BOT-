@@ -12,8 +12,8 @@ module.exports = client => {
 
     client.on('guildMemberAdd', member => {
         member.guild.channels.cache.map(c => {
-            if (c.name.includes("general")){
-                let general = client.channels.cache.get(c.id)
+            if (c.name.includes("general") || c.name.includes("chat")){
+                // let general = client.channels.cache.get(c.id)
                 generalchannel = c.id
             }
         })
@@ -22,6 +22,11 @@ module.exports = client => {
             .setColor(getRandomColor())
             .setDescription(`Welcome ${member} to the server!`)
             .setTimestamp(new Date())
-        member.guild.channels.get(generalchannel).send(embed)
+        if (generalchannel) {
+            member.guild.channels.cache.get(generalchannel).send(embed)
+        }
+        else {
+            return
+        }
     })
 }
