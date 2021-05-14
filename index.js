@@ -27,6 +27,9 @@ let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
 let badwords = ["stfu", "fuck", "fuk", "wtf", "orgy", "faggot", "fucc", "shit", "cunt", "as$", "a$$", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck", "whore"]
+let exceptions = []
+let includedbadword = []
+let exceptionguildids = []
 let spamchannel = []
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -51,6 +54,13 @@ function checks(data, message) {
         message.reply(`Here's your joke: \n${data.joke}`)
         return
     }
+}
+async function quote(channelid) {
+    const quoteraw = await fetch("http://api.quotable.io/random",)
+        .then(async quoteraw => {
+            const finishedquote = await quoteraw.json();
+            client.channels.cache.get(channelid).send(`${finishedquote.content}\n-${finishedquote.author}`)
+        })
 }
 async function createAPIMessage(interaction, content) {
     const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
@@ -112,6 +122,11 @@ client.once('ready', () => {
             ]
         }
     })
+    let e = setInterval(() => {
+        for(let i = 0; i < quotechannel.length; i++) {
+            quote(quotechannel[i])
+        }
+    }, 3600000);
 });
 client.ws.on('INTERACTION_CREATE', async interaction => {
     let command = interaction.data.name.toLowerCase()
@@ -139,10 +154,10 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
     }
 })
 client.on('message', async message => {
+    if (message.author.bot) return;
     const lowercase = message.content.toLowerCase();
     const xspaces = message.content.toLowerCase().split(" ")
     const compiledLowercase = message.content.split(" ").join("").toLowerCase()
-    if (message.author.bot) return;
     let args = message.content.substring(prefix.length).split(" ")
     try {
         foundguild = false
@@ -221,29 +236,24 @@ client.on('message', async message => {
     }
     let isbad = true
     if (sAllow === false) {
+        if (message.content.startsWith(">swear")) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
-                if (xspaces[j].includes(badwords[i])) {
-                    if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
-                        isbad = false
-                    }
-                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup")) {
-                        isbad = false
-                    }
-                    else {
-                        if (isbad === false) {}
-                        else {
-                            message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                            message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                            return;
+                if (xspaces[j].includes(badwords[i]) || compiledLowercase.includes[badwords[i]]) {
+                    for (let f = 0; f < exceptions.length; f++) {
+                        if (xspaces.includes(exceptions[f]) && badwords[i] === includedbadword[f] && message.guild.id === exceptionguildids[f]) {
+                            isbad = false
+                        }
+                        else if (compiledLowercase.includes(exceptions[f]) && badwords[i] === includedbadword[f] && message.guild.id === exceptionguildids[f]) {
+                            isbad = false
                         }
                     }
+                    if (isbad === true) {
+                        message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                        return;
+                    }
                 }
-            }
-            if (compiledLowercase.includes(badwords[i]) && isbad === true) {
-                message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                return;
             }
         }
     }
@@ -296,7 +306,7 @@ client.on('message', async message => {
                 help.addField(`14. ${prefix}quote`, "This command generates a random quote");
                 help.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
                 help.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
-                help.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only)");
+                help.addField(`17. ${prefix}swear (on/off || except) (word)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
                 help.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
                 help.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
                 help.addField(`20. ${prefix}meme`, "Gets a random meme")
@@ -378,7 +388,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Changed some small things about the ban command, and started working on the link screening method\`\`\``)
+                message.channel.send(`\`\`\`Added more options to the ${prefix}swear command, also added quotes\`\`\``)
             break;
             case "messages":
             case "message":
@@ -511,6 +521,31 @@ client.on('message', async message => {
                                 }
                                 swearingallowed.push(message.guild.id)
                                 message.channel.send("Enabled swearing for this server successfully")
+                            }
+                        }
+                        else if (args[1] === "except") {
+                            if (args[2]) {
+                                for (let i = 0; i < exceptions.length; i++) {
+                                    if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+                                        message.channel.send("That exception has already been made")
+                                        return
+                                    }
+                                }
+                                if (args[2].length < 3) {
+                                    message.channel.send("This exception is too short")
+                                    return
+                                }
+                                for (let i = 0; i < badwords.length; i++) {
+                                    if (args[2].includes(badwords[i])) {
+                                        exceptions.push(args[2].toString())
+                                        includedbadword.push(badwords[i].toString())
+                                        exceptionguildids.push(message.guild.id)
+                                        message.channel.send("Word added to exceptions")
+                                        return
+                                    }
+                                }
+                                message.channel.send("That exception did not include a bad word")
+                                return
                             }
                         }
                     }
@@ -986,27 +1021,26 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
             sAllow = false
         }
     }
+    let isbad2 = true
     if (sAllow === false) {
+        if (newMessage.content.startsWith(">swear")) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
-                    if (badwords[i] === "hell" && xspaces[j].includes("hello")) {
-                        return
+                    for (let f = 0; f < exceptions.length; f++) {
+                        if (xspaces.includes(exceptions[f]) && badwords[i] === includedbadword[f] && newMessage.guild.id === exceptionguildids[f]) {
+                            isbad2 = false
+                        }
+                        else if (compiledLowercase.includes(exceptions[f]) && badwords[i] === includedbadword[f] && newMessage.guild.id === exceptionguildids[f]) {
+                            isbad = false
+                        }
                     }
-                    else if (badwords[i] === "ass" && xspaces[j].includes("wassup") || xspaces[j].includes("passive") || xspaces[j].includes("bypass")) {
-                        return
-                    }
-                    else {
+                    if (isbad2 === true) {
                         newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
                         newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
                         return;
                     }
                 }
-            }
-            if (compiledLowercase.includes(badwords[i])) {
-                newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-                newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
-                return;
             }
         }
     }
