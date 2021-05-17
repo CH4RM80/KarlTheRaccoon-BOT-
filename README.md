@@ -1,6 +1,6 @@
 # KarlTheRaccoon-BOT-
 Just a bot made around the theme of Karl from Bungou Stray Dogs. 
-This is just a project that I started that I thought would help me learn a little more about JS in general
+This is just a project that I started that I thought would help me learn a little more about JS in general. 
 All you have to do is grab your token to your bot, get discord.js:
 ----------------------------------------------------------------------------------------------------------
 For those who have npm already:
