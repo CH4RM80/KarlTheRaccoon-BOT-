@@ -6,6 +6,7 @@ const banyesyes = require('./banyesyes');
 const guildmember = require('./GMa.js');
 const onjoinvc = require('./onjoinvc');
 const client = new Client();
+const fs = require('fs')
 let prefix = '>'
 require('dotenv').config()
 const botid = "801827038234804234";
@@ -55,6 +56,21 @@ function checks(data, message) {
         return
     }
 }
+async function loadData(path) {
+    try {
+      return await fs.readFileSync(path, 'utf8')
+    } catch (err) {
+      console.error(err)
+      return
+    }
+  }
+  async function saveData(data, path) {
+    try {
+      fs.writeFileSync(path, JSON.stringify(data))
+    } catch (err) {
+      console.error(err)
+    }
+  }
 async function quote(channelid) {
     const quoteraw = await fetch("http://api.quotable.io/random",)
         .then(async quoteraw => {
@@ -101,6 +117,19 @@ client.once('ready', () => {
                 .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
                 .catch(console.error)
         }
+        let cont = loadData("./Files/data.json").then(cont => {
+            cont = JSON.parse(cont)
+            if (exceptions || exceptionguildids || includedbadword) {
+                exceptionguildids = []
+                exceptions = []
+                includedbadword = []
+            }
+            for (i = 0; i < cont.Exceptions.length; i++) {
+                exceptions.push(cont.Exceptions[i])
+                exceptionguildids.push(cont.exceptionGuild[i])
+                includedbadword.push(cont.includedWord[i])
+            }
+        })
     });
     client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
         data: {
@@ -259,9 +288,13 @@ client.on('message', async message => {
     }
     for (let i = 0; i < aichannels.length; i++) {
         if (message.channel.id === aichannels[i]) {
-            const airesp = await fetch(`https://api.pgamerx.com/ai/response?api_key=SBGW8qLcfEFL&message=${message.content}&language=en`)
-            const aifull = await airesp.json()
-            message.channel.send(aifull[0])
+            const airesp = await fetch(`https://api.pgamerx.com/v3/ai/response?message=encodeURIComponent("${message.content}")&type=stable`, {
+                method: 'get',
+                headers: {'x-api-key': 'SBGW8qLcfEFL'},
+            }).then(async airesp => {
+                const aifull = await airesp.json()
+                message.channel.send(aifull.message)
+            })
             return
         }
     }
@@ -293,7 +326,7 @@ client.on('message', async message => {
                 help.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
                 help.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
                 help.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
-                help.addField(`4: ${prefix}help`, "This command lists all the commands");
+                help.addField(`4: ${prefix}help (dm || stay)`, "This command lists all the commands");
                 help.addField(`5: ${prefix}number (int)`, "This command sends a random number");
                 help.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
                 help.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
@@ -318,7 +351,9 @@ client.on('message', async message => {
                 help.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 help.setColor(getRandomColor());
                 help.setTimestamp();
-                message.channel.send(help).then((msg)=> {msg.delete({timeout: 20000})});
+                if (args[1] === "stay") {message.channel.send(help)}
+                else if (args[1] === "dm") {message.author.send(help); message.channel.send("Commands beamed to your dms")}
+                else {message.channel.send(help).then((msg)=> {msg.delete({timeout: 20000})});}
             break;
             case "number":
                 if(args[1]) {
@@ -345,7 +380,7 @@ client.on('message', async message => {
                 let bungou = new MessageEmbed()
                 bungou.setTitle("Bungou Stray Dogs")
                 bungou.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
-                bungou.addField("Where to watch", "https://animepahe.com/anime/e9523036-5d5c-f06b-8310-fd2e0eaa303c\nhttps://lite.animevibe.wtf/anime/bungou-stray-dogs\nhttps://animixplay.to/v1/bungou-stray-dogs/ep1")
+                bungou.addField("Where to watch", "https://animepahe.com/anime/ee07a883-7f27-964b-1623-9b0dc859adee\nhttps://animevibe.wtf/anime/bungou-stray-dogs\nhttps://animixplay.to/v1/bungou-stray-dogs/ep1")
                 bungou.setColor(getRandomColor());
                 bungou.setTimestamp();
                 message.channel.send(bungou);
@@ -388,7 +423,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added more options to the ${prefix}swear command, also added quotes\`\`\``)
+                message.channel.send(`\`\`\`added more options to ${prefix}help as well as started on a new command, >edit\`\`\``)
             break;
             case "messages":
             case "message":
@@ -405,7 +440,7 @@ client.on('message', async message => {
                     avatar.setTitle(`${us.username} Avatar`);
                     avatar.setImage(us.avatarURL({ dynamic: true, format: 'png', size: 2048 }));
                     avatar.setColor(getRandomColor())
-                    message.channel.send(avatar).then((msg)=> {msg.delete({timeout: 20000})});
+                    message.channel.send(avatar)
                 }
             break;
             case "color":
@@ -460,6 +495,16 @@ client.on('message', async message => {
                     })
                 } catch (TypeError) {
                     return;
+                }
+            break;
+            case "edit":
+                if (message.author.id !== ownerid) {return}
+                if (args[1].length === 18) {
+                    message.channel.messages.fetch(args[1]).then(msg => {
+                        let newmsg = args.splice(2, args.length - 1).join(" ")
+                        msg.edit(newmsg)
+                        message.channel.messages.fetch(message.id).then(messg => messg.delete())
+                    })
                 }
             break;
             case "joke":
@@ -540,6 +585,12 @@ client.on('message', async message => {
                                         exceptions.push(args[2].toString())
                                         includedbadword.push(badwords[i].toString())
                                         exceptionguildids.push(message.guild.id)
+                                        let newdata = {
+                                            "Exceptions": exceptions,
+                                            "includedWord": includedbadword,
+                                            "exceptionGuild": exceptionguildids
+                                        }
+                                        await saveData(newdata, "./Files/data.json")
                                         message.channel.send("Word added to exceptions")
                                         return
                                     }
@@ -549,6 +600,37 @@ client.on('message', async message => {
                             }
                         }
                     }
+            break;
+            case "except":
+                if (args[2]) {
+                    for (let i = 0; i < exceptions.length; i++) {
+                        if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+                            message.channel.send("That exception has already been made")
+                            return
+                        }
+                    }
+                    if (args[2].length < 3) {
+                        message.channel.send("This exception is too short")
+                        return
+                    }
+                    for (let i = 0; i < badwords.length; i++) {
+                        if (args[2].includes(badwords[i])) {
+                            exceptions.push(args[2].toString())
+                            includedbadword.push(badwords[i].toString())
+                            exceptionguildids.push(message.guild.id)
+                            let newdata = {
+                                "Exceptions": exceptions,
+                                "includedWord": includedbadword,
+                                "exceptionGuild": exceptionguildids
+                            }
+                            await saveData(newdata, "./Files/data.json")
+                            message.channel.send("Word added to exceptions")
+                            return
+                        }
+                    }
+                    message.channel.send("That exception did not include a bad word")
+                    return
+                }
             break;
             case "pingme":
                 try {
@@ -776,6 +858,9 @@ client.on('message', async message => {
                         embed.setColor(`${getRandomColor()}`)
                         embed.addField(`${animu.from.type} title:`, `${animu.from.name}`)
                         message.channel.send(embed)
+                            .then(msg => {
+                                msg.react("♥")
+                            })
                         return
                     }
                 }
