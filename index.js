@@ -649,17 +649,6 @@ client.on('message', async message => {
                                         }
                                         await saveData(pushdata, "./Files/data.json")
                                         loadData("./Files/data.json").then(newcont => {
-                                            newcont = JSON.parse(newcont)
-                                            if (exceptions || exceptionguildids || includedbadword) {
-                                                exceptionguildids = []
-                                                exceptions = []
-                                                includedbadword = []
-                                            }
-                                            for (i = 0; i < newcont.Exceptions.length; i++) {
-                                                exceptions.push(newcont.Exceptions[i])
-                                                exceptionguildids.push(newcont.exceptionGuild[i])
-                                                includedbadword.push(newcont.includedWord[i])
-                                            }
                                         })
                                         message.channel.send("Word removed from exceptions")
                                         return
