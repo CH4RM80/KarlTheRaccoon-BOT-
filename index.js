@@ -117,7 +117,7 @@ client.once('ready', () => {
                 .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
                 .catch(console.error)
         }
-        let cont = loadData("./Files/data.json").then(cont => {
+        loadData("./Files/data.json").then(cont => {
             cont = JSON.parse(cont)
             if (exceptions || exceptionguildids || includedbadword) {
                 exceptionguildids = []
@@ -265,7 +265,7 @@ client.on('message', async message => {
     }
     let isbad = true
     if (sAllow === false) {
-        if (message.content.startsWith(">swear")) {isbad = false}
+        if (message.content.startsWith(">swear") || message.content.startsWith(">except")) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i]) || compiledLowercase.includes[badwords[i]]) {
@@ -339,15 +339,16 @@ client.on('message', async message => {
                 help.addField(`14. ${prefix}quote`, "This command generates a random quote");
                 help.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
                 help.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
-                help.addField(`17. ${prefix}swear (on/off || except) (word)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
-                help.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
-                help.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
-                help.addField(`20. ${prefix}meme`, "Gets a random meme")
-                help.addField(`21. ${prefix}dank`, "Gets a random dank meme")
-                help.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
-                help.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
-                help.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
-                help.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+                help.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
+                help.addField(`18. ${prefix}except (add | del) (word)`, "Adds or deletes words from the swear blocking list")
+                help.addField(`19. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
+                help.addField(`20. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
+                help.addField(`21. ${prefix}meme`, "Gets a random meme")
+                help.addField(`22. ${prefix}dank`, "Gets a random dank meme")
+                help.addField(`23. ${prefix}cat(to)`, "Gets a random cat gif/image")
+                help.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
+                help.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
+                help.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
                 help.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 help.setColor(getRandomColor());
                 help.setTimestamp();
@@ -568,17 +569,54 @@ client.on('message', async message => {
                                 message.channel.send("Enabled swearing for this server successfully")
                             }
                         }
-                        else if (args[1] === "except") {
+                        // else if (args[1] === "except") {
+                        //     if (args[2]) {
+                        //         for (let i = 0; i < exceptions.length; i++) {
+                        //             if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+                        //                 message.channel.send("That exception has already been made")
+                        //                 return
+                        //             }
+                        //         }
+                        //         if (args[2].length < 3) {
+                        //             message.channel.send("This exception is too short")
+                        //             return
+                        //         }
+                        //         for (let i = 0; i < badwords.length; i++) {
+                        //             if (args[2].includes(badwords[i])) {
+                        //                 exceptions.push(args[2].toString())
+                        //                 includedbadword.push(badwords[i].toString())
+                        //                 exceptionguildids.push(message.guild.id)
+                        //                 let newdata = {
+                        //                     "Exceptions": exceptions,
+                        //                     "includedWord": includedbadword,
+                        //                     "exceptionGuild": exceptionguildids
+                        //                 }
+                        //                 await saveData(newdata, "./Files/data.json")
+                        //                 message.channel.send("Word added to exceptions")
+                        //                 return
+                        //             }
+                        //         }
+                        //         message.channel.send("That exception did not include a bad word")
+                        //         return
+                        //     }
+                        // }
+                    }
+            break;
+            case "except":
+                if (!(message.member.hasPermission('MANAGE_GUILD') || message.member.id == ownerid)) return
+                if (args[1]) {
+                    switch (args[1]) {
+                        case "add":
                             if (args[2]) {
                                 for (let i = 0; i < exceptions.length; i++) {
                                     if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
                                         message.channel.send("That exception has already been made")
                                         return
                                     }
-                                }
-                                if (args[2].length < 3) {
-                                    message.channel.send("This exception is too short")
-                                    return
+                                    if (args[2].length < 3) {
+                                        message.channel.send("This exception is too short")
+                                        return
+                                    }
                                 }
                                 for (let i = 0; i < badwords.length; i++) {
                                     if (args[2].includes(badwords[i])) {
@@ -595,41 +633,46 @@ client.on('message', async message => {
                                         return
                                     }
                                 }
-                                message.channel.send("That exception did not include a bad word")
-                                return
                             }
-                        }
-                    }
-            break;
-            case "except":
-                if (args[2]) {
-                    for (let i = 0; i < exceptions.length; i++) {
-                        if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
-                            message.channel.send("That exception has already been made")
-                            return
-                        }
-                    }
-                    if (args[2].length < 3) {
-                        message.channel.send("This exception is too short")
-                        return
-                    }
-                    for (let i = 0; i < badwords.length; i++) {
-                        if (args[2].includes(badwords[i])) {
-                            exceptions.push(args[2].toString())
-                            includedbadword.push(badwords[i].toString())
-                            exceptionguildids.push(message.guild.id)
-                            let newdata = {
-                                "Exceptions": exceptions,
-                                "includedWord": includedbadword,
-                                "exceptionGuild": exceptionguildids
+                        break;
+                        case "del":
+                            if (args[2]) {
+                                for (let i = 0; i < exceptions.length; i++) {
+                                    if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+                                        exceptions.splice(i, 1)
+                                        exceptionguildids.splice(i, 1)
+                                        includedbadword.splice(i, 1)
+                                        let pushdata = {
+                                            "Exceptions": exceptions,
+                                            "includedWord": includedbadword,
+                                            "exceptionGuild": exceptionguildids
+                                        }
+                                        await saveData(pushdata, "./Files/data.json")
+                                        loadData("./Files/data.json").then(newcont => {
+                                            newcont = JSON.parse(newcont)
+                                            if (exceptions || exceptionguildids || includedbadword) {
+                                                exceptionguildids = []
+                                                exceptions = []
+                                                includedbadword = []
+                                            }
+                                            for (i = 0; i < newcont.Exceptions.length; i++) {
+                                                exceptions.push(newcont.Exceptions[i])
+                                                exceptionguildids.push(newcont.exceptionGuild[i])
+                                                includedbadword.push(newcont.includedWord[i])
+                                            }
+                                        })
+                                        message.channel.send("Word removed from exceptions")
+                                        return
+                                    }
+                                }
+                                message.channel.send(`That word is not in the exceptions list, add it with ">except add ${args[2]}"`)
                             }
-                            await saveData(newdata, "./Files/data.json")
-                            message.channel.send("Word added to exceptions")
-                            return
-                        }
+                        break;
                     }
-                    message.channel.send("That exception did not include a bad word")
                     return
+                }
+                else {
+                    message.channel.send("You do not have permission to use this command, sorry UwU")
                 }
             break;
             case "pingme":
