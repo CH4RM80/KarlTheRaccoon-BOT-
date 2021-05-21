@@ -877,7 +877,7 @@ client.on('message', async message => {
                     }
                 })
                 const animu = await respnse.json()
-                if (animu.from.type === "H-Game" || animu.from.type === "Hentai") {
+                if (animu.from.type.toLowerCase() === "h-game" || animu.from.type.toLowerCase() === "hentai") {
                     message.channel.send("No lewd allowed so imma just block that one")
                     return
                 }
@@ -982,7 +982,27 @@ client.on('message', async message => {
             break;
             case "ping":
                 message.channel.send(`Latency is \`${Date.now() - message.createdTimestamp}ms.\``);
-            break
+            break;
+            case "eval": 
+                if (message.author.id === ownerid) {
+                    try {
+                        let content = eval(`${args.splice(1, args.length - 1).join(" ")}`)
+                        message.channel.send(content)
+                    } catch (err) {
+                        message.channel.send("An error occurred")
+                        message.author.send(""+err)
+                    }
+                }
+            break;
+            case "calc":
+                if (isNaN(args[1][0])) {message.channel.send("This is not a valid mathematic equation"); return}
+                try {
+                    let content = eval(`${args.splice(1, args.length - 1).join(" ")}`)
+                    message.channel.send(content)
+                } catch (err) {
+                    message.channel.send("An error occurred")
+                    message.author.send(""+err)
+                }
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -1084,7 +1104,7 @@ client.on('message', async message => {
             return
         }
         else if (lowercase.includes("suicide") || lowercase.includes(" die")) {
-            message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, please continue to live, your life is valuable ;)`);
+            message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, life is valuable 😉`);
             return
         }
         else if ((lowercase.startsWith("hi") && (message.content[2] === " " || !(message.content[2]))) || lowercase.includes("hello") || lowercase.includes(" hi ") || lowercase.endsWith(" hi")) {
@@ -1109,8 +1129,15 @@ client.on('message', async message => {
         else if (lowercase.includes("hentai")) {
             message.reply("Pervert!! 😡")
         }
-        else if (lowercase.startsWith("karl meet")) {
-            message.channel.send(`Nice to meet you, ${message.mentions.members.first()}`)
+        else if (lowercase.startsWith("karl meet") || lowercase.startsWith("karl, meet")) {
+            let userName = message.content.split(" ")
+            if (userName.length < 3) {
+                message.channel.send("You need to give me a person to meet :(")
+            }
+            else {
+                let member = message.mentions.members.first() || userName[2]
+                message.channel.send(`Nice to meet you, ${member}`)
+            }
         }
         else if (lowercase.includes("delete")) {
             for (let i = 0; i < 3; i++) {
@@ -1119,10 +1146,6 @@ client.on('message', async message => {
                 message.channel.send("***delete***")
             }
             return
-        }
-        else if (lowercase.includes("cherris cute") || lowercase.includes("cherri's cute")) {
-            message.channel.send("no ur cute :3")
-            return;
         }
     }
 });
