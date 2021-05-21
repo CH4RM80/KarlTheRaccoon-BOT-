@@ -349,6 +349,8 @@ client.on('message', async message => {
                 help.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
                 help.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
                 help.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+                help.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
+                help.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
                 help.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 help.setColor(getRandomColor());
                 help.setTimestamp();
@@ -424,7 +426,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`added more options to ${prefix}help as well as started on a new command, >edit\`\`\``)
+                message.channel.send(`\`\`\`Finished like 3 commands, ${prefix}edit, ${prefix}calc, and ${prefix}(REDACTED), do ${prefix}help to find out more\`\`\``)
             break;
             case "messages":
             case "message":
