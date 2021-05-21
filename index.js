@@ -1000,7 +1000,7 @@ client.on('message', async message => {
                 if (isNaN(args[1][0])) {message.channel.send("This is not a valid mathematic equation"); return}
                 try {
                     let content = eval(`${args.splice(1, args.length - 1).join(" ")}`)
-                    message.channel.send(content)
+                    message.channel.send("`Your answer is: "+ content + "`")
                 } catch (err) {
                     message.channel.send("An error occurred")
                     message.author.send(""+err)
