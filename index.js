@@ -1030,7 +1030,9 @@ client.on('message', async message => {
             if (msgCont[msgCont.length - 2] === "*") {
                 try {
                     let numoftimes = parseInt(msgCont[msgCont.length - 1])
+                        .catch(err => {return})
                     var msgCont = msgCont.splice(0, msgCont.length - 2).join(" ")
+                    if (message.content.toLowerCase().startsWith(`${prefix}calc`)) return
                     if (numoftimes < 11) {
                         for(let i = 0; i < numoftimes; i++) {
                             message.channel.send(`${msgCont}`)
