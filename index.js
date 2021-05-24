@@ -86,7 +86,19 @@ async function createAPIMessage(interaction, content) {
 }
 client.once('ready', () => {
     console.log('Ready!');
-    client.user.setActivity('with Poe-kun', { type: 'PLAYING' });
+    const newtime = new Date()
+    let uptime = ``
+    if (newtime.getHours() > 12) {uptime = `${newtime.getHours() - 12}:${newtime.getMinutes()}`} else {uptime = `${newtime.getHours()}:${newtime.getMinutes()}`}
+    const a = setInterval(() => {
+        let retime = new Date()
+        let hour = retime.getHours()
+        if (hour > 12) {
+            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CST): ${retime.getHours() - 12}:${retime.getMinutes()}`, { type: 'PLAYING' });
+        }
+        else {
+            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CST): ${retime.getHours()}:${retime.getMinutes()}`, { type: 'PLAYING' });
+        }
+    }, 2000);
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
@@ -109,28 +121,28 @@ client.once('ready', () => {
                 quotechannel.push(c.id)
             }
         })
-        const guildids = client.guilds.cache.map(guild => guild.id)
-        console.log(guildids)
-        for (let i = 0; i < guildids.length; i++) {
-            client.guilds
-                .fetch(guildids[i])
-                .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
-                .catch(console.error)
-        }
-        loadData("./Files/data.json").then(cont => {
-            cont = JSON.parse(cont)
-            if (exceptions || exceptionguildids || includedbadword) {
-                exceptionguildids = []
-                exceptions = []
-                includedbadword = []
-            }
-            for (i = 0; i < cont.Exceptions.length; i++) {
-                exceptions.push(cont.Exceptions[i])
-                exceptionguildids.push(cont.exceptionGuild[i])
-                includedbadword.push(cont.includedWord[i])
-            }
-        })
     });
+    const guildids = client.guilds.cache.map(guild => guild.id) 
+    console.log(guildids)
+    for (let i = 0; i < guildids.length; i++) {
+        client.guilds
+            .fetch(guildids[i])
+            .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
+            .catch(console.error)
+    }
+    loadData("./Files/data.json").then(cont => {
+        cont = JSON.parse(cont)
+        if (exceptions || exceptionguildids || includedbadword) {
+            exceptionguildids = []
+            exceptions = []
+            includedbadword = []
+        }
+        for (i = 0; i < cont.Exceptions.length; i++) {
+            exceptions.push(cont.Exceptions[i])
+            exceptionguildids.push(cont.exceptionGuild[i])
+            includedbadword.push(cont.includedWord[i])
+        }
+    })
     client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
         data: {
             name: 'ping', 
