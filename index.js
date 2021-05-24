@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete')
@@ -92,13 +92,10 @@ client.once('ready', () => {
     let uptime = `${uptime1}:${uptime2}`
     const a = setInterval(() => {
         let retime = new Date()
-        let hour = retime.getHours()
-        if (hour > 12) {
-            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${retime.getHours() - 12}:${retime.getMinutes()}`, { type: 'PLAYING' });
-        }
-        else {
-            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${retime.getHours()}:${retime.getMinutes()}`, { type: 'PLAYING' });
-        }
+        let hour = (retime.getHours() > 12) ? `${retime.getHours() - 12}`:`${retime.getHours()}` 
+        let ampm = (retime.getHours() > 12) ? "PM":"AM"
+        let minute = (retime.getMinutes() < 10) ? `0${retime.getMinutes()}`:`${retime.getMinutes}`
+        client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
     }, 2000);
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
