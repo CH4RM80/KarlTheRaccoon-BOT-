@@ -84,19 +84,11 @@ async function createAPIMessage(interaction, content) {
         .resolveFiles()
     return { ...apiMessage.data, files: apiMessage.files};
 }
-client.once('ready', () => {
-    console.log('Ready!');
-    const newtime = new Date()
-    let uptime1 = (newtime.getHours() > 12) ? `${newtime.getHours() - 12}`:`${newtime.getHours()}`;
-    let uptime2 = (newtime.getMinutes() < 10) ? `0${newtime.getMinutes()}`:`${newtime.getMinutes()}`;
-    let uptime = `${uptime1}:${uptime2}`
-    const a = setInterval(() => {
-        let retime = new Date()
-        let hour = (retime.getHours() > 12) ? `${retime.getHours() - 12}`:`${retime.getHours()}` 
-        let ampm = (retime.getHours() > 12) ? "PM":"AM"
-        let minute = (retime.getMinutes() < 10) ? `0${retime.getMinutes()}`:`${retime.getMinutes}`
-        client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
-    }, 2000);
+function start() {
+    spamchannel = []
+    pingchannel = []
+    aichannels = []
+    quotechannel = []
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
@@ -120,6 +112,21 @@ client.once('ready', () => {
             }
         })
     });
+}
+client.once('ready', () => {
+    console.log('Ready!');
+    const newtime = new Date()
+    let uptime1 = (newtime.getHours() > 12) ? `${newtime.getHours() - 12}`:`${newtime.getHours()}`;
+    let uptime2 = (newtime.getMinutes() < 10) ? `0${newtime.getMinutes()}`:`${newtime.getMinutes()}`;
+    let uptime = `${uptime1}:${uptime2}`
+    const a = setInterval(() => {
+        let retime = new Date()
+        let hour = (retime.getHours() > 12) ? `${retime.getHours() - 12}`:`${retime.getHours()}` 
+        let ampm = (retime.getHours() > 12) ? "PM":"AM"
+        let minute = (retime.getMinutes() < 10) ? `0${retime.getMinutes()}`:`${retime.getMinutes()}`
+        client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
+    }, 2000);
+    start()
     const guildids = client.guilds.cache.map(guild => guild.id) 
     console.log(guildids)
     for (let i = 0; i < guildids.length; i++) {
@@ -1199,6 +1206,18 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         }
     }
 });
+client.on('guildCreate', guild => {
+    start()
+    guild.channels.cache.map(c => {
+        if (c.name.includes("general")) {
+            embed = new MessageEmbed()
+                .setTitle("HELLO!")
+                .setDescription("Hi, my name is karl, and I shall now make your server completely communist")
+            client.channels.cache.get(c.id).send(embed)
+                .catch(err => {client.users.cache.get(guild.ownerID).send("Sadly I cannot send messages in your server due to role issues, if you could update my roles that would be amazing! ^w^")})
+        }
+    })
+})
 banyesyes(client)
 messagedeleteo(client)
 onjoinvc(client)
