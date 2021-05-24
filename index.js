@@ -94,10 +94,10 @@ client.once('ready', () => {
         let retime = new Date()
         let hour = retime.getHours()
         if (hour > 12) {
-            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CST): ${retime.getHours() - 12}:${retime.getMinutes()}`, { type: 'PLAYING' });
+            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${retime.getHours() - 12}:${retime.getMinutes()}`, { type: 'PLAYING' });
         }
         else {
-            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CST): ${retime.getHours()}:${retime.getMinutes()}`, { type: 'PLAYING' });
+            client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${retime.getHours()}:${retime.getMinutes()}`, { type: 'PLAYING' });
         }
     }, 2000);
     let guilds = client.guilds.cache.map(g => g.id)
