@@ -87,8 +87,9 @@ async function createAPIMessage(interaction, content) {
 client.once('ready', () => {
     console.log('Ready!');
     const newtime = new Date()
-    let uptime = ``
-    if (newtime.getHours() > 12) {uptime = `${newtime.getHours() - 12}:${newtime.getMinutes()}`} else {uptime = `${newtime.getHours()}:${newtime.getMinutes()}`}
+    let uptime1 = (newtime.getHours() > 12) ? `${newtime.getHours() - 12}`:`${newtime.getHours()}`;
+    let uptime2 = (newtime.getMinutes() < 10) ? `0${newtime.getMinutes()}`:`${newtime.getMinutes()}`;
+    let uptime = `${uptime1}:${uptime2}`
     const a = setInterval(() => {
         let retime = new Date()
         let hour = retime.getHours()
