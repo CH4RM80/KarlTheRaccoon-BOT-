@@ -1,10 +1,10 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
-const messagedeleteo = require('./messagedelete')
-const banyesyes = require('./banyesyes');
+const messagedeleteo = require('./messagedelete.js')
+const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
-const onjoinvc = require('./onjoinvc');
+const onjoinvc = require('./onjoinvc.js');
 const client = new Client();
 const fs = require('fs')
 let prefix = '>'
@@ -32,6 +32,8 @@ let exceptions = []
 let includedbadword = []
 let exceptionguildids = []
 let spamchannel = []
+let helpcommandids = []
+let pages = [1, 2]
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -336,44 +338,66 @@ client.on('message', async message => {
                 }
             break;
             case "help":
-                let help = new MessageEmbed()
-                help.setTitle("Commands")
-                help.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
-                help.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
-                help.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
-                help.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
-                help.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
-                help.addField(`4: ${prefix}help (dm || stay)`, "This command lists all the commands");
-                help.addField(`5: ${prefix}number (int)`, "This command sends a random number");
-                help.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
-                help.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
-                help.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
-                help.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
-                help.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
-                help.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
-                help.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
-                help.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
-                help.addField(`14. ${prefix}quote`, "This command generates a random quote");
-                help.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
-                help.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
-                help.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
-                help.addField(`18. ${prefix}except (add | del) (word)`, "Adds or deletes words from the swear blocking list")
-                help.addField(`19. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
-                help.addField(`20. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
-                help.addField(`21. ${prefix}meme`, "Gets a random meme")
-                help.addField(`22. ${prefix}dank`, "Gets a random dank meme")
-                help.addField(`23. ${prefix}cat(to)`, "Gets a random cat gif/image")
-                help.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
-                help.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
-                help.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
-                help.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
-                help.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
-                help.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
-                help.setColor(getRandomColor());
-                help.setTimestamp();
-                if (args[1] === "stay") {message.channel.send(help)}
-                else if (args[1] === "dm") {message.author.send(help); message.channel.send("Commands beamed to your dms")}
-                else {message.channel.send(help).then((msg)=> {msg.delete({timeout: 20000})});}
+                let page1 = new MessageEmbed()
+                page1.setTitle("Commands")
+                page1.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
+                page1.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
+                page1.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
+                page1.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
+                page1.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
+                page1.addField(`4: ${prefix}help (dm || stay)`, "This command lists all the commands");
+                page1.addField(`5: ${prefix}number (int)`, "This command sends a random number");
+                page1.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
+                page1.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
+                page1.addField(`8: ${prefix}messages`, "This command tells how many messages were sent today");
+                page1.addField(`9: ${prefix}avatar (user)`, "This command sends the avatar of the mentioned user");
+                page1.addField(`10: ${prefix}color`, "This command generates a random color(sorry stackoverflow I've done it again)");
+                page1.addField(`11: ${prefix}reactionid (id)`, "This command reacts to the message that you attach via id(thanks arusok)");
+                page1.addField(`12: ${prefix}dm (member)`, "DMs the mentioned user");
+                page1.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
+                page1.addField(`14. ${prefix}quote`, "This command generates a random quote");
+                page1.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
+                page1.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
+                page1.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
+                page1.addField(`18. ${prefix}except (add | del) (word)`, "Adds or deletes words from the swear blocking list")
+                page1.addField(`19. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
+                page1.addField(`20. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
+                page1.addField(`21. ${prefix}meme`, "Gets a random meme")
+                page1.addField(`22. ${prefix}dank`, "Gets a random dank meme")
+                page1.addField(`23. ${prefix}cat(to)`, "Gets a random cat gif/image")
+                page1.setColor(getRandomColor())
+                page1.setTimestamp()
+                let page2 = new MessageEmbed()
+                page2.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
+                page2.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
+                page2.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+                page2.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
+                page2.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
+                page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
+                page2.setColor(getRandomColor());
+                page2.setTimestamp();
+                pages[0] = page1, pages[1] = page2
+                if (args[1] === "stay") {
+                    message.channel.send(page1)
+                        .then(msg => {
+                            msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')}))
+                            helpcommandids.push(msg.id)
+                            setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 60000)
+                        })
+                }
+                else if (args[1] === "dm") {
+                    message.author.send(page1).then(msg => {msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')})); helpcommandids.push(msg.id)}); message.channel.send("Commands beamed to your dms")
+                }
+                else {
+                    message.channel.send(page1)
+                        .then(msg => {
+                            msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')}))
+                            helpcommandids.push(msg.id)
+                            console.log(helpcommandids)
+                            setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 20000)
+                            msg.delete({timeout: 20000})
+                        })
+                }
             break;
             case "number":
                 if(args[1]) {
@@ -443,7 +467,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Finished like 3 commands, ${prefix}edit, ${prefix}calc, and ${prefix}(REDACTED), do ${prefix}help to find out more\`\`\``)
+                message.channel.send(`\`\`\`Finished like 3 commands, ${prefix}edit, ${prefix}calc, and ${prefix}(REDACTED), do ${prefix}page1 to find out more\`\`\``)
             break;
             case "messages":
             case "message":
@@ -524,6 +548,7 @@ client.on('message', async message => {
                         let newmsg = args.splice(2, args.length - 1).join(" ")
                         msg.edit(newmsg)
                         message.channel.messages.fetch(message.id).then(messg => messg.delete())
+                        return
                     })
                 }
             break;
@@ -1217,6 +1242,26 @@ client.on('guildCreate', guild => {
                 .catch(err => {client.users.cache.get(guild.ownerID).send("Sadly I cannot send messages in your server due to role issues, if you could update my roles that would be amazing! ^w^")})
         }
     })
+})
+client.on('messageReactionAdd', (reaction, user) => {
+    if (user.id === botid) return
+    let message = reaction.message, emoji = reaction.emoji
+    for (i = 0; i < helpcommandids.length; i++) {
+        if (message.id === helpcommandids[i]) {
+            if (emoji.name === '⏩') {
+                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+                message.edit(pages[1])
+            }
+            else if (emoji.name === '⏪') {
+                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+                message.edit(pages[0])
+            }
+            else if (emoji.name === '❌') {
+                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+                message.delete()
+            }
+        }
+    }
 })
 banyesyes(client)
 messagedeleteo(client)
