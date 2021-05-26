@@ -379,8 +379,10 @@ client.on('message', async message => {
                 pages[0] = page1, pages[1] = page2
                 if (args[1] === "stay") {
                     message.channel.send(page1)
-                        .then(msg => {
-                            msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')}))
+                        .then(async msg => {
+                            await msg.react("⏪")
+                            await msg.react("⏩")
+                            await msg.react('❌')
                             helpcommandids.push(msg.id)
                             setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 60000)
                         })
@@ -390,12 +392,14 @@ client.on('message', async message => {
                 }
                 else {
                     message.channel.send(page1)
-                        .then(msg => {
-                            msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')}))
+                        .then(async msg => {
+                            await msg.react("⏪")
+                            await msg.react("⏩")
+                            await msg.react('❌')
                             helpcommandids.push(msg.id)
-                            console.log(helpcommandids)
                             setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 20000)
                             msg.delete({timeout: 20000})
+                                .catch(err)
                         })
                 }
             break;
@@ -613,37 +617,6 @@ client.on('message', async message => {
                                 message.channel.send("Enabled swearing for this server successfully")
                             }
                         }
-                        // else if (args[1] === "except") {
-                        //     if (args[2]) {
-                        //         for (let i = 0; i < exceptions.length; i++) {
-                        //             if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
-                        //                 message.channel.send("That exception has already been made")
-                        //                 return
-                        //             }
-                        //         }
-                        //         if (args[2].length < 3) {
-                        //             message.channel.send("This exception is too short")
-                        //             return
-                        //         }
-                        //         for (let i = 0; i < badwords.length; i++) {
-                        //             if (args[2].includes(badwords[i])) {
-                        //                 exceptions.push(args[2].toString())
-                        //                 includedbadword.push(badwords[i].toString())
-                        //                 exceptionguildids.push(message.guild.id)
-                        //                 let newdata = {
-                        //                     "Exceptions": exceptions,
-                        //                     "includedWord": includedbadword,
-                        //                     "exceptionGuild": exceptionguildids
-                        //                 }
-                        //                 await saveData(newdata, "./Files/data.json")
-                        //                 message.channel.send("Word added to exceptions")
-                        //                 return
-                        //             }
-                        //         }
-                        //         message.channel.send("That exception did not include a bad word")
-                        //         return
-                        //     }
-                        // }
                     }
             break;
             case "except":
