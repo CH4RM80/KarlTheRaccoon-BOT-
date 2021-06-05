@@ -32,8 +32,6 @@ let exceptions = []
 let includedbadword = []
 let exceptionguildids = []
 let spamchannel = []
-let helpcommandids = []
-let pages = [1, 2]
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -60,19 +58,19 @@ function checks(data, message) {
 }
 async function loadData(path) {
     try {
-      return await fs.readFileSync(path, 'utf8')
+        return await fs.readFileSync(path, 'utf8')
     } catch (err) {
-      console.error(err)
-      return
+        console.error(err)
+        return
     }
-  }
+}
   async function saveData(data, path) {
     try {
-      fs.writeFileSync(path, JSON.stringify(data))
+        fs.writeFileSync(path, JSON.stringify(data))
     } catch (err) {
-      console.error(err)
+        console.error(err)
     }
-  }
+}
 async function quote(channelid) {
     const quoteraw = await fetch("http://api.quotable.io/random",)
         .then(async quoteraw => {
@@ -338,6 +336,7 @@ client.on('message', async message => {
                 }
             break;
             case "help":
+                let pages = []
                 let page1 = new MessageEmbed()
                 page1.setTitle("Commands")
                 page1.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
@@ -345,7 +344,7 @@ client.on('message', async message => {
                 page1.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
                 page1.addField(`3: ${prefix}kick (user)`, "This command kicks members(mod only)");
                 page1.addField(`3: ${prefix}ban (user)`, "This command bans members(mod only)");
-                page1.addField(`4: ${prefix}help (dm || stay)`, "This command lists all the commands");
+                page1.addField(`4: ${prefix}help (optional: pgnumbr) (dm || stay)`, "This command lists all the commands(now with pages)");
                 page1.addField(`5: ${prefix}number (int)`, "This command sends a random number");
                 page1.addField(`6: ${prefix}bungou`, "This command sends some text, you should try it out!");
                 page1.addField(`7: ${prefix}update`, "This command tells the new update to the bot");
@@ -367,6 +366,8 @@ client.on('message', async message => {
                 page1.addField(`23. ${prefix}cat(to)`, "Gets a random cat gif/image")
                 page1.setColor(getRandomColor())
                 page1.setTimestamp()
+                page1.setFooter("Page 1")
+                pages.push(page1)
                 let page2 = new MessageEmbed()
                 page2.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
                 page2.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
@@ -376,31 +377,71 @@ client.on('message', async message => {
                 page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
                 page2.setColor(getRandomColor());
                 page2.setTimestamp();
-                pages[0] = page1, pages[1] = page2
-                if (args[1] === "stay") {
-                    message.channel.send(page1)
-                        .then(async msg => {
-                            await msg.react("⏪")
-                            await msg.react("⏩")
-                            await msg.react('❌')
-                            helpcommandids.push(msg.id)
-                            setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 60000)
-                        })
-                }
-                else if (args[1] === "dm") {
-                    message.author.send(page1).then(msg => {msg.react("⏪").then(() => msg.react("⏩").then(() => {msg.react('❌')})); helpcommandids.push(msg.id)}); message.channel.send("Commands beamed to your dms")
+                page2.setFooter("Page 2")
+                pages.push(page2)
+                if (args[1]) {
+                    if (parseInt(args[1])) {
+                        if (args[2]) {
+                            if (args[2] === "stay") {message.channel.send(pages[parseInt(args[1])]).catch(err => {message.channel.send(pages[0]); console.log(err)})}
+                            else if (args[2] === "dm") {message.author.send(pages[0]).then(() => {message.author.send(pages[1])})}
+                            else {
+                                try {
+                                    message.channel.send(pages[parseInt(args[1])])
+                                    .then(msg => {
+                                        msg.delete({timeout: 20000})
+                                            .catch(err => {console.log(err)})
+                                    })
+                                }
+                                catch (error) {
+                                    message.channel.send(pages[0])
+                                    .then(msg => {
+                                        msg.delete({timeout: 20000})
+                                            .catch(err => {console.log(err)})
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            try {
+                                message.channel.send(pages[parseInt(args[1])])
+                                .then(msg => {
+                                    msg.delete({timeout: 20000})
+                                        .catch(err => {console.log(err)})
+                                })
+                            }
+                            catch (error) {
+                                message.channel.send(pages[0])
+                                .then(msg => {
+                                    msg.delete({timeout: 20000})
+                                        .catch(err => {console.log(err)})
+                                })
+                            }
+                        }
+                    }
+                    else {
+                        if (args[1] == "stay") {message.channel.send(pages[0])}
+                        else if (args[1] == "dm") {message.author.send(pages[0]).then(() => {message.author.send(pages[1])})}
+                        else {
+                            try {
+                                message.channel.send(pages[0])
+                                .then(msg => {
+                                    msg.delete({timeout: 20000})
+                                        .catch(err => {console.log(err)})
+                                })
+                            }
+                            catch (error) {console.log(error)}
+                        }
+                    }
                 }
                 else {
-                    message.channel.send(page1)
-                        .then(async msg => {
-                            await msg.react("⏪")
-                            await msg.react("⏩")
-                            await msg.react('❌')
-                            helpcommandids.push(msg.id)
-                            setTimeout(() => helpcommandids.splice(helpcommandids.length - 1, 1), 20000)
+                    try {
+                        message.channel.send(pages[0])
+                        .then(msg => {
                             msg.delete({timeout: 20000})
-                                .catch(err)
+                                .catch(err => {console.log(err)})
                         })
+                    }
+                    catch (error) {console.log(error)}
                 }
             break;
             case "number":
@@ -471,7 +512,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Finished like 3 commands, ${prefix}edit, ${prefix}calc, and ${prefix}(REDACTED), do ${prefix}page1 to find out more\`\`\``)
+                message.channel.send(`\`\`\`Made the help command into pages\`\`\``)
             break;
             case "messages":
             case "message":
@@ -1216,26 +1257,26 @@ client.on('guildCreate', guild => {
         }
     })
 })
-client.on('messageReactionAdd', (reaction, user) => {
-    if (user.id === botid) return
-    let message = reaction.message, emoji = reaction.emoji
-    for (i = 0; i < helpcommandids.length; i++) {
-        if (message.id === helpcommandids[i]) {
-            if (emoji.name === '⏩') {
-                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
-                message.edit(pages[1])
-            }
-            else if (emoji.name === '⏪') {
-                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
-                message.edit(pages[0])
-            }
-            else if (emoji.name === '❌') {
-                message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
-                message.delete()
-            }
-        }
-    }
-})
+// client.on('messageReactionAdd', (reaction, user) => {
+//     if (user.id === botid) return
+//     let message = reaction.message, emoji = reaction.emoji
+//     for (i = 0; i < helpcommandids.length; i++) {
+//         if (message.id === helpcommandids[i]) {
+//             if (emoji.name === '⏩') {
+//                 message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+//                 message.edit(pages[1])
+//             }
+//             else if (emoji.name === '⏪') {
+//                 message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+//                 message.edit(pages[0])
+//             }
+//             else if (emoji.name === '❌') {
+//                 message.reactions.resolve(`${reaction.emoji.name}`).users.remove(`${user.id}`)
+//                 message.delete()
+//             }
+//         }
+//     }
+// })
 banyesyes(client)
 messagedeleteo(client)
 onjoinvc(client)
