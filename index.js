@@ -16,7 +16,8 @@ let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 birthdayids = []
 birthdays = []
-let quotechannel = []
+let quotechannels = []
+let quotechannelguilds = []
 let guildmsgs = []
 let pingchannel = []
 let generalchannels = []
@@ -79,17 +80,16 @@ async function quote(channelid) {
             client.channels.cache.get(channelid).send(`${finishedquote.content}\n-${finishedquote.author}`)
         })
 }
-async function createAPIMessage(interaction, content) {
-    const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
-        .resolveData()
-        .resolveFiles()
-    return { ...apiMessage.data, files: apiMessage.files};
-}
+// async function createAPIMessage(interaction, content) {
+//     const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
+//         .resolveData()
+//         .resolveFiles()
+//     return { ...apiMessage.data, files: apiMessage.files};
+// }
 function start() {
     spamchannel = []
     pingchannel = []
     aichannels = []
-    quotechannel = []
     let guilds = client.guilds.cache.map(g => g.id)
     guilds.forEach(element => {
         let guild = client.guilds.cache.get(element)
@@ -108,9 +108,9 @@ function start() {
             else if (c.name.toLowerCase() === "ai") {
                 aichannels.push(c.id)
             }
-            else if (c.name.toLowerCase().includes("quotes")) {
-                quotechannel.push(c.id)
-            }
+            // else if (c.name.toLowerCase().includes("quotes")) {
+            //     quotechannel.push(c.id)
+            // }
         })
     });
 }
@@ -149,29 +149,29 @@ client.once('ready', () => {
             includedbadword.push(cont.includedWord[i])
         }
     })
-    client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
-        data: {
-            name: 'ping', 
-            description: "Show's the bot's ping"
-        }
-    })
-    client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
-        data: {
-            name: 'say', 
-            description: "Makes the bot say whatever you want",
-            options: [
-                {
-                    name: "content",
-                    description: "Content of the message",
-                    type: 3,
-                    required: true
-                }
-            ]
-        }
-    })
+    // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
+    //     data: {
+    //         name: 'ping', 
+    //         description: "Show's the bot's ping"
+    //     }
+    // })
+    // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
+    //     data: {
+    //         name: 'say', 
+    //         description: "Makes the bot say whatever you want",
+    //         options: [
+    //             {
+    //                 name: "content",
+    //                 description: "Content of the message",
+    //                 type: 3,
+    //                 required: true
+    //             }
+    //         ]
+    //     }
+    // })
     let e = setInterval(() => {
-        for(let i = 0; i < quotechannel.length; i++) {
-            quote(quotechannel[i])
+        for(let i = 0; i < quotechannels.length; i++) {
+            quote(quotechannels[i])
         }
     }, 3600000);
     let page1 = new MessageEmbed()
@@ -193,12 +193,12 @@ client.once('ready', () => {
     page1.addField(`13. ${prefix}joke (noclean(optional))`, "This command generates a random joke");
     page1.addField(`14. ${prefix}quote`, "This command generates a random quote");
     page1.addField(`15. ${prefix}birthday ((MM/DD/YYYY) or (@user))`, "This command logs your birthday and displays the birthdays of others");
-    page1.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
     page1.setColor(getRandomColor())
     page1.setTimestamp()
     page1.setFooter("Page 1")
     pages.push(page1)
     let page2 = new MessageEmbed()
+    page1.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
     page2.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
     page2.addField(`18. ${prefix}except (add | del) (word)`, "Adds or deletes words from the swear blocking list")
     page2.addField(`19. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
@@ -211,37 +211,38 @@ client.once('ready', () => {
     page2.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
     page2.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
     page2.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
+    page2.addField(`29. ${prefix}quotechannel (add || remove || clear) (#channel)`)
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
     page2.setFooter("Page 2")
     pages.push(page2)
 });
-client.ws.on('INTERACTION_CREATE', async interaction => {
-    let command = interaction.data.name.toLowerCase()
-    let args = interaction.data.options
-    switch (command) {
-        case "ping":
-            client.api.interactions(interaction.id, interaction.token).callback.post({
-                data: {
-                    type: 4,
-                    data: {
-                        content: `Ping: ${client.ws.ping}ms`
-                    }
-                }
-            })
-        break;
-        case "say":
-            const description = args.find(arg => arg.name.toLowerCase() == "content").value
-            client.api.interactions(interaction.id, interaction.token).callback.post({
-                data: {
-                    type: 4,
-                    data: await createAPIMessage(interaction, description)
-                }
-            })
-        break
-    }
-})
+// client.ws.on('INTERACTION_CREATE', async interaction => {
+//     let command = interaction.data.name.toLowerCase()
+//     let args = interaction.data.options
+//     switch (command) {
+//         case "ping":
+//             client.api.interactions(interaction.id, interaction.token).callback.post({
+//                 data: {
+//                     type: 4,
+//                     data: {
+//                         content: `Ping: ${client.ws.ping}ms`
+//                     }
+//                 }
+//             })
+//         break;
+//         case "say":
+//             const description = args.find(arg => arg.name.toLowerCase() == "content").value
+//             client.api.interactions(interaction.id, interaction.token).callback.post({
+//                 data: {
+//                     type: 4,
+//                     data: await createAPIMessage(interaction, description)
+//                 }
+//             })
+//         break
+//     }
+// })
 client.on('message', async message => {
     if (message.author.bot) return;
     const lowercase = message.content.toLowerCase();
@@ -1061,6 +1062,59 @@ client.on('message', async message => {
                     message.channel.send("An error occurred")
                     message.author.send(""+err)
                 }
+            break
+            case "quotechannel":
+                if (args[1] && message.member.hasPermission('MANAGE_CHANNELS')) {
+                    switch (args[1]) {
+                        case "add":
+                            let qchannel = message.mentions.channels.first() || message.channel
+                            for (let i = 0; i < quotechannels.length; i++) {
+                                if (qchannel.id === quotechannels[i]) {
+                                    message.channel.send("This id already exists in the system")
+                                    return
+                                }
+                            }
+                            quotechannels.push(qchannel.id)
+                            quotechannelguilds.push(message.guild.id)
+                            message.channel.send("Id added to the quote channels list")
+                        break
+                        case "remove":
+                            let qchannel = message.mentions.channels.first() || message.channel
+                            for (let i = 0; i < quotechannels.length; i++) {
+                                if (qchannel.id === quotechannels[i]) {
+                                    qchannel.splice(i, 1)
+                                    quotechannelguilds.splice(i, 1)
+                                    message.channel.send("Id removed from quote channels list")
+                                }
+                            }
+                            message.channel.send("This id does not exist in the system")
+                            return
+                        break
+                        case "clear":
+                            message.channel.send("Are you sure you want to clear all the quotes channels? (Y/N)")
+                            const filter = m => m.author.id == message.author.id
+                            message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+                                .then(coll => {
+                                    if (coll.first().content.toLowerCase().startsWith("y")) {
+                                        for (let i = 0; i < quotechannelguilds.length; i++) {
+                                            if (quotechannelguilds[i] === message.guild.id) {
+                                                quotechannels.splice(i, 1)
+                                                quotechannelguilds.splice(i, 1)
+                                            }
+                                        }
+                                        message.channel.send("Cleared all the quote channels ;(")
+                                    }
+                                    else {
+                                        message.channel.send("Ok, cancelling...")
+                                    }
+                                })
+                        break
+                    }
+                }
+                else {
+                    message.channel.send("Error: Incorrect syntax/invalid permissions")
+                    return
+                }
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -1105,7 +1159,7 @@ client.on('message', async message => {
         catch (TypeError) {
             return
         }
-        if (lowercase.includes("help")) {
+        if (lowercase.includes("help") && !message.startsWith(">help")) {
             message.react("❔")
             const filter = (reaction, user) => {
                 return "❔".includes(reaction.emoji.name) && user.id === message.author.id
