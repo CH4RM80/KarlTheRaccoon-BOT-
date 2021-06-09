@@ -1243,7 +1243,7 @@ client.on('message', async message => {
         catch (TypeError) {
             return
         }
-        if (lowercase.includes("help") && !message.startsWith(">help")) {
+        if (lowercase.includes("help") && !message.channel.startsWith(`${prefix}help`)) {
             message.react("❔")
             const filter = (reaction, user) => {
                 return "❔".includes(reaction.emoji.name) && user.id === message.author.id
