@@ -4,7 +4,7 @@ const { measureMemory } = require('vm');
 const messagedeleteo = require('./messagedelete.js')
 const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
-const onjoinvc = require('./onjoinvc.js');
+// const onjoinvc = require('./onjoinvc.js');
 const client = new Client();
 const fs = require('fs')
 let prefix = '>'
@@ -16,6 +16,8 @@ let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 birthdayids = []
 birthdays = []
+let rrchannels = []
+let rrguilds = []
 let quotechannels = []
 let quotechannelguilds = []
 let guildmsgs = []
@@ -211,7 +213,7 @@ client.once('ready', () => {
     page2.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
     page2.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
     page2.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
-    page2.addField(`29. ${prefix}quotechannel (add || remove || clear) (#channel)`)
+    page2.addField(`29. ${prefix}quotechannel (add || remove || clear || list) (#channel)`, "Designates a channel/channels for sending quotes in")
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
@@ -366,7 +368,11 @@ client.on('message', async message => {
                 message.channel.messages.fetch(message.id).then(msg => msg.delete())
                 if (message.mentions.members.first()) {
                     message.reply("bruh really, no pinging tyvm");
-                } else {
+                } 
+                else if (lowercase.includes("discord.gg")) {
+                    message.reply("No advertising, tyvm");
+                } 
+                else {
                     fullmessage = args.splice(1, args.length - 1).join(" ");
                     message.channel.send(`‍‍${fullmessage}`);
                 }
@@ -513,7 +519,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Made the help command into pages\`\`\``)
+                message.channel.send(`\`\`\`Added ${prefix}quotechannel for designating quotes channels, check it out with ${prefix}help\`\`\``)
             break;
             case "messages":
             case "message":
@@ -715,6 +721,9 @@ client.on('message', async message => {
                                 }
                                 message.channel.send(`That word is not in the exceptions list, add it with ">except add ${args[2]}"`)
                             }
+                        break;
+                        case "list":
+                            
                         break;
                     }
                     return
@@ -1067,29 +1076,29 @@ client.on('message', async message => {
                 if (args[1] && message.member.hasPermission('MANAGE_CHANNELS')) {
                     switch (args[1]) {
                         case "add":
-                            let qchannel = message.mentions.channels.first() || message.channel
+                            let quochannel = message.mentions.channels.first() || message.channel
                             for (let i = 0; i < quotechannels.length; i++) {
-                                if (qchannel.id === quotechannels[i]) {
+                                if (quochannel.id === quotechannels[i]) {
                                     message.channel.send("This id already exists in the system")
                                     return
                                 }
                             }
-                            quotechannels.push(qchannel.id)
+                            quotechannels.push(quochannel.id)
                             quotechannelguilds.push(message.guild.id)
                             message.channel.send("Id added to the quote channels list")
-                        break
+                        break;
                         case "remove":
-                            let qchannel = message.mentions.channels.first() || message.channel
+                            let quchannel = message.mentions.channels.first() || message.channel
                             for (let i = 0; i < quotechannels.length; i++) {
-                                if (qchannel.id === quotechannels[i]) {
-                                    qchannel.splice(i, 1)
+                                if (quchannel.id === quotechannels[i]) {
+                                    quotechannels.splice(i, 1)
                                     quotechannelguilds.splice(i, 1)
                                     message.channel.send("Id removed from quote channels list")
                                 }
                             }
                             message.channel.send("This id does not exist in the system")
                             return
-                        break
+                        break;
                         case "clear":
                             message.channel.send("Are you sure you want to clear all the quotes channels? (Y/N)")
                             const filter = m => m.author.id == message.author.id
@@ -1108,13 +1117,88 @@ client.on('message', async message => {
                                         message.channel.send("Ok, cancelling...")
                                     }
                                 })
-                        break
+                        break;
+                        case "list":
+                            let list = []
+                            for (let i = 0; i < quotechannelguilds.length; i++) {
+                                if (quotechannelguilds[i] === message.guild.id) {
+                                    list.push(`#${client.channels.cache.get(quotechannels[i]).name}`)
+                                }
+                            }
+                            if (list.length > 0) {
+                                message.channel.send(list)
+                            }
+                            else {
+                                message.channel.send("You have no quote channels as of now :(")
+                            }
+                        break;
                     }
                 }
                 else {
                     message.channel.send("Error: Incorrect syntax/invalid permissions")
                     return
                 }
+                break;
+                // case "rrchannel":
+                //     if (args[1]) {
+                //         switch (args[1]) {
+                //             case "add":
+                //                 if (args[2]) {
+                //                     for (let i = 0; i < rrguilds.length; i++) {
+                //                         if (rrguilds[i] === message.guild.id) {
+                //                             let name = client.channels.cache.get(rrchannels[i]).name
+                //                             message.channel.send(`You already have an rrchannel: ${name}`)
+                //                             return
+                //                         }
+                //                     }
+                //                     if (client.channels.cache.get(args[2])) {
+                //                         rrchannels.push(args[2])
+                //                         rrguilds.push(message.guild.id)
+                //                         exports.rickrchannels = rrchannels
+                //                         message.channel.send("Channel successfully added to the list")
+                //                     }
+                //                 }
+                //                 else {
+                //                     for (let i = 0; i < rrguilds.length; i++) {
+                //                         if (rrguilds[i] === message.guild.id) {
+                //                             let name = client.channels.cache.get(rrchannels[i]).name
+                //                             message.channel.send(`You already have an rrchannel: ${name}`)
+                //                             return
+                //                         }
+                //                     }
+                //                     message.channel.send("Please provide a voice channel id")
+                //                 }
+                //             break;
+                //             case "remove":
+                //                 if (args[2]) {
+                //                     for (let i = 0; i < rrguilds.length; i++) {
+                //                         if (rrguilds[i] === message.guild.id) {
+                //                             rrchannels.splice(i, 1)
+                //                             message.channel.send("Channel removed successfully")
+                //                             exports.rickrchannels = rrchannels
+                //                             return
+                //                         }
+                //                     }
+                //                     message.channel.send(`You do not have a rr channel yet, add one with ${prefix}rrchannel add (#channel)`)
+                //                 }
+                //                 else {
+                //                     for (let i = 0; i < rrguilds.length; i++) {
+                //                         if (rrguilds[i] === message.guild.id) {
+                //                             message.channel.send(`You did not provide a channel id to delete, the current one is ${rrchannels[i]}`)
+                //                             return
+                //                         }
+                //                         message.channel.send(`You do not have a rr channel yet, add one with ${prefix}rrchannel add (#channel)`)
+                //                     }
+                //                 }
+                //             break;
+                //         }
+                //     }
+                //     else {
+
+                //     }
+                // break;
+                // case "dictionary":
+                // break;
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -1202,11 +1286,6 @@ client.on('message', async message => {
             message.reply("42");
             return
         }
-        else if (message.member.id !== "681238807026466870" && message.member.id !== "601822624867155989" && lowercase.includes("discord.gg")) {
-            message.channel.messages.fetch(message.id).then(msg => msg.delete())
-            message.reply("nice... but we don't really do advertising here");
-            return
-        }
         else if (lowercase.includes("hello karl") || lowercase.includes("hi karl")) {
             if(!(message.member.id === "801827038234804234")) {
                 if(lowercase.includes("die") || lowercase.includes("suicide")) {
@@ -1214,17 +1293,9 @@ client.on('message', async message => {
                     return
                 }
                 else {
-                    greets = ["what a lovely day it is, but not as lovely as you ;)", "the sun is shining, but not as bright as your smile ;)", "what have you been up to?", "love u uwu", "sure hope your day has been going well :)", "have a great day uwu", "hope your day is as great as the day i met you ;)", "Let's curl up and read a horror novel together", "Would you like to steal trash with me?", "All my clues lead up to you being amazing", "I dig the look human", "even water is not as clear as how much I love you uwu", "Are you a garbage can? Because you smell f a n t a s t i c!"]
-                    message.channel.send(`hi ${message.member.user.username}-san, ${greets[Math.floor(Math.random() * greets.length) - 1]}`);
+                    message.channel.send(`Hi ${message.member.user.username}-san`);
                     return
                 }   
-            }
-        }
-        else if (lowercase.includes("compliment me")) {
-            if(!(message.member.id === "801827038234804234")) {
-                compliments = ["I would give my life for you in a heartbeat", "Depression is not an option, things will get better", "You're the best person I know", "No matter how many times you fall, I believe you can get back up again", "Enjoy life and value your friends", "Time is not of the essence when it comes to recovery", "Your body matters take care of it", "You're the sunshine to my morning", "You're not alone", "Your life matters, never forget that"]
-                message.channel.send(`${message.member.user.username}-san, ${compliments[Math.floor(Math.random() * compliments.length) - 1]}`)
-                return
             }
         }
         else if (lowercase.includes("bye karl")) {
@@ -1250,10 +1321,6 @@ client.on('message', async message => {
             some = message.content.split(" ")
             content = some.splice(3, message.content.length - 1).join(" ")
             message.reply(`sorry senpai, my ${content} machine is broken due to ${acts[Math.floor(Math.random() * acts.length)]}`);
-            return
-        }
-        else if (lowercase.includes("what did you have for dinner last night")) {
-            message.channel.send("Yeah")
             return
         }
         else if (lowercase.startsWith("what's")) {
@@ -1353,6 +1420,6 @@ client.on('guildCreate', guild => {
 // })
 banyesyes(client)
 messagedeleteo(client)
-onjoinvc(client)
+// onjoinvc(client)
 guildmember(client)
 client.login(process.env.BOT_TOKEN);
