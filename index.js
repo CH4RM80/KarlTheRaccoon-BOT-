@@ -1449,30 +1449,6 @@ client.on('message', async message => {
         }
     }
     else {
-        try {
-            var msgCont = message.content.toLowerCase().split(" ")
-            if (msgCont[msgCont.length - 2] === "*") {
-                try {
-                    let numoftimes = parseInt(msgCont[msgCont.length - 1])
-                        .catch(err => {return})
-                    var msgCont = msgCont.splice(0, msgCont.length - 2).join(" ")
-                    if (message.content.toLowerCase().startsWith(`${prefix}calc`)) return
-                    if (numoftimes < 11) {
-                        for(let i = 0; i < numoftimes; i++) {
-                            message.channel.send(`${msgCont}`)
-                        }
-                    }
-                    else {
-                        message.channel.send("Hold up just a minute bro don't you care about my bandwidth?")
-                        return
-                    }
-                }
-                catch (TypeError) {return}
-            }
-        }
-        catch (TypeError) {
-            return
-        }
         if (lowercase.includes("help") && !message.startsWith(">help")) {
             message.react("❔")
             const filter = (reaction, user) => {
@@ -1496,11 +1472,13 @@ client.on('message', async message => {
         let msgarray = message.content.toLowerCase().split(" ")
         for (let i = 0; i < msgarray.length; i++) {
             if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
+                if (message.mentions.members.first()) return
                 let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
             }
             else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
+                if (message.mentions.members.first()) return
                 let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
