@@ -9,10 +9,9 @@ function getRandomColor() {
 }
 let generalchannel = 0
 module.exports = client => {
-
     client.on('guildMemberAdd', member => {
         member.guild.channels.cache.map(c => {
-            if (c.name.includes("general") || c.name.includes("chat")){
+            if (c.name.includes("general") || c.name.includes("chat") || c.name.includes("welcome")){
                 // let general = client.channels.cache.get(c.id)
                 generalchannel = c.id
             }
@@ -23,7 +22,11 @@ module.exports = client => {
             .setDescription(`Welcome ${member} to the server!`)
             .setTimestamp(new Date())
         if (generalchannel) {
-            member.guild.channels.cache.get(generalchannel).send(embed)
+            try {
+                member.guild.channels.cache.get(generalchannel).send(embed)
+            } catch (error) {
+                console.log(error)
+            }
         }
         else {
             return

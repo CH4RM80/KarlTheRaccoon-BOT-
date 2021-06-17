@@ -1,7 +1,7 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
-const messagedeleteo = require('./messagedelete.js')
+const messagedeletes = require('./messagedelete.js')
 const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
 // const onjoinvc = require('./onjoinvc.js');
@@ -9,7 +9,6 @@ const client = new Client();
 const fs = require('fs')
 let prefix = '>'
 require('dotenv').config()
-const botid = "801827038234804234";
 const fetch = require("node-fetch");
 let embed = new MessageEmbed();
 let allguilds = []
@@ -20,6 +19,8 @@ let rrchannels = []
 let rrguilds = []
 let quotechannels = []
 let quotechannelguilds = []
+let logchannels = []
+let logchannelguilds = []
 let guildmsgs = []
 let pingchannel = []
 let generalchannels = []
@@ -68,7 +69,7 @@ async function loadData(path) {
         return
     }
 }
-  async function saveData(data, path) {
+async function saveData(data, path) {
     try {
         fs.writeFileSync(path, JSON.stringify(data))
     } catch (err) {
@@ -107,9 +108,9 @@ function start() {
             else if (c.name.toLowerCase() === "pingchannel") {
                 pingchannel.push(c.id)
             }
-            else if (c.name.toLowerCase() === "ai") {
-                aichannels.push(c.id)
-            }
+            // else if (c.name.toLowerCase() === "ai") {
+            //     aichannels.push(c.id)
+            // }
             // else if (c.name.toLowerCase().includes("quotes")) {
             //     quotechannel.push(c.id)
             // }
@@ -144,11 +145,23 @@ client.once('ready', () => {
             exceptionguildids = []
             exceptions = []
             includedbadword = []
+            logchannels = []
+            logchannelguilds = []
+            quotechannelguilds = []
+            quotechannels = []
         }
         for (i = 0; i < cont.Exceptions.length; i++) {
             exceptions.push(cont.Exceptions[i])
             exceptionguildids.push(cont.exceptionGuild[i])
             includedbadword.push(cont.includedWord[i])
+        }
+        for (i = 0; i < cont.Logchannels.length; i++) {
+            logchannels.push(cont.Logchannels[i])
+            logchannelguilds.push(cont.Logchannelguilds[i])
+        }
+        for (i = 0; i < cont.Quotechannels.length; i++) {
+            quotechannels.push(cont.Quotechannels[i])
+            quotechannelguilds.push(cont.Quotechannelguilds[i])
         }
     })
     // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
@@ -178,6 +191,7 @@ client.once('ready', () => {
     }, 3600000);
     let page1 = new MessageEmbed()
     page1.setTitle("Commands")
+    page1.addField(`***NEW***: ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
     page1.addField(`1: ${prefix}say (text)`, "This command makes the bot say what you want it to say");
     page1.addField(`2: ${prefix}prefix (character)`, "This command tells and sets(mod only) the prefix of the bot");
     page1.addField(`3: ${prefix}purge (int)`, "This command deletes messages(mod only)");
@@ -213,7 +227,7 @@ client.once('ready', () => {
     page2.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
     page2.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
     page2.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
-    page2.addField(`29. ${prefix}quotechannel (add || remove || clear || list) (#channel)`, "Designates a channel/channels for sending quotes in")
+    page2.addField(`29. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
@@ -519,7 +533,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added ${prefix}quotechannel for designating quotes channels, check it out with ${prefix}help\`\`\``)
+                message.channel.send(`\`\`\`Added ${prefix}channel, check it out with ${prefix}help\`\`\``)
             break;
             case "messages":
             case "message":
@@ -691,7 +705,11 @@ client.on('message', async message => {
                                         let newdata = {
                                             "Exceptions": exceptions,
                                             "includedWord": includedbadword,
-                                            "exceptionGuild": exceptionguildids
+                                            "exceptionGuild": exceptionguildids,
+                                            "Logchannels": logchannels,
+                                            "Logchannelguilds": logchannelguilds,
+                                            "Quotechannels": quotechannels,
+                                            "Quotechannelguilds": quotechannelguilds
                                         }
                                         await saveData(newdata, "./Files/data.json")
                                         message.channel.send("Word added to exceptions")
@@ -710,7 +728,11 @@ client.on('message', async message => {
                                         let pushdata = {
                                             "Exceptions": exceptions,
                                             "includedWord": includedbadword,
-                                            "exceptionGuild": exceptionguildids
+                                            "exceptionGuild": exceptionguildids,
+                                            "Logchannels": logchannels,
+                                            "Logchannelguilds": logchannelguilds,
+                                            "Quotechannels": quotechannels,
+                                            "Quotechannelguilds": quotechannelguilds
                                         }
                                         await saveData(pushdata, "./Files/data.json")
                                         loadData("./Files/data.json").then(newcont => {
@@ -723,7 +745,15 @@ client.on('message', async message => {
                             }
                         break;
                         case "list":
-                            
+                            let wordlist = []
+                            for (let i = 0; i < exceptionguildids.length; i++) {
+                                if (exceptionguildids[i] === message.guild.id) {
+                                    wordlist.push(exceptions[i])
+                                }
+                            }
+                            if (wordlist.length > 0) {
+                                message.channel.send(wordlist)
+                            }
                         break;
                     }
                     return
@@ -761,7 +791,6 @@ client.on('message', async message => {
                         memid = memid.id
                         for (let i = 0; i < birthdayids.length; i++) {
                             if (birthdayids[i] === memid) {
-                                // try {
                                 let month = months[parseInt(birthdays.toString().split("/")[0]) - 1]
                                 let day = birthdays.toString().split("/")[1]
                                 let suffix = ""
@@ -786,8 +815,6 @@ client.on('message', async message => {
                                     break;
                                 }
                                 let year = birthdays.toString().split("/")[2]
-                                // }
-                                // catch (TypeError) {return}
                                 message.channel.send(`<@${memid}>'s birthday is ${month} the ${day}${suffix} in ${year}`)
                             }
                             else {
@@ -1072,72 +1099,245 @@ client.on('message', async message => {
                     message.author.send(""+err)
                 }
             break
-            case "quotechannel":
-                if (args[1] && message.member.hasPermission('MANAGE_CHANNELS')) {
-                    switch (args[1]) {
-                        case "add":
-                            let quochannel = message.mentions.channels.first() || message.channel
-                            for (let i = 0; i < quotechannels.length; i++) {
-                                if (quochannel.id === quotechannels[i]) {
-                                    message.channel.send("This id already exists in the system")
-                                    return
-                                }
-                            }
-                            quotechannels.push(quochannel.id)
-                            quotechannelguilds.push(message.guild.id)
-                            message.channel.send("Id added to the quote channels list")
-                        break;
-                        case "remove":
-                            let quchannel = message.mentions.channels.first() || message.channel
-                            for (let i = 0; i < quotechannels.length; i++) {
-                                if (quchannel.id === quotechannels[i]) {
-                                    quotechannels.splice(i, 1)
-                                    quotechannelguilds.splice(i, 1)
-                                    message.channel.send("Id removed from quote channels list")
-                                }
-                            }
-                            message.channel.send("This id does not exist in the system")
-                            return
-                        break;
-                        case "clear":
-                            message.channel.send("Are you sure you want to clear all the quotes channels? (Y/N)")
-                            const filter = m => m.author.id == message.author.id
-                            message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
-                                .then(coll => {
-                                    if (coll.first().content.toLowerCase().startsWith("y")) {
-                                        for (let i = 0; i < quotechannelguilds.length; i++) {
-                                            if (quotechannelguilds[i] === message.guild.id) {
-                                                quotechannels.splice(i, 1)
-                                                quotechannelguilds.splice(i, 1)
+            // case "quotechannel":
+            //     if (args[1] && message.member.hasPermission('MANAGE_CHANNELS')) {
+            //         switch (args[1]) {
+            //             case "add":
+            //                 let quochannel = message.mentions.channels.first() || message.channel
+            //                 for (let i = 0; i < quotechannels.length; i++) {
+            //                     if (quochannel.id === quotechannels[i]) {
+            //                         message.channel.send("This id already exists in the system")
+            //                         return
+            //                     }
+            //                 }
+            //                 quotechannels.push(quochannel.id)
+            //                 quotechannelguilds.push(message.guild.id)
+            //                 message.channel.send("Id added to the quote channels list")
+            //             break;
+            //             case "remove":
+            //                 let quchannel = message.mentions.channels.first() || message.channel
+            //                 for (let i = 0; i < quotechannels.length; i++) {
+            //                     if (quchannel.id === quotechannels[i]) {
+            //                         quotechannels.splice(i, 1)
+            //                         quotechannelguilds.splice(i, 1)
+            //                         message.channel.send("Id removed from quote channels list")
+            //                     }
+            //                 }
+            //                 message.channel.send("This id does not exist in the system")
+            //                 return
+            //             break;
+            //             case "clear":
+            //                 message.channel.send("Are you sure you want to clear all the quotes channels? (Y/N)")
+            //                 const filter = m => m.author.id == message.author.id
+            //                 message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+            //                     .then(coll => {
+            //                         if (coll.first().content.toLowerCase().startsWith("y")) {
+            //                             for (let i = 0; i < quotechannelguilds.length; i++) {
+            //                                 if (quotechannelguilds[i] === message.guild.id) {
+            //                                     quotechannels.splice(i, 1)
+            //                                     quotechannelguilds.splice(i, 1)
+            //                                 }
+            //                             }
+            //                             message.channel.send("Cleared all the quote channels ;(")
+            //                         }
+            //                         else {
+            //                             message.channel.send("Ok, cancelling...")
+            //                         }
+            //                     })
+            //             break;
+            //             case "list":
+            //                 let list = []
+            //                 for (let i = 0; i < quotechannelguilds.length; i++) {
+            //                     if (quotechannelguilds[i] === message.guild.id) {
+            //                         list.push(`#${client.channels.cache.get(quotechannels[i]).name}`)
+            //                     }
+            //                 }
+            //                 if (list.length > 0) {
+            //                     message.channel.send(list)
+            //                 }
+            //                 else {
+            //                     message.channel.send("You have no quote channels as of now :(")
+            //                 }
+            //             break;
+            //         }
+            //     }
+            //     else {
+            //         message.channel.send("Error: Incorrect syntax/invalid permissions")
+            //         return
+            //     }
+            //     break;
+            case "channel":
+            case "channels":
+            case "settings":
+            case "setting":
+                if (message.member.hasPermission('MANAGE_CHANNELS')) {
+                    if (args[1]) {
+                        switch (args[1].toLowerCase()) {
+                            case "logs":
+                                if (args[2]) {
+                                    switch (args[2].toLowerCase()) {
+                                        case "add":
+                                            let mchannel = message.mentions.channels.first() || message.channel
+                                            for (let i = 0; i < logchannels.length; i++) {
+                                                if (mchannel.id === logchannels[i]) {
+                                                    message.channel.send("You already have a logs channel")
+                                                    return
+                                                }
                                             }
-                                        }
-                                        message.channel.send("Cleared all the quote channels ;(")
+                                            logchannels.push(mchannel.id)
+                                            logchannelguilds.push(message.guild.id)
+                                            let logdata = {
+                                                "Exceptions": exceptions,
+                                                "includedWord": includedbadword,
+                                                "exceptionGuild": exceptionguildids,
+                                                "Logchannels": logchannels,
+                                                "Logchannelguilds": logchannelguilds,
+                                                "Quotechannels": quotechannels,
+                                                "Quotechannelguilds": quotechannelguilds
+                                            }
+                                            saveData(logdata, "./Files/data.json")
+                                            message.channel.send("Channel successfully added to the list")
+                                        break
+                                        case "del":
+                                            let modchannel = message.mentions.channels.first() || message.channel
+                                            for (let i = 0; i < logchannels.length; i++) {
+                                                if (modchannel.id === logchannels[i]) {
+                                                    logchannels.splice(i, 1)
+                                                    logchannelguilds.splice(i, 1)
+                                                    let somedata = {
+                                                        "Exceptions": exceptions,
+                                                        "includedWord": includedbadword,
+                                                        "exceptionGuild": exceptionguildids,
+                                                        "Logchannels": logchannels,
+                                                        "Logchannelguilds": logchannelguilds,
+                                                        "Quotechannels": quotechannels,
+                                                        "Quotechannelguilds": quotechannelguilds
+                                                    }
+                                                    saveData(somedata, "./Files/data.json")
+                                                    message.channel.send("Channel successfully deleted from the list")
+                                                    return
+                                                }
+                                            }
+                                            message.channel.send(`Invalid channel, you can add a channel to the list with ${prefix}channel logs add (channel)`)
+                                        break;
+                                        case "list":
+                                            let loglist = []
+                                            for (let i = 0; i < logchannelguilds.length; i++) {
+                                                if (logchannelguilds[i] === message.guild.id) {
+                                                    loglist.push(`#${client.channels.cache.get(logchannels[i]).name}`)
+                                                }
+                                            }
+                                            if (loglist.length > 0) {
+                                                message.channel.send(loglist)
+                                            }
+                                            else {
+                                                message.channel.send("You have no logs channels as of now :(")
+                                            }
+                                        break;
                                     }
-                                    else {
-                                        message.channel.send("Ok, cancelling...")
-                                    }
-                                })
-                        break;
-                        case "list":
-                            let list = []
-                            for (let i = 0; i < quotechannelguilds.length; i++) {
-                                if (quotechannelguilds[i] === message.guild.id) {
-                                    list.push(`#${client.channels.cache.get(quotechannels[i]).name}`)
                                 }
-                            }
-                            if (list.length > 0) {
-                                message.channel.send(list)
-                            }
-                            else {
-                                message.channel.send("You have no quote channels as of now :(")
-                            }
-                        break;
+                                else message.channel.send(`This is the command syntax, \`${prefix}\`channel (logs, channels) (add, del, list) (#channel(optional))`)
+                            break;
+                            case "quotes":
+                                if (args[2]) {
+                                    switch(args[2].toLowerCase()) {
+                                        case "add":
+                                            let quochannel = message.mentions.channels.first() || message.channel
+                                            for (let i = 0; i < quotechannels.length; i++) {
+                                                if (quochannel.id === quotechannels[i]) {
+                                                    message.channel.send("This id already exists in the system")
+                                                    return
+                                                }
+                                            }
+                                            quotechannels.push(quochannel.id)
+                                            quotechannelguilds.push(message.guild.id)
+                                            let quotedata = {
+                                                "Exceptions": exceptions,
+                                                "includedWord": includedbadword,
+                                                "exceptionGuild": exceptionguildids,
+                                                "Logchannels": logchannels,
+                                                "Logchannelguilds": logchannelguilds,
+                                                "Quotechannels": quotechannels,
+                                                "Quotechannelguilds": quotechannelguilds
+                                            }
+                                            saveData(quotedata, "./Files/data.json")
+                                            message.channel.send("Id added to the quote channels list")
+                                        break;
+                                        case "del":
+                                            let quchannel = message.mentions.channels.first() || message.channel
+                                            for (let i = 0; i < quotechannels.length; i++) {
+                                                if (quchannel.id === quotechannels[i]) {
+                                                    quotechannels.splice(i, 1)
+                                                    quotechannelguilds.splice(i, 1)
+                                                    let quotesdata = {
+                                                        "Exceptions": exceptions,
+                                                        "includedWord": includedbadword,
+                                                        "exceptionGuild": exceptionguildids,
+                                                        "Logchannels": logchannels,
+                                                        "Logchannelguilds": logchannelguilds,
+                                                        "Quotechannels": quotechannels,
+                                                        "Quotechannelguilds": quotechannelguilds
+                                                    }
+                                                    saveData(quotesdata, "./Files/data.json")
+                                                    message.channel.send("Id removed from quote channels list")
+                                                }
+                                            }
+                                            message.channel.send("This id does not exist in the system")
+                                            return
+                                        break;
+                                        case "clear":
+                                            message.channel.send("Are you sure you want to clear all the quotes channels? (Y/N)")
+                                            const filter = m => m.author.id == message.author.id
+                                            message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+                                                .then(coll => {
+                                                    if (coll.first().content.toLowerCase().startsWith("y")) {
+                                                        for (let i = 0; i < quotechannelguilds.length; i++) {
+                                                            if (quotechannelguilds[i] === message.guild.id) {
+                                                                quotechannels.splice(i, 1)
+                                                                quotechannelguilds.splice(i, 1)
+                                                            }
+                                                        }
+                                                        let cleareddata = {
+                                                            "Exceptions": exceptions,
+                                                            "includedWord": includedbadword,
+                                                            "exceptionGuild": exceptionguildids,
+                                                            "Logchannels": logchannels,
+                                                            "Logchannelguilds": logchannelguilds,
+                                                            "Quotechannels": quotechannels,
+                                                            "Quotechannelguilds": quotechannelguilds
+                                                        }
+                                                        saveData(clearreddata, "./Files/data.json")
+                                                        message.channel.send("Cleared all the quote channels ;(")
+                                                    }
+                                                    else {
+                                                        message.channel.send("Ok, cancelling...")
+                                                    }
+                                                })
+                                        break;
+                                        case "list":
+                                            let list = []
+                                            for (let i = 0; i < quotechannelguilds.length; i++) {
+                                                if (quotechannelguilds[i] === message.guild.id) {
+                                                    list.push(`#${client.channels.cache.get(quotechannels[i]).name}`)
+                                                }
+                                            }
+                                            if (list.length > 0) {
+                                                message.channel.send(list)
+                                            }
+                                            else {
+                                                message.channel.send("You have no quote channels as of now :(")
+                                            }                                                
+                                        break;
+                                    }
+                                }
+                                else message.channel.send(`This is the command syntax, \`${prefix}\`channel (logs, channels) (add, del, list) (#channel(optional))`)
+                            break
+                        }
+                            
                     }
+                    else message.channel.send(`This is the command syntax, \`${prefix}\`channel (logs, channels) (add, del, list) (#channel(optional))`)
                 }
-                else {
-                    message.channel.send("Error: Incorrect syntax/invalid permissions")
-                    return
-                }
+                else message.channel.send("You don't have the permissions to use this command")
                 break;
                 // case "rrchannel":
                 //     if (args[1]) {
@@ -1308,7 +1508,7 @@ client.on('message', async message => {
             message.reply(`The current prefix is \`${prefix}\``);
             return
         }
-        else if (lowercase.includes("suicide") || lowercase.includes(" die")) {
+        else if (lowercase.includes("kys") || lowercase.includes("suicide") || lowercase.includes(" die") && lowercase.includes("want") || lowercase.includes("you") || lowercase.includes("should")) {
             message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, life is valuable 😉`);
             return
         }
@@ -1419,7 +1619,7 @@ client.on('guildCreate', guild => {
 //     }
 // })
 banyesyes(client)
-messagedeleteo(client)
+messagedeletes(client)
 // onjoinvc(client)
 guildmember(client)
 client.login(process.env.BOT_TOKEN);
