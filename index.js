@@ -356,7 +356,7 @@ client.on('message', async message => {
                     }
                     if (isbad === true) {
                         message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! (If you think this is a mistake then add the word to exceptions with ${prefix}except add (word))`).then((msg)=> {msg.delete({timeout: 8000})});
                         return;
                     }
                 }
@@ -754,6 +754,36 @@ client.on('message', async message => {
                             if (wordlist.length > 0) {
                                 message.channel.send(wordlist)
                             }
+                        break;
+                        case "clear":
+                            message.channel.send("Are you sure you want to clear all the exceptions for this server? (Y/N)")
+                            const filter = m => m.author.id == message.author.id
+                            message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+                                .then(coll => {
+                                    if (coll.first().content.toLowerCase().startsWith("y")) {
+                                        for (let i = 0; i < exceptionguildids.length; i++) {
+                                            if (exceptionguildids[i] === message.guild.id) {
+                                                exceptionguildids.splice(i, 1)
+                                                exceptions.splice(i, 1)
+                                                includedbadword.splice(i, 1)
+                                            }
+                                        }
+                                        let deleted = {
+                                            "Exceptions": exceptions,
+                                            "includedWord": includedbadword,
+                                            "exceptionGuild": exceptionguildids,
+                                            "Logchannels": logchannels,
+                                            "Logchannelguilds": logchannelguilds,
+                                            "Quotechannels": quotechannels,
+                                            "Quotechannelguilds": quotechannelguilds
+                                        }
+                                        saveData(deleted, "./Files/data.json")
+                                        message.channel.send("Cleared all the exceptions for this server ;(")
+                                    }
+                                    else {
+                                        message.channel.send("Ok, cancelling...")
+                                    }
+                                })                            
                         break;
                     }
                     return
@@ -1306,7 +1336,7 @@ client.on('message', async message => {
                                                             "Quotechannels": quotechannels,
                                                             "Quotechannelguilds": quotechannelguilds
                                                         }
-                                                        saveData(clearreddata, "./Files/data.json")
+                                                        saveData(cleareddata, "./Files/data.json")
                                                         message.channel.send("Cleared all the quote channels ;(")
                                                     }
                                                     else {
@@ -1443,7 +1473,7 @@ client.on('message', async message => {
         catch (TypeError) {
             return
         }
-        if (lowercase.includes("help") && !message.channel.startsWith(`${prefix}help`)) {
+        if (lowercase.includes("help") && !message.startsWith(">help")) {
             message.react("❔")
             const filter = (reaction, user) => {
                 return "❔".includes(reaction.emoji.name) && user.id === message.author.id
@@ -1578,7 +1608,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
                     }
                     if (isbad2 === true) {
                         newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 5000})});
+                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! (If you think this is a mistake then add the word to exceptions with ${prefix}except add (word))`).then((msg)=> {msg.delete({timeout: 8000})});
                         return;
                     }
                 }

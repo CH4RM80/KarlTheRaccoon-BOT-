@@ -28,7 +28,7 @@ module.exports = client => {
           logchannelguilds.push(cont.Logchannelguilds[i])
         }
       })
-      if (messageDelete.author.id === client.id) return
+      if (messageDelete.member.id === "801827038234804234") return
         for (let i = 0; i < logchannelguilds.length; i++) {
           if (messageDelete.guild.id === logchannelguilds[i]) {
             channel = messageDelete.guild.channels.cache.get(logchannels[i])
