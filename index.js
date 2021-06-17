@@ -1496,7 +1496,7 @@ client.on('message', async message => {
         }
         else if (lowercase.includes("hello karl") || lowercase.includes("hi karl")) {
             if(!(message.member.id === "801827038234804234")) {
-                if(lowercase.includes("die") || lowercase.includes("suicide")) {
+                if(lowercase.includes("suicide")) {
                     message.channel.send(`hi ${message.member.user.username}-chan, don't die, your life is valuable, don't waste it ;)`);
                     return
                 }
@@ -1516,7 +1516,7 @@ client.on('message', async message => {
             message.reply(`The current prefix is \`${prefix}\``);
             return
         }
-        else if (lowercase.includes("kys") || lowercase.includes("suicide") || lowercase.includes(" die") && lowercase.includes("want") || lowercase.includes("you") || lowercase.includes("should")) {
+        else if (lowercase.includes("kys") || lowercase.includes("suicide") || lowercase.includes(" die") && lowercase.includes("want") || lowercase.includes("you") && lowercase.includes(" die") || lowercase.includes("should") && lowercase.includes(" die")) {
             message.channel.send(`${message.member.user.username}-san, life is too short to talk about dying, life is valuable 😉`);
             return
         }
