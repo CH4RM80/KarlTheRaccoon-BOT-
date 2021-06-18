@@ -342,7 +342,7 @@ client.on('message', async message => {
     }
     let isbad = true
     if (sAllow === false) {
-        if (message.content.startsWith(">swear") || message.content.startsWith(">except")) {isbad = false}
+        if (message.content.startsWith(`${prefix}except`)) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i]) || compiledLowercase.includes[badwords[i]]) {
@@ -1310,6 +1310,7 @@ client.on('message', async message => {
                                                     }
                                                     saveData(quotesdata, "./Files/data.json")
                                                     message.channel.send("Id removed from quote channels list")
+                                                    return
                                                 }
                                             }
                                             message.channel.send("This id does not exist in the system")
@@ -1473,12 +1474,14 @@ client.on('message', async message => {
         for (let i = 0; i < msgarray.length; i++) {
             if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
                 if (message.mentions.members.first()) return
+                if (message.content.startsWith(`${prefix}`)) return
                 let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
             }
             else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
                 if (message.mentions.members.first()) return
+                if (message.content.startsWith(`${prefix}`)) return
                 let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
@@ -1572,7 +1575,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     }
     let isbad2 = true
     if (sAllow === false) {
-        if (newMessage.content.startsWith(">swear")) {isbad = false}
+        if (newMessage.content.startsWith(`${prefix}except`)) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
