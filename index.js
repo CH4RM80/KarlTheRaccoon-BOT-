@@ -1440,6 +1440,9 @@ client.on('message', async message => {
                 // break;
                 // case "dictionary":
                 // break;
+                case "die":
+                    if (message.author.id === ownerid) message.channel.send("Okie UwU, *dies").then(() => client.destroy())
+                break
         }   
     }
     let channel = message.guild.channels.cache.find(
