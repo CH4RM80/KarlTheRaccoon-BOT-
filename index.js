@@ -342,7 +342,7 @@ client.on('message', async message => {
     }
     let isbad = true
     if (sAllow === false) {
-        if (message.content.startsWith(`${prefix}except`)) {isbad = false}
+        if (message.content.toLowerCase().startsWith(`${prefix}except`)) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i]) || compiledLowercase.includes[badwords[i]]) {
@@ -785,6 +785,16 @@ client.on('message', async message => {
                                     }
                                 })                            
                         break;
+                        // case "user":
+                        //     if (args[3] && message.mentions.users.first()) {
+                        //         switch (args[3]) {
+                        //             case "allow":
+
+                        //             break;
+                        //             case "deny":
+
+                        //         }
+                        //     }
                     }
                     return
                 }
@@ -1450,7 +1460,24 @@ client.on('message', async message => {
         }
     }
     else {
-        if (lowercase.includes("help") && !message.startsWith(">help")) {
+        let msgarray = message.content.toLowerCase().split(" ")
+        for (let i = 0; i < msgarray.length; i++) {
+            if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
+                if (message.mentions.members.first()) return
+                if (message.content.startsWith(`${prefix}`)) return
+                let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
+                message.channel.send(`Hi ${iam}, I'm karl!`)
+                return
+            }
+            else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
+                if (message.mentions.members.first()) return
+                if (message.content.startsWith(`${prefix}`)) return
+                let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
+                message.channel.send(`Hi ${iam}, I'm karl!`)
+                return
+            }
+        }
+        if (lowercase.includes("help") && !lowercase.startsWith(">help")) {
             message.react("❔")
             const filter = (reaction, user) => {
                 return "❔".includes(reaction.emoji.name) && user.id === message.author.id
@@ -1469,23 +1496,6 @@ client.on('message', async message => {
                         catch (error) {console.log(error)}
                     }
                 })
-        }
-        let msgarray = message.content.toLowerCase().split(" ")
-        for (let i = 0; i < msgarray.length; i++) {
-            if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
-                if (message.mentions.members.first()) return
-                if (message.content.startsWith(`${prefix}`)) return
-                let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
-                message.channel.send(`Hi ${iam}, I'm karl!`)
-                return
-            }
-            else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
-                if (message.mentions.members.first()) return
-                if (message.content.startsWith(`${prefix}`)) return
-                let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
-                message.channel.send(`Hi ${iam}, I'm karl!`)
-                return
-            }
         }
         if (lowercase.includes("pogchamp")) {
             if (message.member.user.id !== "801827038234804234") {
@@ -1575,7 +1585,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     }
     let isbad2 = true
     if (sAllow === false) {
-        if (newMessage.content.startsWith(`${prefix}except`)) {isbad = false}
+        if (newMessage.content.toLowerCase().startsWith(`${prefix}except`)) {isbad = false}
         for (let i = 0; i < badwords.length; i++) {
             for (let j = 0; j < xspaces.length; j++) {
                 if (xspaces[j].includes(badwords[i])) {
