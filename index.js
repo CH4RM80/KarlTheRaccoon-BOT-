@@ -10,6 +10,9 @@ const fs = require('fs')
 let prefix = '>'
 require('dotenv').config()
 const fetch = require("node-fetch");
+var unirest = require("unirest");
+var axios = require("axios").default;
+const { log } = require('util');
 let embed = new MessageEmbed();
 let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -31,10 +34,6 @@ let lastuserid = "";
 let sAllow = false
 let ownerid = "601822624867155989"
 ccache = client.channels.cache
-let badwords = ["stfu", "fuck", "fuk", "wtf", "orgy", "faggot", "fucc", "shit", "cunt", "as$", "a$$", "damn", "bastard", "penus", "boob", "titties", "b!tch", "tits", "clit", "penjs","vagina", "shjt", "shjit", "fucj", "bitch", "pussy", "fucn", "pujssy", "djck", "bussy", "fcuk", "btch", "nigger", "nigga", "niqqa", "niger", "dick", "prick", "ass", "penis", "whore", "shutup", "b*tch", "pr*ck", "p*ssy", "*ss", "@ss", "c*nt", "f*ck", "fck", "d*mn", "n*gga", "n*gger", "n*qqa", "d*ck", "hell", "piss", "cum", "p!ss", "cock", "c0ck", "p3nis", "p3n!s", "wh0re", "cum", "d!ck", "whore"]
-let exceptions = []
-let includedbadword = []
-let exceptionguildids = []
 let spamchannel = []
 let pages = []
 function getRandomColor() {
@@ -141,19 +140,11 @@ client.once('ready', () => {
     }
     loadData("./Files/data.json").then(cont => {
         cont = JSON.parse(cont)
-        if (exceptions || exceptionguildids || includedbadword) {
-            exceptionguildids = []
-            exceptions = []
-            includedbadword = []
+        if (logchannels || logchannelguilds) {
             logchannels = []
             logchannelguilds = []
             quotechannelguilds = []
             quotechannels = []
-        }
-        for (i = 0; i < cont.Exceptions.length; i++) {
-            exceptions.push(cont.Exceptions[i])
-            exceptionguildids.push(cont.exceptionGuild[i])
-            includedbadword.push(cont.includedWord[i])
         }
         for (i = 0; i < cont.Logchannels.length; i++) {
             logchannels.push(cont.Logchannels[i])
@@ -163,13 +154,10 @@ client.once('ready', () => {
             quotechannels.push(cont.Quotechannels[i])
             quotechannelguilds.push(cont.Quotechannelguilds[i])
         }
+        for (i = 0; i < cont.SwearingAllowed.length; i++) {
+            swearingallowed.push(cont.SwearingAllowed[i])
+        }
     })
-    // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
-    //     data: {
-    //         name: 'ping', 
-    //         description: "Show's the bot's ping"
-    //     }
-    // })
     // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
     //     data: {
     //         name: 'say', 
@@ -215,19 +203,18 @@ client.once('ready', () => {
     pages.push(page1)
     let page2 = new MessageEmbed()
     page1.addField(`16. ${prefix}pingme (number)`, "This command pings the user (number) times");
-    page2.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(server owner only), also configures bypasses to the words");
-    page2.addField(`18. ${prefix}except (add | del) (word)`, "Adds or deletes words from the swear blocking list")
-    page2.addField(`19. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
-    page2.addField(`20. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
-    page2.addField(`21. ${prefix}meme`, "Gets a random meme")
-    page2.addField(`22. ${prefix}dank`, "Gets a random dank meme")
-    page2.addField(`23. ${prefix}cat(to)`, "Gets a random cat gif/image")
-    page2.addField(`24. ${prefix}dog(go)`, "Gets a random dog gif/image")
-    page2.addField(`25. ${prefix}duck`, "Gets a random duck gif/image")
-    page2.addField(`26. ${prefix}cute(aww)`, "Gets a random cute gif/image")
-    page2.addField(`27. ${prefix}calc (math equation)`, "Gives answers to math problems")
-    page2.addField(`28. ${prefix}eval (REDACTED)`, "REDACTED")
-    page2.addField(`29. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
+    page2.addField(`17. ${prefix}swear (on/off)`, "Enables or disables swear blocking in the server(mod only)");
+    page2.addField(`18. ${prefix}waifu`, "Gets a random waifu, complete with anime title(courtesy of the Animu API)")
+    page2.addField(`19. ${prefix}afact`, "Gets a random anime fact(courtesy of the Animu API)")
+    page2.addField(`20. ${prefix}meme`, "Gets a random meme")
+    page2.addField(`21. ${prefix}dank`, "Gets a random dank meme")
+    page2.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
+    page2.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
+    page2.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
+    page2.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+    page2.addField(`26. ${prefix}calc (math equation)`, "Gives answers to math problems")
+    page2.addField(`27. ${prefix}eval (REDACTED)`, "REDACTED")
+    page2.addField(`28. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
@@ -342,39 +329,45 @@ client.on('message', async message => {
     }
     let isbad = true
     if (sAllow === false) {
-        if (message.content.toLowerCase().startsWith(`${prefix}except`)) {isbad = false}
-        for (let i = 0; i < badwords.length; i++) {
-            for (let j = 0; j < xspaces.length; j++) {
-                if (xspaces[j].includes(badwords[i]) || compiledLowercase.includes[badwords[i]]) {
-                    for (let f = 0; f < exceptions.length; f++) {
-                        if (xspaces.includes(exceptions[f]) && badwords[i] === includedbadword[f] && message.guild.id === exceptionguildids[f]) {
-                            isbad = false
+        var options = {
+            method: 'GET',
+            url: 'https://community-purgomalum.p.rapidapi.com/containsprofanity',
+            params: {text: `${message.content}`},
+            headers: {
+              'x-rapidapi-key': '1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5',
+              'x-rapidapi-host': 'community-purgomalum.p.rapidapi.com'
+            }
+          };
+          axios.request(options).then(function (response) {
+                if (JSON.parse(response.data) === true) {
+                    message.channel.messages.fetch(message.id).then(msg => msg.delete())
+                    message.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 8000})})
+                    for (let i = 0; i < logchannelguilds.length; i++) {
+                        if (logchannelguilds[i] === message.guild.id) {
+                            embed = new MessageEmbed()
+                            embed.setColor('RANDOM')
+                            embed.setTitle(`Word triggered in ${message.channel.name}`)
+                            embed.addField("Info", `User: ${message.author.tag}\nUncensored: ${message.content}`)
+                            client.channels.cache.get(logchannels[i]).send(embed)
                         }
-                        else if (compiledLowercase.includes(exceptions[f]) && badwords[i] === includedbadword[f] && message.guild.id === exceptionguildids[f]) {
-                            isbad = false
-                        }
-                    }
-                    if (isbad === true) {
-                        message.channel.messages.fetch(message.id).then(msg => msg.delete())
-                        message.reply(`Thou shalt not send unholy words in the holy chat of this holy server! (If you think this is a mistake then add the word to exceptions with ${prefix}except add (word))`).then((msg)=> {msg.delete({timeout: 8000})});
-                        return;
                     }
                 }
-            }
-        }
+          }).catch(function (error) {
+              console.error(error);
+          });
     }
-    for (let i = 0; i < aichannels.length; i++) {
-        if (message.channel.id === aichannels[i]) {
-            const airesp = await fetch(`https://api.pgamerx.com/v3/ai/response?message=encodeURIComponent("${message.content}")&type=stable`, {
-                method: 'get',
-                headers: {'x-api-key': 'SBGW8qLcfEFL'},
-            }).then(async airesp => {
-                const aifull = await airesp.json()
-                message.channel.send(aifull.message)
-            })
-            return
-        }
-    }
+    // for (let i = 0; i < aichannels.length; i++) {
+    //     if (message.channel.id === aichannels[i]) {
+    //         const airesp = await fetch(`https://api.pgamerx.com/v3/ai/response?message=encodeURIComponent("${message.content}")&type=stable`, {
+    //             method: 'get',
+    //             headers: {'x-api-key': 'SBGW8qLcfEFL'},
+    //         }).then(async airesp => {
+    //             const aifull = await airesp.json()
+    //             message.channel.send(aifull.message)
+    //         })
+    //         return
+    //     }
+    // }
     
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
@@ -656,6 +649,14 @@ client.on('message', async message => {
                             for (i = 0; i < swearingallowed.length; i++) {
                                 if (message.guild.id === swearingallowed[i]) {
                                     swearingallowed.splice(i, 1)
+                                    let sweardata1 = {
+                                        "Logchannels": logchannels,
+                                        "Logchannelguilds": logchannelguilds,
+                                        "Quotechannels": quotechannels,
+                                        "Quotechannelguilds": quotechannelguilds,
+                                        "SwearingAllowed": swearingallowed
+                                    }
+                                    saveData(sweardata1, "./Files/data.json")
                                     message.channel.send("Disallowed swearing for this server successfully")
                                     sAllow = false
                                     return
@@ -667,6 +668,14 @@ client.on('message', async message => {
                             if (swearingallowed.length === 0) {
                                 swearingallowed.push(message.guild.id)
                                 message.channel.send("Enabled swearing for this server successfully")
+                                let sweardata2 = {
+                                    "Logchannels": logchannels,
+                                    "Logchannelguilds": logchannelguilds,
+                                    "Quotechannels": quotechannels,
+                                    "Quotechannelguilds": quotechannelguilds,
+                                    "SwearingAllowed": swearingallowed
+                                }
+                                saveData(sweardata2, "./Files/data.json")
                             }
                             else {
                                 for (let i = 0; i < swearingallowed.length; i++) {
@@ -676,132 +685,140 @@ client.on('message', async message => {
                                     }
                                 }
                                 swearingallowed.push(message.guild.id)
+                                let sweardata3 = {
+                                    "Logchannels": logchannels,
+                                    "Logchannelguilds": logchannelguilds,
+                                    "Quotechannels": quotechannels,
+                                    "Quotechannelguilds": quotechannelguilds,
+                                    "SwearingAllowed": swearingallowed
+                                }
+                                saveData(sweardata3, "./Files/data.json")
                                 message.channel.send("Enabled swearing for this server successfully")
                             }
                         }
                     }
             break;
-            case "except":
-                if (!(message.member.hasPermission('MANAGE_GUILD') || message.member.id == ownerid)) return
-                if (args[1]) {
-                    switch (args[1]) {
-                        case "add":
-                            if (args[2]) {
-                                for (let i = 0; i < exceptions.length; i++) {
-                                    if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
-                                        message.channel.send("That exception has already been made")
-                                        return
-                                    }
-                                    if (args[2].length < 3) {
-                                        message.channel.send("This exception is too short")
-                                        return
-                                    }
-                                }
-                                for (let i = 0; i < badwords.length; i++) {
-                                    if (args[2].includes(badwords[i])) {
-                                        exceptions.push(args[2].toString())
-                                        includedbadword.push(badwords[i].toString())
-                                        exceptionguildids.push(message.guild.id)
-                                        let newdata = {
-                                            "Exceptions": exceptions,
-                                            "includedWord": includedbadword,
-                                            "exceptionGuild": exceptionguildids,
-                                            "Logchannels": logchannels,
-                                            "Logchannelguilds": logchannelguilds,
-                                            "Quotechannels": quotechannels,
-                                            "Quotechannelguilds": quotechannelguilds
-                                        }
-                                        await saveData(newdata, "./Files/data.json")
-                                        message.channel.send("Word added to exceptions")
-                                        return
-                                    }
-                                }
-                            }
-                        break;
-                        case "del":
-                            if (args[2]) {
-                                for (let i = 0; i < exceptions.length; i++) {
-                                    if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
-                                        exceptions.splice(i, 1)
-                                        exceptionguildids.splice(i, 1)
-                                        includedbadword.splice(i, 1)
-                                        let pushdata = {
-                                            "Exceptions": exceptions,
-                                            "includedWord": includedbadword,
-                                            "exceptionGuild": exceptionguildids,
-                                            "Logchannels": logchannels,
-                                            "Logchannelguilds": logchannelguilds,
-                                            "Quotechannels": quotechannels,
-                                            "Quotechannelguilds": quotechannelguilds
-                                        }
-                                        await saveData(pushdata, "./Files/data.json")
-                                        loadData("./Files/data.json").then(newcont => {
-                                        })
-                                        message.channel.send("Word removed from exceptions")
-                                        return
-                                    }
-                                }
-                                message.channel.send(`That word is not in the exceptions list, add it with ">except add ${args[2]}"`)
-                            }
-                        break;
-                        case "list":
-                            let wordlist = []
-                            for (let i = 0; i < exceptionguildids.length; i++) {
-                                if (exceptionguildids[i] === message.guild.id) {
-                                    wordlist.push(exceptions[i])
-                                }
-                            }
-                            if (wordlist.length > 0) {
-                                message.channel.send(wordlist)
-                            }
-                        break;
-                        case "clear":
-                            message.channel.send("Are you sure you want to clear all the exceptions for this server? (Y/N)")
-                            const filter = m => m.author.id == message.author.id
-                            message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
-                                .then(coll => {
-                                    if (coll.first().content.toLowerCase().startsWith("y")) {
-                                        for (let i = 0; i < exceptionguildids.length; i++) {
-                                            if (exceptionguildids[i] === message.guild.id) {
-                                                exceptionguildids.splice(i, 1)
-                                                exceptions.splice(i, 1)
-                                                includedbadword.splice(i, 1)
-                                            }
-                                        }
-                                        let deleted = {
-                                            "Exceptions": exceptions,
-                                            "includedWord": includedbadword,
-                                            "exceptionGuild": exceptionguildids,
-                                            "Logchannels": logchannels,
-                                            "Logchannelguilds": logchannelguilds,
-                                            "Quotechannels": quotechannels,
-                                            "Quotechannelguilds": quotechannelguilds
-                                        }
-                                        saveData(deleted, "./Files/data.json")
-                                        message.channel.send("Cleared all the exceptions for this server ;(")
-                                    }
-                                    else {
-                                        message.channel.send("Ok, cancelling...")
-                                    }
-                                })                            
-                        break;
-                        // case "user":
-                        //     if (args[3] && message.mentions.users.first()) {
-                        //         switch (args[3]) {
-                        //             case "allow":
+            // case "except":
+            //     if (!(message.member.hasPermission('MANAGE_GUILD') || message.member.id == ownerid)) return
+            //     if (args[1]) {
+            //         switch (args[1]) {
+            //             case "add":
+            //                 if (args[2]) {
+            //                     for (let i = 0; i < exceptions.length; i++) {
+            //                         if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+            //                             message.channel.send("That exception has already been made")
+            //                             return
+            //                         }
+            //                         if (args[2].length < 3) {
+            //                             message.channel.send("This exception is too short")
+            //                             return
+            //                         }
+            //                     }
+            //                     for (let i = 0; i < badwords.length; i++) {
+            //                         if (args[2].includes(badwords[i])) {
+            //                             exceptions.push(args[2].toString())
+            //                             includedbadword.push(badwords[i].toString())
+            //                             exceptionguildids.push(message.guild.id)
+            //                             let newdata = {
+            //                    
+            //                     
+            //                    
+            //                                 "Logchannels": logchannels,
+            //                                 "Logchannelguilds": logchannelguilds,
+            //                                 "Quotechannels": quotechannels,
+            //                                 "Quotechannelguilds": quotechannelguilds
+            //                             }
+            //                             await saveData(newdata, "./Files/data.json")
+            //                             message.channel.send("Word added to exceptions")
+            //                             return
+            //                         }
+            //                     }
+            //                 }
+            //             break;
+            //             case "del":
+            //                 if (args[2]) {
+            //                     for (let i = 0; i < exceptions.length; i++) {
+            //                         if (args[2] === exceptions[i] && message.guild.id === exceptionguildids[i]) {
+            //                             exceptions.splice(i, 1)
+            //                             exceptionguildids.splice(i, 1)
+            //                             includedbadword.splice(i, 1)
+            //                             let pushdata = {
+            //                    
+            //                     
+            //                    
+            //                                 "Logchannels": logchannels,
+            //                                 "Logchannelguilds": logchannelguilds,
+            //                                 "Quotechannels": quotechannels,
+            //                                 "Quotechannelguilds": quotechannelguilds
+            //                             }
+            //                             await saveData(pushdata, "./Files/data.json")
+            //                             loadData("./Files/data.json").then(newcont => {
+            //                             })
+            //                             message.channel.send("Word removed from exceptions")
+            //                             return
+            //                         }
+            //                     }
+            //                     message.channel.send(`That word is not in the exceptions list, add it with ">except add ${args[2]}"`)
+            //                 }
+            //             break;
+            //             case "list":
+            //                 let wordlist = []
+            //                 for (let i = 0; i < exceptionguildids.length; i++) {
+            //                     if (exceptionguildids[i] === message.guild.id) {
+            //                         wordlist.push(exceptions[i])
+            //                     }
+            //                 }
+            //                 if (wordlist.length > 0) {
+            //                     message.channel.send(wordlist)
+            //                 }
+            //             break;
+            //             case "clear":
+            //                 message.channel.send("Are you sure you want to clear all the exceptions for this server? (Y/N)")
+            //                 const filter = m => m.author.id == message.author.id
+            //                 message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+            //                     .then(coll => {
+            //                         if (coll.first().content.toLowerCase().startsWith("y")) {
+            //                             for (let i = 0; i < exceptionguildids.length; i++) {
+            //                                 if (exceptionguildids[i] === message.guild.id) {
+            //                                     exceptionguildids.splice(i, 1)
+            //                                     exceptions.splice(i, 1)
+            //                                     includedbadword.splice(i, 1)
+            //                                 }
+            //                             }
+            //                             let deleted = {
+            //                    
+            //                     
+            //                    
+            //                                 "Logchannels": logchannels,
+            //                                 "Logchannelguilds": logchannelguilds,
+            //                                 "Quotechannels": quotechannels,
+            //                                 "Quotechannelguilds": quotechannelguilds
+            //                             }
+            //                             saveData(deleted, "./Files/data.json")
+            //                             message.channel.send("Cleared all the exceptions for this server ;(")
+            //                         }
+            //                         else {
+            //                             message.channel.send("Ok, cancelling...")
+            //                         }
+            //                     })                            
+            //             break;
+            //             // case "user":
+            //             //     if (args[3] && message.mentions.users.first()) {
+            //             //         switch (args[3]) {
+            //             //             case "allow":
 
-                        //             break;
-                        //             case "deny":
+            //             //             break;
+            //             //             case "deny":
 
-                        //         }
-                        //     }
-                    }
-                    return
-                }
-                else {
-                    message.channel.send("You do not have permission to use this command, sorry UwU")
-                }
-            break;
+            //             //         }
+            //             //     }
+            //         }
+            //         return
+            //     }
+            //     else {
+            //         message.channel.send("You do not have permission to use this command, sorry UwU")
+            //     }
+            // break;
             case "pingme":
                 try {
                     if (args[1] <= 100) {
@@ -1227,13 +1244,11 @@ client.on('message', async message => {
                                             logchannels.push(mchannel.id)
                                             logchannelguilds.push(message.guild.id)
                                             let logdata = {
-                                                "Exceptions": exceptions,
-                                                "includedWord": includedbadword,
-                                                "exceptionGuild": exceptionguildids,
                                                 "Logchannels": logchannels,
                                                 "Logchannelguilds": logchannelguilds,
                                                 "Quotechannels": quotechannels,
-                                                "Quotechannelguilds": quotechannelguilds
+                                                "Quotechannelguilds": quotechannelguilds,
+                                                "SwearingAllowed": swearingallowed
                                             }
                                             saveData(logdata, "./Files/data.json")
                                             message.channel.send("Channel successfully added to the list")
@@ -1245,13 +1260,11 @@ client.on('message', async message => {
                                                     logchannels.splice(i, 1)
                                                     logchannelguilds.splice(i, 1)
                                                     let somedata = {
-                                                        "Exceptions": exceptions,
-                                                        "includedWord": includedbadword,
-                                                        "exceptionGuild": exceptionguildids,
                                                         "Logchannels": logchannels,
                                                         "Logchannelguilds": logchannelguilds,
                                                         "Quotechannels": quotechannels,
-                                                        "Quotechannelguilds": quotechannelguilds
+                                                        "Quotechannelguilds": quotechannelguilds,
+                                                        "SwearingAllowed": swearingallowed
                                                     }
                                                     saveData(somedata, "./Files/data.json")
                                                     message.channel.send("Channel successfully deleted from the list")
@@ -1292,13 +1305,11 @@ client.on('message', async message => {
                                             quotechannels.push(quochannel.id)
                                             quotechannelguilds.push(message.guild.id)
                                             let quotedata = {
-                                                "Exceptions": exceptions,
-                                                "includedWord": includedbadword,
-                                                "exceptionGuild": exceptionguildids,
                                                 "Logchannels": logchannels,
                                                 "Logchannelguilds": logchannelguilds,
                                                 "Quotechannels": quotechannels,
-                                                "Quotechannelguilds": quotechannelguilds
+                                                "Quotechannelguilds": quotechannelguilds,
+                                                "SwearingAllowed": swearingallowed
                                             }
                                             saveData(quotedata, "./Files/data.json")
                                             message.channel.send("Id added to the quote channels list")
@@ -1310,13 +1321,11 @@ client.on('message', async message => {
                                                     quotechannels.splice(i, 1)
                                                     quotechannelguilds.splice(i, 1)
                                                     let quotesdata = {
-                                                        "Exceptions": exceptions,
-                                                        "includedWord": includedbadword,
-                                                        "exceptionGuild": exceptionguildids,
                                                         "Logchannels": logchannels,
                                                         "Logchannelguilds": logchannelguilds,
                                                         "Quotechannels": quotechannels,
-                                                        "Quotechannelguilds": quotechannelguilds
+                                                        "Quotechannelguilds": quotechannelguilds,
+                                                        "SwearingAllowed": swearingallowed
                                                     }
                                                     saveData(quotesdata, "./Files/data.json")
                                                     message.channel.send("Id removed from quote channels list")
@@ -1339,13 +1348,11 @@ client.on('message', async message => {
                                                             }
                                                         }
                                                         let cleareddata = {
-                                                            "Exceptions": exceptions,
-                                                            "includedWord": includedbadword,
-                                                            "exceptionGuild": exceptionguildids,
                                                             "Logchannels": logchannels,
                                                             "Logchannelguilds": logchannelguilds,
                                                             "Quotechannels": quotechannels,
-                                                            "Quotechannelguilds": quotechannelguilds
+                                                            "Quotechannelguilds": quotechannelguilds,
+                                                            "SwearingAllowed": swearingallowed
                                                         }
                                                         saveData(cleareddata, "./Files/data.json")
                                                         message.channel.send("Cleared all the quote channels ;(")
@@ -1589,25 +1596,32 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     let isbad2 = true
     if (sAllow === false) {
         if (newMessage.content.toLowerCase().startsWith(`${prefix}except`)) {isbad = false}
-        for (let i = 0; i < badwords.length; i++) {
-            for (let j = 0; j < xspaces.length; j++) {
-                if (xspaces[j].includes(badwords[i])) {
-                    for (let f = 0; f < exceptions.length; f++) {
-                        if (xspaces.includes(exceptions[f]) && badwords[i] === includedbadword[f] && newMessage.guild.id === exceptionguildids[f]) {
-                            isbad2 = false
+        var opt = {
+            method: 'GET',
+            url: 'https://community-purgomalum.p.rapidapi.com/containsprofanity',
+            params: {text: `${newMessage.content}`},
+            headers: {
+              'x-rapidapi-key': '1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5',
+              'x-rapidapi-host': 'community-purgomalum.p.rapidapi.com'
+            }
+          };
+          axios.request(opt).then(function (rpn) {
+                if (JSON.parse(rpn.data) === true) {
+                    newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
+                    newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server!`).then((msg)=> {msg.delete({timeout: 8000})})
+                    for (let i = 0; i < logchannelguilds.length; i++) {
+                        if (logchannelguilds[i] === newMessage.guild.id) {
+                            embed = new MessageEmbed()
+                            embed.setColor('RANDOM')
+                            embed.setTitle(`Word triggered in ${newMessage.channel.name}`)
+                            embed.addField("Info", `User: ${newMessage.author.tag}\nUncensored: ${newMessage.content}`)
+                            client.channels.cache.get(logchannels[i]).send(embed)
                         }
-                        else if (compiledLowercase.includes(exceptions[f]) && badwords[i] === includedbadword[f] && newMessage.guild.id === exceptionguildids[f]) {
-                            isbad = false
-                        }
-                    }
-                    if (isbad2 === true) {
-                        newMessage.channel.messages.fetch(newMessage.id).then(msg => msg.delete())
-                        newMessage.reply(`Thou shalt not send unholy words in the holy chat of this holy server! (If you think this is a mistake then add the word to exceptions with ${prefix}except add (word))`).then((msg)=> {msg.delete({timeout: 8000})});
-                        return;
                     }
                 }
-            }
-        }
+          }).catch(function (error) {
+              console.error(error);
+          });
     }
 });
 client.on('guildCreate', guild => {

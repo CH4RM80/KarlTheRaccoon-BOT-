@@ -1,6 +1,7 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser} = require('discord.js');
 const parse = require('path')
 const fs = require('fs')
+const axios = require('axios').default;
 async function loadData(path) {
   try {
       return await fs.readFileSync(path, 'utf8')
@@ -32,7 +33,22 @@ module.exports = client => {
         for (let i = 0; i < logchannelguilds.length; i++) {
           if (messageDelete.guild.id === logchannelguilds[i]) {
             channel = messageDelete.guild.channels.cache.get(logchannels[i])
-            if(channel) {
+            var options = {
+              method: 'GET',
+              url: 'https://community-purgomalum.p.rapidapi.com/json',
+              params: {text: `${messageDelete.content}`},
+              headers: {
+                'x-rapidapi-key': '1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5',
+                'x-rapidapi-host': 'community-purgomalum.p.rapidapi.com'
+              }
+            };
+
+            axios.request(options).then(function (response) {
+              response = response.data
+              if (response.result !== messageDelete.content) {
+                messageDelete.content = response.result
+              }
+              if(channel) {
                 embed = new MessageEmbed();
                 embed.setTitle("Message Deleted");
                 embed.setDescription(messageDelete.content);
@@ -42,6 +58,9 @@ module.exports = client => {
                 embed.setTimestamp();
                 channel.send(embed);
             }
+            }).catch(function (error) {
+              console.error(error);
+            });
           }
         }
     })
