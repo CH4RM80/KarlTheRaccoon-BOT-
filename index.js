@@ -1,6 +1,7 @@
 const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
+const { OpusEncoder } = require('@discordjs/opus');
 const messagedeletes = require('./messagedelete.js')
 const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
@@ -10,6 +11,7 @@ const fs = require('fs')
 let prefix = '>'
 require('dotenv').config()
 const fetch = require("node-fetch");
+const ffmpeg = require('ffmpeg-static');
 var unirest = require("unirest");
 var axios = require("axios").default;
 const { log } = require('util');
@@ -29,6 +31,8 @@ let pingchannel = []
 let generalchannels = []
 let aichannels = []
 let foundguild = false
+let useridinvc = []
+let userinvcid = []
 swearingallowed = []
 let lastuserid = "";
 let sAllow = false
@@ -81,6 +85,19 @@ async function quote(channelid) {
             const finishedquote = await quoteraw.json();
             client.channels.cache.get(channelid).send(`${finishedquote.content}\n-${finishedquote.author}`)
         })
+}
+async function play(voiceChannel, path) {
+    const connection = await voiceChannel.join().then((connection) => {
+        const dispatcher = connection.play(path)
+        dispatcher.on('start', () => {
+            console.log("audio is now playing!")
+        })
+        dispatcher.on('finish', () => {
+            console.log('audio has finished playing!')
+            voiceChannel.leave()
+        })
+        dispatcher.on('error', console.error);
+    })
 }
 // async function createAPIMessage(interaction, content) {
 //     const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
@@ -244,6 +261,26 @@ client.once('ready', () => {
 //                 }
 //             })
 //         break
+//     }
+// })
+// client.on('voiceStateUpdate', (oldMember, newMember) => {
+//     let newUserChannel = newMember.voiceChannel
+//     let oldUserChannel = oldMember.voiceChannel
+
+//     console.log(newUserChannel)
+//     if (oldUserChannel === undefined && newUserChannel !== undefined) {
+//         userinvcid.push(newUserChannel.id)
+//         useridinvc.push(newMember.id)
+//         console.log("user joined vc")
+//     }
+//     else if (newUserChannel === undefined) {
+//         for (let i = 0; i < useridinvc.length; i++) {
+//             if (useridinvc[i] === oldMember.id) {
+//                 useridinvc.slice(i, 1)
+//                 userinvcid.slice(i, 1)
+//             }
+//         }
+//         console.log("user left vc")
 //     }
 // })
 client.on('message', async message => {
@@ -517,7 +554,7 @@ client.on('message', async message => {
                             })
                         })
                     }
-                    catch (TypeError) {
+                    catch (Error) {
                         message.channel.send("member not banned")
                         return
                     }
@@ -1450,6 +1487,15 @@ client.on('message', async message => {
                 case "die":
                     if (message.author.id === ownerid) message.channel.send("Okie UwU, *dies").then(() => client.destroy())
                 break
+                case "rr":
+                    if (message.member.voice.channel) {
+                        message.delete()
+                        let currentVoiceChannel = client.channels.cache.get(message.member.voice.channel.id)
+                        play(currentVoiceChannel, "./Files/rr.mp3")
+                        console.log("played the file")
+                    }
+                    else message.channel.send("You are not currently in a voice channel, join one and then try the command again"); message.delete();
+                break;
         }   
     }
     let channel = message.guild.channels.cache.find(
