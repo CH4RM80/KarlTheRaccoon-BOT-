@@ -15,6 +15,11 @@ const ffmpeg = require('ffmpeg-static');
 var unirest = require("unirest");
 var axios = require("axios").default;
 const { log } = require('util');
+let rsa = require('random-stuff-api');
+const { debugPort } = require('process');
+let api = new rsa({
+    key: "SBGW8qLcfEFL"
+})
 let embed = new MessageEmbed();
 let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -98,6 +103,20 @@ async function play(voiceChannel, path) {
         })
         dispatcher.on('error', console.error);
     })
+}
+async function image(type) {
+    let response = await fetch(`https://api.pgamerx.com/v3/image/${type}?api-key=SBGW8qLcfEFL`, {
+	"method": "GET",
+	"headers": {
+		"x-api-key": "SBGW8qLcfEFL",
+		"x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
+		"x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
+	}
+})
+.catch(err => {
+	console.error(err);
+});
+return response
 }
 // async function createAPIMessage(interaction, content) {
 //     const apiMessage = await APIMessage.create(client.channels.resolve(interaction.channel_id), content)
@@ -227,11 +246,10 @@ client.once('ready', () => {
     page2.addField(`21. ${prefix}dank`, "Gets a random dank meme")
     page2.addField(`22. ${prefix}cat(to)`, "Gets a random cat gif/image")
     page2.addField(`23. ${prefix}dog(go)`, "Gets a random dog gif/image")
-    page2.addField(`24. ${prefix}duck`, "Gets a random duck gif/image")
-    page2.addField(`25. ${prefix}cute(aww)`, "Gets a random cute gif/image")
-    page2.addField(`26. ${prefix}calc (math equation)`, "Gives answers to math problems")
-    page2.addField(`27. ${prefix}eval (REDACTED)`, "REDACTED")
-    page2.addField(`28. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
+    page2.addField(`24. ${prefix}cute(aww)`, "Gets a random cute gif/image")
+    page2.addField(`25. ${prefix}calc (math equation)`, "Gives answers to math problems")
+    page2.addField(`26. ${prefix}eval (REDACTED)`, "REDACTED")
+    page2.addField(`27. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
@@ -1101,73 +1119,37 @@ client.on('message', async message => {
             break;
             case "catto":
             case "cat":
-                const p = await fetch(`https://random-stuff-api.p.rapidapi.com/image/cat?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
+                image("cat").then(async (cat) => {
+                    cat = await cat.json()
+                    message.channel.send(cat[0])
                 })
-                const catto = await p.json()
-                message.channel.send(catto[0])
             break;
             case "doggo":
             case "dog":
-                const pr = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dog?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
+                image("dog").then(async (dog) => {
+                    dog = await dog.json()
+                    message.channel.send(dog[0])
                 })
-                const doggo = await pr.json()
-                message.channel.send(doggo[0])
-            break;
-            case "duck":
-                const pro = await fetch(`https://random-stuff-api.p.rapidapi.com/image/duck?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
-                })
-                const ducc = await pro.json()
-                message.channel.send(ducc[0])
             break;
             case "meme":
-                const prot = await fetch(`https://random-stuff-api.p.rapidapi.com/image/memes?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
+                image("meme").then(async (meme) => {
+                    meme = await meme.json()
+                    message.channel.send(meme[0])
                 })
-                const meme = await prot.json()
-                message.channel.send(meme[0])
             break;
             case "dank":
-                const proto = await fetch(`https://random-stuff-api.p.rapidapi.com/image/dankmemes?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
+                image("dankmeme").then(async (dank) => {
+                    dank = await dank.json()
+                    message.channel.send(dank[0])
                 })
-                const dankmeme = await proto.json()
-                message.channel.send(dankmeme[0])
             break;
             case "kawaii":
             case "aww":
             case "cute":
-                const protocute = await fetch(`https://random-stuff-api.p.rapidapi.com/image/aww?api_key=SBGW8qLcfEFL`, {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "1ba1a4c77emsh7855a73a19d75aap106c51jsne0c491e53af5",
-                        "x-rapidapi-host": "random-stuff-api.p.rapidapi.com"
-                    }
+                image("aww").then(async (cute) => {
+                    cute = await cute.json()
+                    message.channel.send(cute[0])
                 })
-                const cute = await protocute.json()
-                message.channel.send(cute[0])
             break;
             case "ping":
                 message.channel.send(`Latency is \`${Date.now() - message.createdTimestamp}ms.\``);
@@ -1521,6 +1503,7 @@ client.on('message', async message => {
             if (msgarray[i] === "i" && msgarray[i + 1] === "am") {
                 if (message.mentions.members.first()) return
                 if (message.content.startsWith(`${prefix}`)) return
+                if (message.content.includes("@everyone")) return
                 let iam = msgarray.splice(i + 2, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
@@ -1528,6 +1511,7 @@ client.on('message', async message => {
             else if (msgarray[i] === "im" || msgarray[i] === "i'm") {
                 if (message.mentions.members.first()) return
                 if (message.content.startsWith(`${prefix}`)) return
+                if (message.content.includes("@everyone")) return
                 let iam = msgarray.splice(i + 1, msgarray.length - 1).join(" ")
                 message.channel.send(`Hi ${iam}, I'm karl!`)
                 return
