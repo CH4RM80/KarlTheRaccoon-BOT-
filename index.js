@@ -1490,35 +1490,52 @@ client.on('message', async message => {
                     }
                     else message.channel.send("You are not currently in a voice channel, join one and then try the command again"); message.delete();
                 break;
-                // case "timer":
-                //     if (parseInt(args[1])) {
-                //         switch (args[2][0].toLowerCase()) {
-                //             case "s":
-                //                 let messageinfo
-                //                 message.author.send(`Your timer has been set for ${args[1]} seconds`).then((msg) => {messageinfo = msg})
-                //                 let timerseconds = parseInt(args[1])
-                //                 let a = setInterval(() => {
-                //                     if (timerseconds === 15) message.author.send("You have 15 seconds left!")
-                //                     else if (timerseconds === 10) message.author.send("You have 10 seconds left!")
-                //                     else if (timerseconds === 5) message.author.send("You have 5 seconds left!")
-                //                     else if (timerseconds === 0) {
-                //                         messageinfo.edit("Your timer is up!")
-                //                         message.author.send("TIME UP!!!!")
-                //                         clearInterval()
-                //                     }
-                //                     timerseconds--
-                //                 }, 1000)
-                //             break;
-                //             case "m":
-                //                 let msginfo
-                //                 message.author.send(`Your timer has been set for ${args[1]} minutes!`)
-                //             break;
-                //             default:
+                case "timer":
+                    if (parseInt(args[1])) {
+                        switch (args[2][0].toLowerCase()) {
+                            case "s":
+                                let messageinfo
+                                message.author.send(`Your timer is at ${args[1]} seconds`).then(msg => messageinfo = msg)
+                                let timerseconds = parseInt(args[1])
+                                let s = setInterval(() => {
+                                    timerseconds--
+                                    if (timerseconds === 15) message.author.send("You have 15 seconds left!")
+                                    else if (timerseconds === 10) message.author.send("You have 10 seconds left!")
+                                    else if (timerseconds === 5) message.author.send("You have 5 seconds left!")
+                                    else if (timerseconds === 0) {
+                                        messageinfo.edit("Your timer is up!")
+                                        message.author.send("TIME UP!!!!")
+                                        clearInterval()
+                                    }
+                                }, 1000)
+                            break;
+                            case "m":
+                                let msginfo
+                                message.author.send(`Your timer is at ${args[1]} minutes!`).then(msg => msginfo = msg)
+                                let timerminutes = parseInt(args[1])
+                                let ts = timerminutes * 60
+                                let m = setInterval(() => {
+                                    ts--
+                                    if (ts % 60 === 0 && timerminutes > 0) {
+                                        timerminutes--
+                                        msginfo.edit(`Your timer is at ${timerminutes}`)
+                                    }
+                                    if (ts === 15) message.author.send("You have 15 seconds left!")
+                                    else if (ts === 10) message.author.send("You have 10 seconds left!")
+                                    else if (ts === 5) message.author.send("You have 5 seconds left!")
+                                    else if (ts === 0) {
+                                        msginfo.edit("Your timer is up!")
+                                        message.author.send("TIME UP!!!!")
+                                        clearInterval()
+                                    }
+                                }, 1000)
+                            break;
+                            default:
 
 
-                //        }
-                //     }
-                // break;
+                       }
+                    }
+                break;
         }   
     }
     let channel = message.guild.channels.cache.find(
