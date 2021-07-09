@@ -15,11 +15,7 @@ const ffmpeg = require('ffmpeg-static');
 var unirest = require("unirest");
 var axios = require("axios").default;
 const { log } = require('util');
-let rsa = require('random-stuff-api');
-const { debugPort } = require('process');
-let api = new rsa({
-    key: "SBGW8qLcfEFL"
-})
+const { clear } = require('console');
 let embed = new MessageEmbed();
 let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -39,6 +35,7 @@ let foundguild = false
 let useridinvc = []
 let userinvcid = []
 swearingallowed = []
+let on = false
 let lastuserid = "";
 let sAllow = false
 let ownerid = "601822624867155989"
@@ -152,6 +149,16 @@ function start() {
         })
     });
 }
+function reminder() {
+    let areminder = setInterval(() => {
+        let user = client.users.cache.get("601822624867155989")
+        user.send("Did you forget?")
+        on = true
+        setTimeout(() => {
+            on = false
+        }, 18000000)
+    }, 259200000)
+}
 client.once('ready', () => {
     console.log('Ready!');
     const newtime = new Date()
@@ -166,6 +173,7 @@ client.once('ready', () => {
         client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
     }, 2000);
     start()
+    reminder()
     const guildids = client.guilds.cache.map(guild => guild.id) 
     console.log(guildids)
     for (let i = 0; i < guildids.length; i++) {
@@ -326,18 +334,22 @@ client.on('message', async message => {
     catch (TypeError) {
         if (message.channel.type === "dm" && message.author.id !== "801827038234804234") {
             if (message.author.id === "601822624867155989") {
-                    if(message.content[0] === prefix) {
-                        if (message.content[1] === "-") {
-                            lastuserid = message.content.substring(2, 20).toString()
-                        }
-                        flmsg = args.splice(1, args.length - 1).join(" ");
-                        try {
-                            client.users.cache.get(lastuserid).send(flmsg).then(() => {
-                                client.users.cache.get("601822624867155989").send(`Hypr: ${flmsg}`)
-                            })
-                        }
-                        catch (TypeError) {return;}
+                if (message.content.toLowerCase().startsWith("n") && on === true) {
+                    message.author.send(":)")
+                    on = false
+                }
+                else if(message.content[0] === prefix) {
+                    if (message.content[1] === "-") {
+                        lastuserid = message.content.substring(2, 20).toString()
                     }
+                    flmsg = args.splice(1, args.length - 1).join(" ");
+                    try {
+                        client.users.cache.get(lastuserid).send(flmsg).then(() => {
+                            client.users.cache.get("601822624867155989").send(`Hypr: ${flmsg}`)
+                        })
+                    }
+                    catch (TypeError) {return;}
+                }
             }
             else {
                 console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
@@ -661,7 +673,7 @@ client.on('message', async message => {
                     message.channel.messages.fetch(args[1]).then(msg => {
                         let newmsg = args.splice(2, args.length - 1).join(" ")
                         msg.edit(newmsg)
-                        message.channel.messages.fetch(message.id).then(messg => messg.delete())
+                        message.delete()
                         return
                     })
                 }
@@ -1478,6 +1490,35 @@ client.on('message', async message => {
                     }
                     else message.channel.send("You are not currently in a voice channel, join one and then try the command again"); message.delete();
                 break;
+                // case "timer":
+                //     if (parseInt(args[1])) {
+                //         switch (args[2][0].toLowerCase()) {
+                //             case "s":
+                //                 let messageinfo
+                //                 message.author.send(`Your timer has been set for ${args[1]} seconds`).then((msg) => {messageinfo = msg})
+                //                 let timerseconds = parseInt(args[1])
+                //                 let a = setInterval(() => {
+                //                     if (timerseconds === 15) message.author.send("You have 15 seconds left!")
+                //                     else if (timerseconds === 10) message.author.send("You have 10 seconds left!")
+                //                     else if (timerseconds === 5) message.author.send("You have 5 seconds left!")
+                //                     else if (timerseconds === 0) {
+                //                         messageinfo.edit("Your timer is up!")
+                //                         message.author.send("TIME UP!!!!")
+                //                         clearInterval()
+                //                     }
+                //                     timerseconds--
+                //                 }, 1000)
+                //             break;
+                //             case "m":
+                //                 let msginfo
+                //                 message.author.send(`Your timer has been set for ${args[1]} minutes!`)
+                //             break;
+                //             default:
+
+
+                //        }
+                //     }
+                // break;
         }   
     }
     let channel = message.guild.channels.cache.find(
@@ -1612,10 +1653,12 @@ client.on('message', async message => {
     }
 });
 client.on('messageUpdate', (oldMessage, newMessage) => {
+    if (newMessage.author.id === client.id) return
     const lowercase = newMessage.content.toLowerCase()
     const compiledLowercase = newMessage.content.split(" ").join("").toLowerCase()
     const xspaces = newMessage.content.toLowerCase().split(" ")
     for (let i = 0; i < swearingallowed.length; i++) {
+        if (newMessage.guild === null) return
         if (newMessage.guild.id === swearingallowed[i]) {
             sAllow = true
         }
