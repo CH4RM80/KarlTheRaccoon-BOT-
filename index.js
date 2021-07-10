@@ -30,7 +30,6 @@ let logchannelguilds = []
 let guildmsgs = []
 let pingchannel = []
 let generalchannels = []
-let aichannels = []
 let foundguild = false
 let useridinvc = []
 let userinvcid = []
@@ -1518,7 +1517,7 @@ client.on('message', async message => {
                                     ts--
                                     if (ts % 60 === 0 && timerminutes > 0) {
                                         timerminutes--
-                                        msginfo.edit(`Your timer is at ${timerminutes}`)
+                                        msginfo.edit(`Your timer is at ${timerminutes} minutes!`)
                                     }
                                     if (ts === 15) message.author.send("You have 15 seconds left!")
                                     else if (ts === 10) message.author.send("You have 10 seconds left!")
@@ -1575,6 +1574,25 @@ client.on('message', async message => {
                 return
             }
         }
+        if (message.content.includes("<@801827038234804234>")) {
+            message.channel.send("yes?").then(msgref => {
+                msgref.react("❔")
+                const filter2 = (reaction, user) => {
+                    return "❔".includes(reaction.emoji.name) && user.id === message.author.id
+                }
+                msgref.awaitReactions(filter2, {max: 1, time: 30000, errors: ['time']})
+                    .then(coldata => {
+                        const react = coldata.first()
+                        if (react.emoji.name == "❔") {
+                            try {
+                                message.author.send(pages[0])
+                                message.channel.send("Commands teleported to your dms")
+                            }
+                            catch (error) {console.log(error)}
+                        }
+                    })
+            })             
+        }
         if (lowercase.includes("help") && !lowercase.startsWith(">help")) {
             message.react("❔")
             const filter = (reaction, user) => {
@@ -1585,17 +1603,14 @@ client.on('message', async message => {
                     const reaction = coll.first()
                     if (reaction.emoji.name === "❔") {
                         try {
-                            message.channel.send(pages[0])
-                            .then(msg => {
-                                msg.delete({timeout: 20000})
-                                    .catch(err => console.log(err))
-                            })
+                            message.author.send(pages[0])
+                            message.channel.send("Commands teleported to your dms")
                         }
                         catch (error) {console.log(error)}
                     }
                 })
         }
-        if (lowercase.includes("pogchamp")) {
+        else if (lowercase.includes("pogchamp")) {
             if (message.member.user.id !== "801827038234804234") {
                 message.reply("ugh fineee, I guess you are my little pogchamp, come here");
                 return
