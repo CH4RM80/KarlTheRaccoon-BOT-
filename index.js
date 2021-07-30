@@ -1,4 +1,4 @@
-const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager} = require('discord.js');
+const {Client, MessageEmbed, Message, GuildManager, GuildMember, DiscordAPIError, Discord, ClientUser, ReactionUserManager, APIMessage, ReactionManager, MessageFlags} = require('discord.js');
 const { parse } = require('path');
 const { measureMemory } = require('vm');
 const { OpusEncoder } = require('@discordjs/opus');
@@ -16,6 +16,7 @@ var unirest = require("unirest");
 var axios = require("axios").default;
 const { log } = require('util');
 const { clear } = require('console');
+const emojiRegex = require('emoji-regex/RGI_Emoji.js');
 let embed = new MessageEmbed();
 let allguilds = []
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -23,6 +24,7 @@ birthdayids = []
 birthdays = []
 let rrchannels = []
 let rrguilds = []
+let useractive = false
 let quotechannels = []
 let quotechannelguilds = []
 let logchannels = []
@@ -30,9 +32,12 @@ let logchannelguilds = []
 let guildmsgs = []
 let pingchannel = []
 let generalchannels = []
+let reactionrolemsgs = []
 let foundguild = false
 let useridinvc = []
 let userinvcid = []
+let userids = []
+let msgcount = []
 swearingallowed = []
 let on = false
 let lastuserid = "";
@@ -158,21 +163,33 @@ function reminder() {
         }, 18000000)
     }, 259200000)
 }
+function annoy() {
+    let annoying = setInterval(() => {
+        let user = client.users.cache.get("868136905139683338")
+        if (useractive) {
+            useractive = false
+            return
+        }
+        user.send("Chevrolet kid, talk in chat or ur ip address is mine")
+    }, 360000)
+}
 client.once('ready', () => {
     console.log('Ready!');
-    const newtime = new Date()
-    let uptime1 = (newtime.getHours() > 12) ? `${newtime.getHours() - 12}`:`${newtime.getHours()}`;
-    let uptime2 = (newtime.getMinutes() < 10) ? `0${newtime.getMinutes()}`:`${newtime.getMinutes()}`;
-    let uptime = `${uptime1}:${uptime2}`
+    let prevtime = []
     const a = setInterval(() => {
         let retime = new Date()
         let hour = (retime.getHours() > 12) ? `${retime.getHours() - 12}`:`${retime.getHours()}` 
         let ampm = (retime.getHours() > 12) ? "PM":"AM"
         let minute = (retime.getMinutes() < 10) ? `0${retime.getMinutes()}`:`${retime.getMinutes()}`
-        client.user.setActivity(`with Poe-kun since ${uptime}, current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
-    }, 2000);
+        if (prevtime[0] !== hour || prevtime[1] !== ampm || prevtime[2] !== minute) client.user.setActivity(`say "help" or ping me to summon me! Current time(CDT): ${hour}:${minute} ${ampm}`, { type: 'PLAYING' });
+        prevtime = []
+        prevtime.push(hour)
+        prevtime.push(ampm)
+        prevtime.push(minute)
+    }, 1000);
     start()
     reminder()
+    annoy()
     const guildids = client.guilds.cache.map(guild => guild.id) 
     console.log(guildids)
     for (let i = 0; i < guildids.length; i++) {
@@ -183,11 +200,13 @@ client.once('ready', () => {
     }
     loadData("./Files/data.json").then(cont => {
         cont = JSON.parse(cont)
-        if (logchannels || logchannelguilds) {
+        if (logchannels || logchannelguilds || quotechannelguilds || quotechannels || userids || msgcount) {
             logchannels = []
             logchannelguilds = []
             quotechannelguilds = []
             quotechannels = []
+            userids = []
+            msgcount = []
         }
         for (i = 0; i < cont.Logchannels.length; i++) {
             logchannels.push(cont.Logchannels[i])
@@ -199,6 +218,10 @@ client.once('ready', () => {
         }
         for (i = 0; i < cont.SwearingAllowed.length; i++) {
             swearingallowed.push(cont.SwearingAllowed[i])
+        }
+        for (i = 0; i < cont.UserIds.length; i++) {
+            userids.push(cont.UserIds[i])
+            msgcount.push(cont.MsgCount[i])
         }
     })
     // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
@@ -288,26 +311,6 @@ client.once('ready', () => {
 //         break
 //     }
 // })
-// client.on('voiceStateUpdate', (oldMember, newMember) => {
-//     let newUserChannel = newMember.voiceChannel
-//     let oldUserChannel = oldMember.voiceChannel
-
-//     console.log(newUserChannel)
-//     if (oldUserChannel === undefined && newUserChannel !== undefined) {
-//         userinvcid.push(newUserChannel.id)
-//         useridinvc.push(newMember.id)
-//         console.log("user joined vc")
-//     }
-//     else if (newUserChannel === undefined) {
-//         for (let i = 0; i < useridinvc.length; i++) {
-//             if (useridinvc[i] === oldMember.id) {
-//                 useridinvc.slice(i, 1)
-//                 userinvcid.slice(i, 1)
-//             }
-//         }
-//         console.log("user left vc")
-//     }
-// })
 client.on('message', async message => {
     if (message.author.bot) return;
     const lowercase = message.content.toLowerCase();
@@ -360,14 +363,56 @@ client.on('message', async message => {
         }
         return;
     }
-    try {
-        for(let i = 0; i < spamchannel.length; i++) {
-            client.channels.cache.get(spamchannel[i]).send("spam")
-        }
-    }
-    catch (TypeError) {
-        return;
-    }
+    // let founduser = false
+    // for (let i = 0; i < userids; i++) {
+    //     if (userids[i] === message.author.id) {
+    //         founduser = true
+    //         msgcount[i]++
+    //         let thedata = {
+    //             "Logchannels": logchannels,
+    //             "Logchannelguilds": logchannelguilds,
+    //             "Quotechannels": quotechannels,
+    //             "Quotechannelguilds": quotechannelguilds,
+    //             "SwearingAllowed": swearingallowed,
+    //             "UserIds": userids,
+    //             "MsgCount": msgcount
+    //         }
+    //         saveData(thedata, "./Files/data.json")
+    //         if (msgcount[i].length === 3 && msgcount[i].toString().endsWith("00")) {
+    //             let level1 = msgcount[i][0]
+    //             embed = new MessageEmbed()
+    //             embed.addField(`${message.author.tag} advanced to level ${level1}`)
+    //             message.channel.send(embed)
+    //         }
+    //         else if (msgcount[i].length === 4 && msgcount[i].toString().endsWith("000")) {
+    //             let level2 = msgcount[i].slice(0, 2)
+    //             embed = new MessageEmbed()
+    //             embed.addField(`${message.author.tag} advanced to level ${level2}`)
+    //             message.channel.send(embed)
+    //         }
+    //         else if (msgcount[i].length === 5 && msgcount[i].toString().endsWith("0000")) {
+    //             let level3 = msgcount[i].slice(0, 3)
+    //             embed = new MessageEmbed()
+    //             embed.setTitle(`${message.author.tag} advanced to level ${level3}!`)
+    //             message.channel.send(embed)
+    //         } 
+    //     }
+    // }
+    // if (founduser !== true) {
+    //     userids.push(message.author.id)
+    //     msgcount.push(0)
+    //     let msgdata = {
+    //         "Logchannels": logchannels,
+    //         "Logchannelguilds": logchannelguilds,
+    //         "Quotechannels": quotechannels,
+    //         "Quotechannelguilds": quotechannelguilds,
+    //         "SwearingAllowed": swearingallowed,
+    //         "UserIds": userids,
+    //         "MsgCount": msgcount
+    //     }
+    //     saveData(msgdata, "./Files/data.json")
+    // }
+    if (message.author.id === "868136905139683338") useractive = true
     let channel2 = message.guild.channels.cache.find(
         channel => channel.name.toLowerCase() === "swear-equals-ban"
     )
@@ -422,19 +467,6 @@ client.on('message', async message => {
               console.error(error);
           });
     }
-    // for (let i = 0; i < aichannels.length; i++) {
-    //     if (message.channel.id === aichannels[i]) {
-    //         const airesp = await fetch(`https://api.pgamerx.com/v3/ai/response?message=encodeURIComponent("${message.content}")&type=stable`, {
-    //             method: 'get',
-    //             headers: {'x-api-key': 'SBGW8qLcfEFL'},
-    //         }).then(async airesp => {
-    //             const aifull = await airesp.json()
-    //             message.channel.send(aifull.message)
-    //         })
-    //         return
-    //     }
-    // }
-    
     if (message.content[0] === prefix) {
         switch(args[0].toLowerCase()) {
             case "say":
@@ -549,7 +581,7 @@ client.on('message', async message => {
                 let bungou = new MessageEmbed()
                 bungou.setTitle("Bungou Stray Dogs")
                 bungou.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
-                bungou.addField("Where to watch", "https://animepahe.com/anime/ee07a883-7f27-964b-1623-9b0dc859adee\nhttps://animevibe.wtf/anime/bungou-stray-dogs\nhttps://animixplay.to/v1/bungou-stray-dogs/ep1")
+                bungou.addField("Where to watch", "https://animepahe.com/\nhttps://animevibe.wtf/\nhttps://animixplay.to/")
                 bungou.setColor(getRandomColor());
                 bungou.setTimestamp();
                 message.channel.send(bungou);
@@ -720,7 +752,9 @@ client.on('message', async message => {
                                         "Logchannelguilds": logchannelguilds,
                                         "Quotechannels": quotechannels,
                                         "Quotechannelguilds": quotechannelguilds,
-                                        "SwearingAllowed": swearingallowed
+                                        "SwearingAllowed": swearingallowed,
+                                        "UserIds": userids,
+                                        "MsgCount": msgcount
                                     }
                                     saveData(sweardata1, "./Files/data.json")
                                     message.channel.send("Disallowed swearing for this server successfully")
@@ -739,7 +773,9 @@ client.on('message', async message => {
                                     "Logchannelguilds": logchannelguilds,
                                     "Quotechannels": quotechannels,
                                     "Quotechannelguilds": quotechannelguilds,
-                                    "SwearingAllowed": swearingallowed
+                                    "SwearingAllowed": swearingallowed,
+                                    "UserIds": userids,
+                                    "MsgCount": msgcount
                                 }
                                 saveData(sweardata2, "./Files/data.json")
                             }
@@ -756,7 +792,9 @@ client.on('message', async message => {
                                     "Logchannelguilds": logchannelguilds,
                                     "Quotechannels": quotechannels,
                                     "Quotechannelguilds": quotechannelguilds,
-                                    "SwearingAllowed": swearingallowed
+                                    "SwearingAllowed": swearingallowed,
+                                    "UserIds": userids,
+                                    "MsgCount": msgcount
                                 }
                                 saveData(sweardata3, "./Files/data.json")
                                 message.channel.send("Enabled swearing for this server successfully")
@@ -978,112 +1016,6 @@ client.on('message', async message => {
                     message.channel.send("To enter your birthday into the database, use the command like this:\`\`\`>birthday 1/12/2010\`\`\`")
                 }
             break;
-            // case "link":
-            // case "links":
-            //     if (args[1] && message.member.hasPermission('ADMINISTRATOR')) {
-            //         switch (args[1].toLowerCase()) {
-            //             case "user":
-            //                 let user = message.mentions.users.first() || message.author
-            //                 if (user) {
-            //                     if (args[2].toLowerCase() === "allow") {
-            //                         for (let i = 0; i < linkallowed.guilds.length; i++) {
-            //                             if (linkallowed.guilds.users === user.id) {
-            //                                 message.channel.send("User was already allowed to use links")
-            //                                 return
-            //                             }
-            //                         }
-            //                         linkallowed.guild.
-            //                         message.channel.send("User allowed to use links successfully")
-            //                     }
-            //                     else if (args[2].toLowerCase() === "deny") {
-            //                         for (let i = 0; i < linkallowedusers.length; i++) {
-            //                             if (linkallowedusers[i] === user.id) {
-            //                                 linkallowedusers.splice(i, 1)
-            //                                 message.channel.send("User disabled from using links")
-            //                                 return
-            //                             }
-            //                         }
-            //                         message.channel.send("That user was already not allowed to use links")
-            //                         return
-            //                     }
-            //                 }
-            //             break;
-            //             case "channel":
-            //                 if (args[2]) {
-            //                     try {args[2].parseInt} catch (error) {
-            //                         message.channel.send("This is not a valid id")
-            //                         return
-            //                     }
-            //                     if (args[2].length > 18) {
-            //                         message.channel.send("This is not a valid id")
-            //                         return
-            //                     }
-            //                     if (args[3].toLowerCase() === "allow") {
-            //                         for (let i = 0; i < linkallowedchannels.length; i++) {
-            //                             if (linkallowedchannels[i] === args[3]) {
-            //                                 message.channel.send("That channel was already allowed to use links")
-            //                                 return
-            //                             }
-            //                         }
-            //                         linkallowedchannels.push(args[2])
-            //                         message.channel.send("Channel successfully allowed")
-            //                         return
-            //                     }
-            //                     else if (args[3].toLowerCase() === "deny") {
-            //                         for (let i = 0; i < linkallowedchannels.length; i++) {
-            //                             if (linkallowedchannels[i] === args[2]) {
-            //                                 linkallowedchannels.splice(i, 1)
-            //                                 message.channel.send("Channel sucessfully not allowed to use links")
-            //                                 return
-            //                             }
-            //                         }
-            //                         message.channel.send("That channel was already not allowed to use links")
-            //                         return
-            //                     }
-            //                 }
-            //             break;
-            //             case "server":
-            //                 if (args[2]) {
-            //                     if (args[2].toLowerCase() === "allow") {
-            //                         for (let i = 0; i < linkallowedservers.length; i++) {
-            //                             if (linkallowedservers[i] === message.guild.id) {
-            //                                 message.channel.send("Change not needed as the id was already in the allowed servers")
-            //                                 return
-            //                             }
-            //                         }
-            //                         linkallowedservers.push()
-            //                         message.channel.send("Server successfully allowed to use links")
-            //                         return
-            //                     }
-            //                     else if (args[2].toLowerCase() === "deny") {
-            //                         for (let i = 0; i < linkallowedservers.length; i++) {
-            //                             if (linkallowedservers[i] === message.guild.id) {
-            //                                 linkallowedservers.splice(i, 1)
-            //                                 message.channel.send("Server successfully disallowed to use links")
-            //                                 return
-            //                             }
-            //                         }
-            //                         message.channel.send("That server was already not allowed to use links")
-            //                         return
-            //                     }
-            //                 }
-            //                 else {
-            //                     let isallowed = "not allowed"
-            //                     for (let i = 0; i < linkallowedservers.length; i++) {
-            //                         if (linkallowedservers[i] === message.guild.id) {
-            //                             isallowed = "allowed"
-            //                         }
-            //                     }
-            //                     message.channel.send(`Current status of server is:\n \`${isallowed}\` to use links`)
-            //                 }
-            //             break;
-            //         }
-            //     }
-            //     else {
-            //         message.channel.send("You have used this command incorrectly/do not have the correct permissions to use this command")
-            //         return
-            //     }
-            // break;
             case "waifu":
                 message.channel.send("This command is in development so it will be in its testing phase for a while")
                 const respnse = await fetch("https://animu.p.rapidapi.com/waifu", {
@@ -1278,7 +1210,9 @@ client.on('message', async message => {
                                                 "Logchannelguilds": logchannelguilds,
                                                 "Quotechannels": quotechannels,
                                                 "Quotechannelguilds": quotechannelguilds,
-                                                "SwearingAllowed": swearingallowed
+                                                "SwearingAllowed": swearingallowed,
+                                                "UserIds": userids,
+                                                "MsgCount": msgcount
                                             }
                                             saveData(logdata, "./Files/data.json")
                                             message.channel.send("Channel successfully added to the list")
@@ -1294,7 +1228,9 @@ client.on('message', async message => {
                                                         "Logchannelguilds": logchannelguilds,
                                                         "Quotechannels": quotechannels,
                                                         "Quotechannelguilds": quotechannelguilds,
-                                                        "SwearingAllowed": swearingallowed
+                                                        "SwearingAllowed": swearingallowed,
+                                                        "UserIds": userids,
+                                                        "MsgCount": msgcount
                                                     }
                                                     saveData(somedata, "./Files/data.json")
                                                     message.channel.send("Channel successfully deleted from the list")
@@ -1339,7 +1275,9 @@ client.on('message', async message => {
                                                 "Logchannelguilds": logchannelguilds,
                                                 "Quotechannels": quotechannels,
                                                 "Quotechannelguilds": quotechannelguilds,
-                                                "SwearingAllowed": swearingallowed
+                                                "SwearingAllowed": swearingallowed,
+                                                "UserIds": userids,
+                                                "MsgCount": msgcount
                                             }
                                             saveData(quotedata, "./Files/data.json")
                                             message.channel.send("Id added to the quote channels list")
@@ -1355,7 +1293,9 @@ client.on('message', async message => {
                                                         "Logchannelguilds": logchannelguilds,
                                                         "Quotechannels": quotechannels,
                                                         "Quotechannelguilds": quotechannelguilds,
-                                                        "SwearingAllowed": swearingallowed
+                                                        "SwearingAllowed": swearingallowed,
+                                                        "UserIds": userids,
+                                                        "MsgCount": msgcount
                                                     }
                                                     saveData(quotesdata, "./Files/data.json")
                                                     message.channel.send("Id removed from quote channels list")
@@ -1382,7 +1322,9 @@ client.on('message', async message => {
                                                             "Logchannelguilds": logchannelguilds,
                                                             "Quotechannels": quotechannels,
                                                             "Quotechannelguilds": quotechannelguilds,
-                                                            "SwearingAllowed": swearingallowed
+                                                            "SwearingAllowed": swearingallowed,
+                                                            "UserIds": userids,
+                                                            "MsgCount": msgcount
                                                         }
                                                         saveData(cleareddata, "./Files/data.json")
                                                         message.channel.send("Cleared all the quote channels ;(")
@@ -1535,6 +1477,45 @@ client.on('message', async message => {
                        }
                     }
                 break;
+                // case "reactionrole":
+                //     if (args[1]) {
+                //         console.log("got to 1")
+                //         if (parseInt(args[1])) {
+                //             console.log("got to 2")
+                //             const re = emojiRegex()
+                //             let match
+                //             let emoji = []
+                //             while ((match = re.exec(message.content)) !== null) {
+                //                 emoji.push(match[0])
+                //             }
+                //             if (emoji.length > 1) return
+                //             message.channel.messages.fetch(args[1])
+                //                 .then(message => {
+                //                     message.react(emoji[0])
+                //                     reactionrolemsgs.push(message.id)
+                //                 })
+                //             // if (args[2].startsWith("<:") && args[2].endsWith(">")) {
+                //             //     console.log("got to 3")
+                //             //     client.messages.cache.get(args[1]).react(":hot_face:")
+                //             // }
+                //         }
+                //     }
+                // break;
+                // case "level":
+                // case "lvl":
+                //     let curruser = message.mentions.members.first() || message.author
+                //     for (let i = 0; i < userids.length; i++) {
+                //         if (curruser.id === userids[i]) {
+                //             embed = new MessageEmbed()
+                //             embed.setTitle(`${curruser.tag} has ${msgcount[i]} messages on record`)
+                //             message.channel.send(embed)
+                //             return
+                //         }
+                //     }
+                //     embed = new MessageEmbed()
+                //     embed.setTitle("User Not Found")
+                //     message.channel.send(embed)
+                // break;
         }   
     }
     let channel = message.guild.channels.cache.find(
