@@ -5,6 +5,7 @@ const { OpusEncoder } = require('@discordjs/opus');
 const messagedeletes = require('./messagedelete.js')
 const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
+const config = require("./Files/data.json")
 // const onjoinvc = require('./onjoinvc.js');
 const client = new Client();
 const fs = require('fs')
@@ -171,10 +172,16 @@ function annoy() {
             return
         }
         user.send("Chevrolet kid, talk in chat or ur ip address is mine")
+        console.log("annoyed the kid")
     }, 360000)
 }
 client.once('ready', () => {
     console.log('Ready!');
+    logchannels = config.Logchannels
+    logchannelguilds = config.Logchannelguilds
+    quotechannels = config.Quotechannels
+    quotechannelguilds = config.Quotechannelguilds
+    swearingallowed = config.SwearingAllowed
     let prevtime = []
     const a = setInterval(() => {
         let retime = new Date()
@@ -198,32 +205,32 @@ client.once('ready', () => {
             .then(guild => console.log(`"${guild.name}", ${guildids[i]}`))
             .catch(console.error)
     }
-    loadData("./Files/data.json").then(cont => {
-        cont = JSON.parse(cont)
-        if (logchannels || logchannelguilds || quotechannelguilds || quotechannels || userids || msgcount) {
-            logchannels = []
-            logchannelguilds = []
-            quotechannelguilds = []
-            quotechannels = []
-            userids = []
-            msgcount = []
-        }
-        for (i = 0; i < cont.Logchannels.length; i++) {
-            logchannels.push(cont.Logchannels[i])
-            logchannelguilds.push(cont.Logchannelguilds[i])
-        }
-        for (i = 0; i < cont.Quotechannels.length; i++) {
-            quotechannels.push(cont.Quotechannels[i])
-            quotechannelguilds.push(cont.Quotechannelguilds[i])
-        }
-        for (i = 0; i < cont.SwearingAllowed.length; i++) {
-            swearingallowed.push(cont.SwearingAllowed[i])
-        }
-        for (i = 0; i < cont.UserIds.length; i++) {
-            userids.push(cont.UserIds[i])
-            msgcount.push(cont.MsgCount[i])
-        }
-    })
+    // loadData("./Files/data.json").then(cont => {
+    //     cont = JSON.parse(cont)
+    //     if (logchannels || logchannelguilds || quotechannelguilds || quotechannels || userids || msgcount) {
+    //         logchannels = []
+    //         logchannelguilds = []
+    //         quotechannelguilds = []
+    //         quotechannels = []
+    //         userids = []
+    //         msgcount = []
+    //     }
+    //     for (i = 0; i < cont.Logchannels.length; i++) {
+    //         logchannels.push(cont.Logchannels[i])
+    //         logchannelguilds.push(cont.Logchannelguilds[i])
+    //     }
+    //     for (i = 0; i < cont.Quotechannels.length; i++) {
+    //         quotechannels.push(cont.Quotechannels[i])
+    //         quotechannelguilds.push(cont.Quotechannelguilds[i])
+    //     }
+    //     for (i = 0; i < cont.SwearingAllowed.length; i++) {
+    //         swearingallowed.push(cont.SwearingAllowed[i])
+    //     }
+    //     for (i = 0; i < cont.UserIds.length; i++) {
+    //         userids.push(cont.UserIds[i])
+    //         msgcount.push(cont.MsgCount[i])
+    //     }
+    // })
     // client.api.applications(client.user.id).guilds("690421418114154556").commands.post({
     //     data: {
     //         name: 'say', 
@@ -280,6 +287,8 @@ client.once('ready', () => {
     page2.addField(`25. ${prefix}calc (math equation)`, "Gives answers to math problems")
     page2.addField(`26. ${prefix}eval (REDACTED)`, "REDACTED")
     page2.addField(`27. ${prefix}(channel(s), setting(s)) (logs, quotes) (add, del, list) (#channel)`, "Designates channels for specific things, in development")
+    page2.addField(`28. ${prefix}rr`, "does a rickroll in the current vc of the user")
+    page2.addField(`29. ${prefix}timer (m || s(optional)) (number)`, "Sets a timer for you and dms you when it is done")
     page2.addField("MORE COMMANDS COMING SOON", "psst, he's lying");
     page2.setColor(getRandomColor());
     page2.setTimestamp();
@@ -354,6 +363,9 @@ client.on('message', async message => {
                 }
             }
             else {
+                if (message.content.toLowerCase() === "help") {
+                    message.author.send(pages[0]).then(() => message.author.send(pages[1]))
+                }
                 console.log(`${message.content}\n\n-${message.author.username}(${message.author.id})`)
                 lastuserid = message.author.id.toString()
                 if (message.author.id !== "601822624867155989") {
@@ -624,7 +636,7 @@ client.on('message', async message => {
                 }
             break;
             case "update" :
-                message.channel.send(`\`\`\`Added ${prefix}channel, check it out with ${prefix}help\`\`\``)
+                message.channel.send(`\`\`\`Added ${prefix}rr and ${prefix}timer, as well as a default method for catching misspelled commands ${prefix}help\`\`\``)
             break;
             case "messages":
             case "message":
@@ -747,16 +759,8 @@ client.on('message', async message => {
                             for (i = 0; i < swearingallowed.length; i++) {
                                 if (message.guild.id === swearingallowed[i]) {
                                     swearingallowed.splice(i, 1)
-                                    let sweardata1 = {
-                                        "Logchannels": logchannels,
-                                        "Logchannelguilds": logchannelguilds,
-                                        "Quotechannels": quotechannels,
-                                        "Quotechannelguilds": quotechannelguilds,
-                                        "SwearingAllowed": swearingallowed,
-                                        "UserIds": userids,
-                                        "MsgCount": msgcount
-                                    }
-                                    saveData(sweardata1, "./Files/data.json")
+                                    config.SwearingAllowed = swearingallowed
+                                    saveData(config, "./Files/data.json")
                                     message.channel.send("Disallowed swearing for this server successfully")
                                     sAllow = false
                                     return
@@ -767,17 +771,9 @@ client.on('message', async message => {
                         else if (args[1] === "off") {
                             if (swearingallowed.length === 0) {
                                 swearingallowed.push(message.guild.id)
+                                config.SwearingAllowed = swearingallowed
+                                saveData(config, "./Files/data.json")
                                 message.channel.send("Enabled swearing for this server successfully")
-                                let sweardata2 = {
-                                    "Logchannels": logchannels,
-                                    "Logchannelguilds": logchannelguilds,
-                                    "Quotechannels": quotechannels,
-                                    "Quotechannelguilds": quotechannelguilds,
-                                    "SwearingAllowed": swearingallowed,
-                                    "UserIds": userids,
-                                    "MsgCount": msgcount
-                                }
-                                saveData(sweardata2, "./Files/data.json")
                             }
                             else {
                                 for (let i = 0; i < swearingallowed.length; i++) {
@@ -787,16 +783,8 @@ client.on('message', async message => {
                                     }
                                 }
                                 swearingallowed.push(message.guild.id)
-                                let sweardata3 = {
-                                    "Logchannels": logchannels,
-                                    "Logchannelguilds": logchannelguilds,
-                                    "Quotechannels": quotechannels,
-                                    "Quotechannelguilds": quotechannelguilds,
-                                    "SwearingAllowed": swearingallowed,
-                                    "UserIds": userids,
-                                    "MsgCount": msgcount
-                                }
-                                saveData(sweardata3, "./Files/data.json")
+                                config.SwearingAllowed = swearingallowed
+                                saveData(config, "./Files/data.json")
                                 message.channel.send("Enabled swearing for this server successfully")
                             }
                         }
@@ -1205,16 +1193,9 @@ client.on('message', async message => {
                                             }
                                             logchannels.push(mchannel.id)
                                             logchannelguilds.push(message.guild.id)
-                                            let logdata = {
-                                                "Logchannels": logchannels,
-                                                "Logchannelguilds": logchannelguilds,
-                                                "Quotechannels": quotechannels,
-                                                "Quotechannelguilds": quotechannelguilds,
-                                                "SwearingAllowed": swearingallowed,
-                                                "UserIds": userids,
-                                                "MsgCount": msgcount
-                                            }
-                                            saveData(logdata, "./Files/data.json")
+                                            config.Logchannels = logchannels
+                                            config.Logchannelguilds = logchannelguilds
+                                            saveData(config, "./Files/data.json")
                                             message.channel.send("Channel successfully added to the list")
                                         break
                                         case "del":
@@ -1223,16 +1204,9 @@ client.on('message', async message => {
                                                 if (modchannel.id === logchannels[i]) {
                                                     logchannels.splice(i, 1)
                                                     logchannelguilds.splice(i, 1)
-                                                    let somedata = {
-                                                        "Logchannels": logchannels,
-                                                        "Logchannelguilds": logchannelguilds,
-                                                        "Quotechannels": quotechannels,
-                                                        "Quotechannelguilds": quotechannelguilds,
-                                                        "SwearingAllowed": swearingallowed,
-                                                        "UserIds": userids,
-                                                        "MsgCount": msgcount
-                                                    }
-                                                    saveData(somedata, "./Files/data.json")
+                                                    config.Logchannels = logchannels
+                                                    config.Logchannelguilds = logchannelguilds
+                                                    saveData(config, "./Files/data.json")
                                                     message.channel.send("Channel successfully deleted from the list")
                                                     return
                                                 }
@@ -1270,16 +1244,9 @@ client.on('message', async message => {
                                             }
                                             quotechannels.push(quochannel.id)
                                             quotechannelguilds.push(message.guild.id)
-                                            let quotedata = {
-                                                "Logchannels": logchannels,
-                                                "Logchannelguilds": logchannelguilds,
-                                                "Quotechannels": quotechannels,
-                                                "Quotechannelguilds": quotechannelguilds,
-                                                "SwearingAllowed": swearingallowed,
-                                                "UserIds": userids,
-                                                "MsgCount": msgcount
-                                            }
-                                            saveData(quotedata, "./Files/data.json")
+                                            config.Quotechannels = quotechannels
+                                            config.Quotechannelguilds = quotechannelguilds
+                                            saveData(config, "./Files/data.json")
                                             message.channel.send("Id added to the quote channels list")
                                         break;
                                         case "del":
@@ -1288,16 +1255,9 @@ client.on('message', async message => {
                                                 if (quchannel.id === quotechannels[i]) {
                                                     quotechannels.splice(i, 1)
                                                     quotechannelguilds.splice(i, 1)
-                                                    let quotesdata = {
-                                                        "Logchannels": logchannels,
-                                                        "Logchannelguilds": logchannelguilds,
-                                                        "Quotechannels": quotechannels,
-                                                        "Quotechannelguilds": quotechannelguilds,
-                                                        "SwearingAllowed": swearingallowed,
-                                                        "UserIds": userids,
-                                                        "MsgCount": msgcount
-                                                    }
-                                                    saveData(quotesdata, "./Files/data.json")
+                                                    config.Quotechannels = quotechannels
+                                                    config.Quotechannelguilds = quotechannelguilds
+                                                    saveData(config, "./Files/data.json")
                                                     message.channel.send("Id removed from quote channels list")
                                                     return
                                                 }
@@ -1317,16 +1277,9 @@ client.on('message', async message => {
                                                                 quotechannelguilds.splice(i, 1)
                                                             }
                                                         }
-                                                        let cleareddata = {
-                                                            "Logchannels": logchannels,
-                                                            "Logchannelguilds": logchannelguilds,
-                                                            "Quotechannels": quotechannels,
-                                                            "Quotechannelguilds": quotechannelguilds,
-                                                            "SwearingAllowed": swearingallowed,
-                                                            "UserIds": userids,
-                                                            "MsgCount": msgcount
-                                                        }
-                                                        saveData(cleareddata, "./Files/data.json")
+                                                        config.Quotechannels = quotechannels
+                                                        config.Quotechannelguilds = quotechannelguilds
+                                                        saveData(config, "./Files/data.json")
                                                         message.channel.send("Cleared all the quote channels ;(")
                                                     }
                                                     else {
@@ -1472,11 +1425,25 @@ client.on('message', async message => {
                                 }, 1000)
                             break;
                             default:
-
-
                        }
                     }
                 break;
+                default:
+                    message.react("❔")
+                    const filter3 = (reaction, user) => {
+                        return "❔".includes(reaction.emoji.name) && user.id === message.author.id
+                    }
+                    message.awaitReactions(filter3, {max: 1, time: 30000, errors: ['time']})
+                        .then(colddata => {
+                            const react = colddata.first()
+                            if (react.emoji.name == "❔") {
+                                try {
+                                    message.author.send(pages[0])
+                                    message.channel.send("Commands teleported to your dms")
+                                }
+                                catch (error) {console.log(error)}
+                            }
+                        })
                 // case "reactionrole":
                 //     if (args[1]) {
                 //         console.log("got to 1")
@@ -1584,7 +1551,7 @@ client.on('message', async message => {
                     const reaction = coll.first()
                     if (reaction.emoji.name === "❔") {
                         try {
-                            message.author.send(pages[0])
+                            message.author.send(pages[0]).then(() => message.author.send(pages[1]))
                             message.channel.send("Commands teleported to your dms")
                         }
                         catch (error) {console.log(error)}
