@@ -164,17 +164,6 @@ function reminder() {
         }, 18000000)
     }, 259200000)
 }
-function annoy() {
-    let annoying = setInterval(() => {
-        let user = client.users.cache.get("868136905139683338")
-        if (useractive) {
-            useractive = false
-            return
-        }
-        user.send("Chevrolet kid, talk in chat or ur ip address is mine")
-        console.log("annoyed the kid")
-    }, 360000)
-}
 client.once('ready', () => {
     console.log('Ready!');
     logchannels = config.Logchannels
@@ -196,7 +185,6 @@ client.once('ready', () => {
     }, 1000);
     start()
     reminder()
-    annoy()
     const guildids = client.guilds.cache.map(guild => guild.id) 
     console.log(guildids)
     for (let i = 0; i < guildids.length; i++) {
