@@ -5,7 +5,7 @@ const { OpusEncoder } = require('@discordjs/opus');
 const messagedeletes = require('./messagedelete.js')
 const banyesyes = require('./banyesyes.js');
 const guildmember = require('./GMa.js');
-const config = require("./Files/data.json")
+const config = require("./Files/config.json")
 // const onjoinvc = require('./onjoinvc.js');
 const client = new Client();
 const fs = require('fs')
@@ -15,8 +15,6 @@ const fetch = require("node-fetch");
 const ffmpeg = require('ffmpeg-static');
 var unirest = require("unirest");
 var axios = require("axios").default;
-const { log } = require('util');
-const { clear } = require('console');
 const emojiRegex = require('emoji-regex/RGI_Emoji.js');
 let embed = new MessageEmbed();
 let allguilds = []
@@ -71,14 +69,14 @@ function checks(data, message) {
         return
     }
 }
-async function loadData(path) {
-    try {
-        return await fs.readFileSync(path, 'utf8')
-    } catch (err) {
-        console.error(err)
-        return
-    }
-}
+// async function loadData(path) {
+//     try {
+//         return await fs.readFileSync(path, 'utf8')
+//     } catch (err) {
+//         console.error(err)
+//         return
+//     }
+// }
 async function saveData(data, path) {
     try {
         fs.writeFileSync(path, JSON.stringify(data))
@@ -412,7 +410,6 @@ client.on('message', async message => {
     //     }
     //     saveData(msgdata, "./Files/data.json")
     // }
-    if (message.author.id === "868136905139683338") useractive = true
     let channel2 = message.guild.channels.cache.find(
         channel => channel.name.toLowerCase() === "swear-equals-ban"
     )
@@ -438,7 +435,6 @@ client.on('message', async message => {
             sAllow = false
         }
     }
-    let isbad = true
     if (sAllow === false) {
         var options = {
             method: 'GET',
@@ -581,7 +577,7 @@ client.on('message', async message => {
                 let bungou = new MessageEmbed()
                 bungou.setTitle("Bungou Stray Dogs")
                 bungou.setDescription("Bungo Stray Dogs (Japanese: 文豪ストレイドッグス, Hepburn: Bungō Sutorei Doggusu, lit. 'Literary Stray Dogs') is a Japanese seinen manga series written by Kafka Asagiri and illustrated by Sango Harukawa, which has been serialized in the magazine Young Ace since 2012. The series follows the members of the 'Armed Detective Agency' throughout their everyday lives. The show mainly focuses on the weretiger Atsushi Nakajima, who joins others gifted with supernatural powers to accomplish different tasks including running a business, solving mysteries, and carrying out missions assigned by the mafia.Multiple light novels have been published. An anime television series adaptation by Bones aired in 2016 in two parts, the first part aired between 7 April 2016 and 23 June 2016, and the second part aired between 6 October 2016 and 22 December 2016. An anime film, Bungo Stray Dogs: Dead Apple, was released on 3 March 2018. A third season aired between 12 April 2019 and 28 June 2019. A spin-off television series adaptation of Bungo Stray Dogs Wan! premiered on 13 January 2021. Another film, Bungo Stray Dogs The Movie: Beast, was confirmed in March 2020 to be in development");
-                bungou.addField("Where to watch", "https://animepahe.com/\nhttps://animevibe.wtf/\nhttps://animixplay.to/")
+                bungou.addField("Where to watch", "https://animepahe.com/\nhttps://animevibe.wtf/\nhttps://animixplay.to/\nhttps://9anime.to(caution, use an adblocker)")
                 bungou.setColor(getRandomColor());
                 bungou.setTimestamp();
                 message.channel.send(bungou);
@@ -1077,7 +1073,6 @@ client.on('message', async message => {
                 if (message.author.id === ownerid) {
                     try {
                         let content = eval(`${args.splice(1, args.length - 1).join(" ")}`)
-                        message.channel.send(content)
                     } catch (err) {
                         message.channel.send("An error occurred")
                         message.author.send(""+err)
